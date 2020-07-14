@@ -1,0 +1,25 @@
+FROM node:12.1.0-alpine as build
+
+WORKDIR /app
+
+COPY . ./
+
+RUN cd ./services/{{serviceName}} && npm i && ./node_modules/.bin/tsc --skipLibCheck
+
+FROM node:12.1.0-alpine
+
+WORKDIR /app
+
+RUN mkdir -p ./build/
+COPY --from=build /app/services/{{serviceName}}/build/ /app/build/
+COPY --from=build /app/services/{{serviceName}}/package.json /app/build/services/{{serviceName}}/package.json
+COPY --from=build /app/services/{{serviceName}}/docker/prod/docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN cd ./build/services/{{serviceName}} && npm i --production
+RUN chmod +x /docker-entrypoint.sh
+EXPOSE 50050
+
+WORKDIR /app/build/services/{{serviceName}}
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD [""]

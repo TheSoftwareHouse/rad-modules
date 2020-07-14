@@ -1,0 +1,154 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "scheduler",
+    "version": "0.0.5",
+    "description": ""
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "in": "header",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Scheduling",
+      "description": ""
+    }
+  ],
+  "paths": {
+    "/api/scheduling/cancel-job": {
+      "delete": {
+        "tags": [
+          "Scheduling"
+        ],
+        "security": [],
+        "summary": "Cancels a job with given id",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "jobId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Job cancelled"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/scheduling/schedule-job": {
+      "post": {
+        "tags": [
+          "Scheduling"
+        ],
+        "security": [],
+        "summary": "Schedule an action to another service - either to run immediately, at some specific timestamp or as a cron job.",
+        "description": "Schedule an action to another service - either to run immediately, at some specific timestamp or as a cron job.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "service": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "payload": "type string",
+                  "cron": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Job scheduled"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "BadRequestError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Bad request"
+        }
+      }
+    },
+    "InternalServerError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Error description"
+        }
+      }
+    }
+  }
+}

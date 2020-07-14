@@ -1,0 +1,8 @@
+plop-templates
+node_modules
+services/**/bootstrap.ts
+shared/service-template/**
+**/*.d.ts
+*.json
+**/migrations/*
+**/plop-templates/*

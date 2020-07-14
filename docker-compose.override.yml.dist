@@ -1,0 +1,100 @@
+version: '3.4'
+
+services:
+  js:
+    volumes:
+      - .:/app:delegated
+      - ./node_modules:/app/node_modules/
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    networks:
+      - app
+
+  security:
+    volumes:
+      - ./services/security/node_modules:/app/build/services/security/node_modules
+      - ./services/security/src:/app/services/security/src
+      - ./services/security/swagger:/app/services/security/swagger
+      - ./services/security/init-data-volume:/app/build/services/init-data-volume
+    ports:
+      - 50050:50050
+
+  gateway:
+    volumes:
+      - ./services/gateway/node_modules:/app/build/services/gateway/node_modules
+      - ./services/gateway/src:/app/services/gateway/src
+    ports:
+      - 50051:50050
+  
+  notifications:
+    volumes:
+      - ./services/notifications/node_modules:/app/build/services/notifications/node_modules
+      - ./services/notifications/src:/app/services/notifications/src
+      - ./services/notifications/swagger:/app/services/notifications/swagger
+    ports:
+      - 50052:50050
+
+  scheduler: 
+    volumes:
+      - ./services/scheduler/node_modules:/app/build/services/scheduler/node_modules
+      - ./services/scheduler/src:/app/services/scheduler/src
+      - ./services/scheduler/swagger:/app/services/scheduler/swagger
+    ports:
+      - 50053:50050
+
+  mailer:
+    volumes:
+      - ./services/mailer/node_modules:/app/build/services/mailer/node_modules
+      - ./services/mailer/src:/app/services/mailer/src
+      - ./services/mailer/swagger:/app/services/mailer/swagger
+    ports:
+      - 50054:50050
+
+  pdf:
+      volumes:
+        - ./services/pdf/node_modules:/app/build/services/pdf/node_modules
+        - ./services/pdf/src:/app/services/pdf/src
+        - ./services/pdf/swagger:/app/services/pdf/swagger
+      ports:
+        - 50050:50050
+
+  redis:
+    ports:
+      - 6379:6379
+
+  keycloak:
+    image: jboss/keycloak
+    command: ["-Djboss.socket.binding.port-offset=10"]
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak-postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: "admin"
+      KEYCLOAK_PASSWORD: "admin"
+    ports:
+      - 8090:8090
+    networks:
+      - app
+    depends_on:
+      - keycloak-postgres
+
+  keycloak-postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./keycloak/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./keycloak/keycloak-postgres-data.sql:/keycloak-postgres-data.sql
+    networks:
+      - app

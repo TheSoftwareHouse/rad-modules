@@ -1,0 +1,3021 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "security",
+    "version": "0.0.53",
+    "description": ""
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Tokens",
+      "description": ""
+    },
+    {
+      "name": "Users",
+      "description": ""
+    },
+    {
+      "name": "Policy",
+      "description": ""
+    }
+  ],
+  "definitions": {
+    "ApiKeyHeaderName": {
+      "in": "header",
+      "name": "x-api-key",
+      "description": "ApiKey that allows generating access tokens.",
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "required": true,
+      "example": "123e4567-e89b-12d3-a456-426655440000"
+    },
+    "Tokens": {
+      "type": "object"
+    },
+    "AlreadyExistsError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Error description"
+        }
+      }
+    },
+    "BadRequestError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Bad request"
+        }
+      }
+    },
+    "ForbiddenError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Forbidden"
+        }
+      }
+    },
+    "InternalServerError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Error description"
+        }
+      }
+    },
+    "NoLongerAvailableError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "No longer available"
+        }
+      }
+    },
+    "NotFoundError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Not found"
+        }
+      }
+    },
+    "UnauthorizedError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Token missing or invalid token format"
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/attributes": {
+      "get": {
+        "tags": [
+          "Attributes"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get attributes list (if no query parameters returns first 25 attributes)",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "default": 0,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "default": 25,
+            "schema": {
+              "type": "number"
+            },
+            "example": 25
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "filter[username][include]=superadmin"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "order[by]=name&order[type]=asc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of attributes and total count of attributes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "An array of objects",
+                      "example": [
+                        {
+                          "key": "f2fd043c-44d3-49f6-9a5a-c486f9f47258",
+                          "name": "attr1",
+                          "username": "superadmin"
+                        }
+                      ]
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 2
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 25
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/policy/add-policy": {
+      "post": {
+        "tags": [
+          "Policy"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Adds a new policy",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "resource": {
+                    "type": "string",
+                    "required": true,
+                    "example": "res1"
+                  },
+                  "attribute": {
+                    "type": "string",
+                    "required": true,
+                    "example": "attr1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New policy created id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "f2fd043c-44d3-49f6-9a5a-c486f9f47258"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Policy already exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/AlreadyExistsError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/policy/get-policies": {
+      "get": {
+        "tags": [
+          "Policy"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get policies list (if no query parameters returns first 25 policies)",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "default": 0,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "default": 25,
+            "schema": {
+              "type": "number"
+            },
+            "example": 25
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "filter[resource][Like]=%resource%"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "order[by]=attribute&order[type]=asc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of policies and total count of policies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "policies": {
+                      "type": "An array of objects",
+                      "example": [
+                        {
+                          "id": "f2fd043c-44d3-49f6-9a5a-c486f9f47258",
+                          "attribute": "ADMIN_PANEL",
+                          "resource": "user-operation/add-user"
+                        },
+                        {
+                          "id": "262907ad-2ca4-41b6-85f3-c2face7d3318",
+                          "attribute": "ADMIN_PANEL",
+                          "resource": "user-operation/get-user-id"
+                        }
+                      ]
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/policy/remove-policy": {
+      "delete": {
+        "tags": [
+          "Policy"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Removes a policy (identified either by id or resource and attribute)",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "example": "9540c4b4-bbf7-479d-aa58-4bddc1200d9c"
+          },
+          {
+            "in": "query",
+            "name": "resource",
+            "schema": {
+              "type": "string"
+            },
+            "example": "res1"
+          },
+          {
+            "in": "query",
+            "name": "attribute",
+            "schema": {
+              "type": "string"
+            },
+            "example": "attr1"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Policy removed"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Creates token which will be used to reset the user password",
+        "description": "Create a password reset token with will be used to find if the user started action to change password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "required": true,
+                    "example": "test-user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Token created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/auth/reset-password/{resetPasswordToken}": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "security": [],
+        "summary": "Reset user password",
+        "description": "If a user wants to reset the password without providing old one first the user needs to receive \"resetPasswordToken\" from /password-reset-token endpoint. After that user need to send newPassword and to valid URL with resetPasswordToken in parameter. If the user won't provide newPassword in the body the password will be generated randomly",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "resetPasswordToken",
+            "schema": {
+              "type": "string"
+            },
+            "example": "110b7890b25bbtEsTtoKenc7760e8ac2e247b"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newPassword": {
+                    "type": "string",
+                    "example": "passw0rd"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns password when generater otherwise empty body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "newPassword": {
+                      "type": "string",
+                      "example": "passw0rd"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tokens/create-access-key": {
+      "post": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Create Api Key",
+        "description": "Returns an api key",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Access key created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apiKey": {
+                      "type": "string",
+                      "default": "uuid v4",
+                      "example": "123e4567-e89b-12d3-a456-426655440000"
+                    },
+                    "type": {
+                      "type": "string",
+                      "default": "custom",
+                      "example": "custom"
+                    },
+                    "createdBy": {
+                      "type": "string",
+                      "default": "username",
+                      "example": "superadmin"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tokens/generate-token": {
+      "post": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Create new token",
+        "description": "Creates new token with default policies and attributes without SUPERADMIN_ROLE attribute",
+        "parameters": [
+          {
+            "$ref": "#/definitions/ApiKeyHeaderName"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accessExpirationInSeconds": {
+                    "type": "number",
+                    "required": true,
+                    "example": 3600
+                  },
+                  "refreshExpirationInSeconds": {
+                    "type": "number",
+                    "required": true,
+                    "example": 3000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Access key created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "default": "JWT token",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGM4YzBjNi1jYzI3LTRjOTEtODk0ZS05MDIzMzYyYzMwOTAiLCJ1c2VybmFtZSI6Ijk0N2E1NmEyLWYyNmItNGU5OC1iZjk4LTI5ZWEwOWE0Njk5YyIsImF0dHJpYnV0ZXMiOlsiYXR0cjEiLCJhdHRyMiJdLCJwb2xpY3kiOltdLCJ0eXBlIjoiY3VzdG9tIiwiYWNjZXNzRXhwaXJhdGlvbkluU2Vjb25kcyI6MzYwMCwicmVmcmVzaEV4cGlyYXRpb25JblNlY29uZHMiOjMwMDAsImlhdCI6MTU3ODgzMjA1MCwiZXhwIjoxNTc4ODM1NjUwfQ.C-eAbVXd8GJNTnKmYAT0YZqv4suqSPwHHp7DL48mZag"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "default": "JWT token",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGM4YzBjNi1jYzI3LTRjOTEtODk0ZS05MDIzMzYyYzMwOTAiLCJ1c2VybmFtZSI6Ijk0N2E1NmEyLWYyNmItNGU5OC1iZjk4LTI5ZWEwOWE0Njk5YyIsImF0dHJpYnV0ZXMiOlsiYXR0cjEiLCJhdHRyMiJdLCJwb2xpY3kiOltdLCJ0eXBlIjoiY3VzdG9tIiwiYWNjZXNzRXhwaXJhdGlvbkluU2Vjb25kcyI6MzYwMCwicmVmcmVzaEV4cGlyYXRpb25JblNlY29uZHMiOjMwMDAsImlhdCI6MTU3ODgzMjA1MCwiZXhwIjoxNTc4ODM1MDUwfQ.wNzw7dSLux3a3Jf1KRsnGKMBVlMxToz8x2dJu7DWff0"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tokens/get-access-keys": {
+      "get": {
+        "tags": [
+          "Tokens"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get access keys list (if no query parameters returns first 25 keys)",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "default": 0,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "default": 25,
+            "schema": {
+              "type": "number"
+            },
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of access keys and total count of keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessKeys": {
+                      "type": "An array of objects",
+                      "example": [
+                        {
+                          "id": "cbc078c3-da36-43a7-b364-7f5c48e1fe50",
+                          "apiKey": "37362ad7-a603-1bcc-808c-a24bfd35883c",
+                          "type": "custom",
+                          "createdBy": "superadmin",
+                          "createdAt": "2020-02-07T11:13:16.184Z"
+                        },
+                        {
+                          "id": "485d2318-5a0e-4b80-bfd1-1b74e1636878",
+                          "apiKey": "79e596f1-72c9-0afc-cde8-d7acd9cadf9c",
+                          "type": "custom",
+                          "createdBy": "superadmin",
+                          "createdAt": "2020-02-07T11:13:16.431Z"
+                        }
+                      ]
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tokens/remove-access-key/{apiKey}": {
+      "delete": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Remove api key",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "apiKey",
+            "description": "ApiKey that should be deleted",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Api key removed"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/activate-user/{activationToken}": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Activate a new user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "activationToken",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User activated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userId": {
+                      "type": "string",
+                      "example": "45287eff-cdb0-4cd4-8a0f-a07d1a11b382"
+                    },
+                    "isActive": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Token not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NotFoundError"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Token expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NoLongerAvailableError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/add-attribute": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Adds a new attribute for a given user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "required": true,
+                    "example": "ee4b1d3e-463e-49a8-880f-5f3a816b492c"
+                  },
+                  "attributes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "required": true,
+                    "example": [
+                      "attr1",
+                      "attr2"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Attribute created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NotFoundError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Already Exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/AlreadyExistsError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/add-user": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new user",
+        "description": "Adds a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "required": true,
+                    "example": "test-user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "required": true,
+                    "example": "passw0rd"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "newUserId": {
+                      "type": "string",
+                      "example": "45287eff-cdb0-4cd4-8a0f-a07d1a11b382"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Already Exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/AlreadyExistsError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/deactivate-user": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Deactivate a user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "required": true,
+                    "example": "ee4b1d3e-463e-49a8-880f-5f3a816b492c"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User deactivated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userId": {
+                      "type": "string",
+                      "example": "45287eff-cdb0-4cd4-8a0f-a07d1a11b382"
+                    },
+                    "isActive": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "deactivationDate": {
+                      "type": "string",
+                      "example": "2020-01-12T13:36:39.373Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/delete-user": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Removes a user by id",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "example": "ee4b1d3e-463e-49a8-880f-5f3a816b492c"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User removed"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/get-user-id": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Returns a user id by user name",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User Id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userId": {
+                      "type": "string",
+                      "example": "45287eff-cdb0-4cd4-8a0f-a07d1a11b382"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/get-user/{userId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "806ab2f0-fb77-4a45-aece-493c8a591ef5"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "test-user"
+                    },
+                    "isActive": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2020-04-27T09:34:13.424Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2020-04-28T09:34:13.424Z"
+                    },
+                    "attributes": {
+                      "type": "An array of strings",
+                      "example": [
+                        "attr1",
+                        "attr2"
+                      ]
+                    },
+                    "isSuperAdmin": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/get-users-by-resource": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get users by resource name",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "resource",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "default": 0,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "default": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "An array of objects",
+                      "example": [
+                        {
+                          "id": "806ab2f0-fb77-4a45-aece-493c8a591ef5",
+                          "username": "test-user",
+                          "isActive": true,
+                          "createdAt": "2020-04-27T09:34:13.424Z",
+                          "updatedAt": "2020-04-28T09:34:13.424Z",
+                          "attributes": [
+                            "attr1",
+                            "attr2"
+                          ],
+                          "isSuperAdmin": false
+                        }
+                      ]
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 2
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 25
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get users list (if no query parameters returns first 25 users)",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "default": 0,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "default": 25,
+            "schema": {
+              "type": "number"
+            },
+            "example": 25
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "allowReserved": true,
+            "example": "filter[username][include]=superadmin"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "allowReserved": true,
+            "example": "order[by]=username&order[type]=asc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users and total count of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "An array of objects",
+                      "example": [
+                        {
+                          "id": "806ab2f0-fb77-4a45-aece-493c8a591ef5",
+                          "username": "test-user",
+                          "isActive": true,
+                          "activationToken": null,
+                          "createdAt": "2020-04-27T09:34:13.424Z",
+                          "updatedAt": "2020-04-27T09:34:13.424Z",
+                          "attributes": [
+                            "attr1",
+                            "attr2"
+                          ],
+                          "isSuperAdmin": false
+                        }
+                      ]
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 2
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 25
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/has-access": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Verifies whether user has access to a specific resource.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "resource",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "example": "resource1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User has access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasAccess": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "/api/users/has-attribute": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Verifies whether user has attributes.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "attributes",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "example": "attr1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns an object determining whether user has all attributes and a list of owned attributes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasAllAttributes": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "ownedAttributes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "attr1"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/is-authenticated": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Verifies if user is authenticated",
+        "responses": {
+          "200": {
+            "description": "Is authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isAuthenticated": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [],
+        "summary": "Login to app",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "required": true,
+                    "example": "superadmin"
+                  },
+                  "password": {
+                    "type": "string",
+                    "required": true,
+                    "example": "superadmin"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "auth success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzQ4Zjc0MC1lOWRiLTQxYTMtOGJlNy04OTJlMWY5MzViYzgiLCJ1c2VybmFtZSI6InN1cGVyYWRtaW4iLCJhdHRyaWJ1dGVzIjpbIlJPTEVfU1VQRVJBRE1JTiJdLCJwb2xpY3kiOltdLCJ0eXBlIjoidXNlciIsImlhdCI6MTU4MzQ5ODIxNCwiZXhwIjoxNTgzNTA4MjE0fQ.LU3DKnwjzmqIMlxni0bwFNH4-MpjRp6dvt7cXztvQIc"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzQ4Zjc0MC1lOWRiLTQxYTMtOGJlNy04OTJlMWY5MzViYzgiLCJ1c2VybmFtZSI6InN1cGVyYWRtaW4iLCJhdHRyaWJ1dGVzIjpbIlJPTEVfU1VQRVJBRE1JTiJdLCJwb2xpY3kiOltdLCJ0eXBlIjoidXNlciIsImlhdCI6MTU4MzQ5ODIxNCwiZXhwIjoxNTgzNDk5MTE0fQ.tUSn6ktZRB8z1X7Q7QiMtQK7JFGI-AKJMcltlZaOR0U"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "child \"username\" fails because [\"username\" is not allowed to be empty]"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Wrong username or password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/auth/login": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "security": [],
+        "summary": "Login to app",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "required": true,
+                    "example": "superadmin"
+                  },
+                  "password": {
+                    "type": "string",
+                    "required": true,
+                    "example": "superadmin"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "auth success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzQ4Zjc0MC1lOWRiLTQxYTMtOGJlNy04OTJlMWY5MzViYzgiLCJ1c2VybmFtZSI6InN1cGVyYWRtaW4iLCJhdHRyaWJ1dGVzIjpbIlJPTEVfU1VQRVJBRE1JTiJdLCJwb2xpY3kiOltdLCJ0eXBlIjoidXNlciIsImlhdCI6MTU4MzQ5ODIxNCwiZXhwIjoxNTgzNTA4MjE0fQ.LU3DKnwjzmqIMlxni0bwFNH4-MpjRp6dvt7cXztvQIc"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzQ4Zjc0MC1lOWRiLTQxYTMtOGJlNy04OTJlMWY5MzViYzgiLCJ1c2VybmFtZSI6InN1cGVyYWRtaW4iLCJhdHRyaWJ1dGVzIjpbIlJPTEVfU1VQRVJBRE1JTiJdLCJwb2xpY3kiOltdLCJ0eXBlIjoidXNlciIsImlhdCI6MTU4MzQ5ODIxNCwiZXhwIjoxNTgzNDk5MTE0fQ.tUSn6ktZRB8z1X7Q7QiMtQK7JFGI-AKJMcltlZaOR0U"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "child \"username\" fails because [\"username\" is not allowed to be empty]"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Wrong username or password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/oauth-redirect/{provider}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [],
+        "summary": "oauth-redirect callback",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "code",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "redirectUrl",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoaSI6ImhvdyBhcmUgeW91PyA6KSJ9.NYXWEhydNzRrGQD-dhEQL0pi0MIPoOwbGwfOw39wvus"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3ciOiJjYW4gSSBoZWxwIHlvdT8ifQ.P7egumkjqupIVmvVgy0rv4rqNOVXSlZvOX5ZiFxNR9w"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "test.user@test.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/auth/oauth-redirect/{provider}": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "security": [],
+        "summary": "oauth-redirect callback",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "code",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "redirectUrl",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoaSI6ImhvdyBhcmUgeW91PyA6KSJ9.NYXWEhydNzRrGQD-dhEQL0pi0MIPoOwbGwfOw39wvus"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3ciOiJjYW4gSSBoZWxwIHlvdT8ifQ.P7egumkjqupIVmvVgy0rv4rqNOVXSlZvOX5ZiFxNR9w"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "test.user@test.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/password-reset-token": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Returns token with will be used to reset the user password",
+        "description": "Create a password reset token with will be used to find if the user started action to change password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "required": true,
+                    "example": "test-user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Token created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "resetPasswordToken": {
+                      "type": "string",
+                      "example": "45287eff-cdb0-4cd4-8a0f-a07d1a11b382"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/refresh-token": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Refreshes access token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accessToken": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Access token string..."
+                  },
+                  "refreshToken": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Refresh token string..."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token successfully refreshed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "access token string..."
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "example": "refresh token string..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/auth/refresh-token": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "security": [],
+        "summary": "Refreshes access token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accessToken": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Access token string..."
+                  },
+                  "refreshToken": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Refresh token string..."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token successfully refreshed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "access token string..."
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "example": "refresh token string..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/refresh-user-active-token": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Refresh user's active token if token has expired.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "required": true,
+                    "example": "ee4b1d3e-463e-49a8-880f-5f3a816b492c"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User's active token refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "access token string..."
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "example": "refresh token string..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Error the user is already active",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/remove-attribute": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Removes an attribute for a user",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "attributes",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "example": "attr1"
+          },
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "example": "ee4b1d3e-463e-49a8-880f-5f3a816b492c"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attribute not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/reset-password/{resetPasswordToken}": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [],
+        "summary": "Reset user password",
+        "description": "If a user wants to reset the password without providing old one first the user needs to receive \"resetPasswordToken\" from /password-reset-token endpoint. After that user need to send newPassword and to valid URL with resetPasswordToken in parameter. If the user won't provide newPassword in the body the password will be generated randomly",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "resetPasswordToken",
+            "schema": {
+              "type": "string"
+            },
+            "example": "110b7890b25bbtEsTtoKenc7760e8ac2e247b"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newPassword": {
+                    "type": "string",
+                    "example": "passw0rd"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns password when generater otherwise empty body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "newPassword": {
+                      "type": "string",
+                      "example": "passw0rd"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/set-password": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Set user password",
+        "description": "If a normal user wants to change his password the user needs to send newPassword and oldPassword. If an admin user wants to set a new password for a user, the admin needs to send username and newPassword",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "oldPassword": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "required": true
+                  }
+                },
+                "example": {
+                  "normal-user": {
+                    "body": {
+                      "newPassword": "87654321cba",
+                      "oldPassword": "abc12345678"
+                    }
+                  },
+                  "admin-user": {
+                    "body": {
+                      "newPassword": "87654321cba",
+                      "username": "user1"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Set new password success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "passwordChanged": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

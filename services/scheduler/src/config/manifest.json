@@ -1,0 +1,15 @@
+[
+  {
+    "url": "http://security:50050",
+    "name": "security",
+    "actions": [
+      {
+        "type": "addUser",
+        "http": {
+          "uri": "/api/users/add-user",
+          "method": "POST"
+        }
+      }
+    ]
+  }
+]

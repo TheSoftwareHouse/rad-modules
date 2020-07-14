@@ -1,0 +1,153 @@
+image: atlassian/default-image:2.08
+
+definitions:
+  steps:
+    - step: &compile
+        name: Compile TypeScript
+        caches:
+          - node
+        services:
+          - docker
+        script:
+          - npm run docker-build-watcher
+          - npm run lint
+    - step: &security-integration
+        name: Security integration
+        caches:
+          - node
+        services:
+          - docker
+        script:
+          - npm run docker-build-security-prod
+          - npm run security-integration      
+    - step: &mailer-integration
+        name: Mailer integration
+        caches:
+          - node
+        services:
+          - docker
+        script:
+          - npm run docker-build-mailer-prod
+          - npm run mailer-integration
+    - step: &notifications-integration
+        name: Notifications integration
+        caches:
+          - node
+        services:
+          - docker
+        script:
+          - npm run docker-build-notifications-prod
+          - npm run notifications-integration
+    - step: &scheduler-integration
+        name: Scheduler
+        caches:
+          - node
+        services:
+          - docker
+        script:
+          - npm run docker-build-scheduler-prod
+    - step: &gateway-integration
+        name: Gateway integration
+        caches:
+          - node
+        services:
+          - docker
+        script:
+          - npm run docker-build-gateway-prod
+          - npm run docker-build-security-prod
+          - npm run gateway-integration
+    - step: &pdf-integration
+        name: Pdf integration
+        caches:
+          - node
+        services:
+          - docker
+        script:
+          - npm run docker-build-pdf-prod
+          - npm run pdf-integration
+    - step: &deploy-docs
+        name: Prepare and push API Docs to GitHub
+        script:
+          - make install
+          - npm run build
+          - make npm-install-in-all-build-services
+          - node ./ci-scripts/generate-api-docs.js
+          - bash ./ci-scripts/api-docs-to-github.sh
+        services:
+          - docker
+    - step: &deploy-docusaurus-to-github
+        name: Prepare and push Docusaurus Docs to GitHub
+        script:          
+          - bash ./ci-scripts/docusaurus-to-github.sh
+        services:
+          - docker
+pipelines:
+  default:
+    - step: *compile
+    - parallel:
+      - step: *security-integration
+      - step: *mailer-integration
+      - step: *notifications-integration
+      - step: *scheduler-integration
+      - step: *gateway-integration
+      - step: *pdf-integration
+  branches:
+    master:
+      - step: *compile
+      - parallel:
+        - step: *security-integration
+        - step: *mailer-integration
+        - step: *notifications-integration
+        - step: *scheduler-integration
+        - step: *gateway-integration    
+        - step: *pdf-integration
+      - step: *deploy-docs
+      - step: *deploy-docusaurus-to-github
+        
+  custom:
+    deploy-mailer:
+      - step:
+          name: Build and push Mailer to DockerHub
+          script:
+            - bash ./ci-scripts/docker-release.sh mailer ./services/mailer/docker/prod/Dockerfile ./services/mailer/package.json
+          services:
+            - docker
+    deploy-scheduler:
+      - step:
+          name: Build and push Scheduler to DockerHub
+          script:
+            - bash ./ci-scripts/docker-release.sh scheduler ./services/scheduler/docker/prod/Dockerfile ./services/scheduler/package.json
+          services:
+            - docker
+    deploy-security:
+      - step:
+          name: Build and push Security to DockerHub
+          script:
+            - bash ./ci-scripts/docker-release.sh security ./services/security/docker/prod/Dockerfile ./services/security/package.json
+          services:
+            - docker
+    deploy-gateway:
+      - step:
+          name: Build and push Gateway to DockerHub
+          script:
+            - bash ./ci-scripts/docker-release.sh gateway ./services/gateway/docker/prod/Dockerfile ./services/gateway/package.json
+          services:
+            - docker
+    deploy-notifications:
+      - step:
+          name: Build and push Notifications to DockerHub
+          script:
+            - bash ./ci-scripts/docker-release.sh notifications ./services/notifications/docker/prod/Dockerfile ./services/notifications/package.json
+          services:
+            - docker
+    deploy-pdf:
+      - step:
+          name: Build and push Pdf to DockerHub
+          script:
+            - bash ./ci-scripts/docker-release.sh pdf ./services/pdf/docker/prod/Dockerfile ./services/pdf/package.json
+          services:
+            - docker
+    generate-api-doc-and-push-to-github:
+      - step: *deploy-docs
+    push-docusaurus-doc-to-github:
+      - step: *deploy-docusaurus-to-github
