@@ -1,0 +1,92 @@
+language: node_js
+node_js:
+  - 12
+services:
+  - docker  
+before_script:
+  - npm install
+jobs:
+  include:    
+    - stage: compile      
+      name: "Compile TypeScript and Lint"
+      script:
+        - npm run docker-build-watcher
+        - npm run lint
+
+    - stage: integration-tests       
+      # security-12
+      script:
+        - npm run docker-build-security-prod
+        - npm run security-integration
+      name: "Security integration tests"
+    - # mailer
+      script:
+        - npm run docker-build-mailer-prod
+        - npm run mailer-integration
+      env: TRANSPORT_SMTP_HOST=test
+      name: "Mailer integration tests"
+    - # notifications
+      script:
+        - npm run docker-build-notifications-prod
+        - npm run notifications-integration
+      name: "Notifications integration tests"
+    - # scheduler
+      script:
+        - npm run docker-build-scheduler-prod
+      name: "Scheduler integration tests"
+    - # gateway
+      script:
+        - npm run docker-build-gateway-prod
+        - npm run docker-build-security-prod
+        - npm run gateway-integration
+      name: "Gateway integration tests"
+    - # pdf
+      script:
+        - npm run docker-build-pdf-prod
+        - npm run pdf-integration
+      name: "Pdf integration tests"
+    
+    - stage: deploy-redocs
+      if: branch = master
+      name: "Prepare and push API ReDocs to GitHub"      
+      script:
+        - make install
+        - npm run build
+        - make npm-install-in-all-build-services
+        - node ./ci-scripts/generate-api-docs.js
+        - bash ./ci-scripts/api-docs-to-github.sh
+
+    - stage: deploy-docusaurus-to-github      
+      if: branch = master
+      name: "Prepare and push Docusaurus Docs to GitHub"
+      script: bash ./ci-scripts/docusaurus-to-github.sh
+
+    - stage: deploy-mailer-to-docker-hub
+      if: tag =~ /^mailer/
+      name: "Deploy Mailer to DockerHub"
+      script: bash ./ci-scripts/docker-release.sh mailer ./services/mailer/docker/prod/Dockerfile ./services/mailer/package.json
+
+    - stage: deploy-scheduler-to-docker-hub
+      if: tag =~ /^scheduler/
+      name: "Deploy Scheduler to DockerHub"
+      script: bash ./ci-scripts/docker-release.sh scheduler ./services/scheduler/docker/prod/Dockerfile ./services/scheduler/package.json
+
+    - stage: deploy-security-to-docker-hub
+      if: tag =~ /^security/
+      name: "Deploy Security to DockerHub"
+      script: bash ./ci-scripts/docker-release.sh security ./services/security/docker/prod/Dockerfile ./services/security/package.json
+
+    - stage: deploy-gateway-to-docker-hub
+      if: tag =~ /^gateway/
+      name: "Deploy Gateway to DockerHub"
+      script: bash ./ci-scripts/docker-release.sh gateway ./services/gateway/docker/prod/Dockerfile ./services/gateway/package.json
+
+    - stage: deploy-notifications-to-docker-hub
+      if: tag =~ /^notifications/
+      name: "Deploy Notifications to DockerHub"
+      script: bash ./ci-scripts/docker-release.sh notifications ./services/notifications/docker/prod/Dockerfile ./services/notifications/package.json
+
+    - stage: deploy-pdf-to-docker-hub
+      if: tag =~ /^pdf/
+      name: "Deploy Pdf to DockerHub"
+      script: bash ./ci-scripts/docker-release.sh pdf ./services/pdf/docker/prod/Dockerfile ./services/pdf/package.json
