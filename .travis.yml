@@ -2,11 +2,11 @@ language: node_js
 node_js:
   - 12
 services:
-  - docker  
+  - docker
 before_script:
   - npm install
 jobs:
-  include:    
+  include:
     - stage: compile
       if: branch = master
       name: "Compile TypeScript and Lint"
@@ -14,12 +14,12 @@ jobs:
         - npm run docker-build-watcher
         - npm run lint
 
-    - stage: integration-tests       
+    - stage: integration-tests
       # security
       script:
         - npm run docker-build-security-prod
         - npm run security-integration
-      name: "Security integration tests"      
+      name: "Security integration tests"
       if: branch = master
     - # mailer
       script:
@@ -52,10 +52,10 @@ jobs:
         - npm run pdf-integration
       name: "Pdf integration tests"
       if: branch = master
-    
+
     - stage: deploy-redocs
-      if: branch = master AND type IS NOT pull_request
-      name: "Prepare and push API ReDocs to GitHub"      
+      if: branch = master AND type NOT IN (pull_request)
+      name: "Prepare and push API ReDocs to GitHub"
       script:
         - make install
         - npm run build
@@ -63,8 +63,8 @@ jobs:
         - node ./ci-scripts/generate-api-docs.js
         - bash ./ci-scripts/api-docs-to-github.sh
 
-    - stage: deploy-docusaurus-to-github      
-      if: branch = master AND type IS NOT pull_request
+    - stage: deploy-docusaurus-to-github
+      if: branch = master AND type NOT IN (pull_request)
       name: "Prepare and push Docusaurus Docs to GitHub"
       script: bash ./ci-scripts/docusaurus-to-github.sh
 
