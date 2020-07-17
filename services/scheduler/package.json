@@ -24,7 +24,7 @@
     "helmet": "3.22.0",
     "http-status-codes": "1.4.0",
     "jsonwebtoken": "8.5.1",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "morgan": "1.10.0",
     "node-fetch": "2.6.0",
     "pg": "7.12.1",
