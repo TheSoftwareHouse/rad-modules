@@ -15,7 +15,7 @@ jobs:
         - npm run lint
 
     - stage: integration-tests       
-      # security-12
+      # security
       script:
         - npm run docker-build-security-prod
         - npm run security-integration
@@ -54,7 +54,7 @@ jobs:
       if: branch = master
     
     - stage: deploy-redocs
-      if: branch = master
+      if: branch = master AND type NOT IN (pull_request)
       name: "Prepare and push API ReDocs to GitHub"      
       script:
         - make install
@@ -64,7 +64,7 @@ jobs:
         - bash ./ci-scripts/api-docs-to-github.sh
 
     - stage: deploy-docusaurus-to-github      
-      if: branch = master
+      if: branch = master AND type NOT IN (pull_request)
       name: "Prepare and push Docusaurus Docs to GitHub"
       script: bash ./ci-scripts/docusaurus-to-github.sh
 
