@@ -4,9 +4,11 @@ import { Application } from "../app/application.types";
 import { asValue, AwilixContainer } from "awilix";
 import { appConfig } from "../config/config";
 import { deepCloneAndHideKeys } from "../middleware/request-logger";
-import { createContainer } from "../container";
+import { GlobalData } from "./bootstrap";
 
 describe("Request logger tests", () => {
+  const GLOBAL = global as GlobalData;
+
   let app: Application;
   let container: AwilixContainer;
   let middlewareMessageText = "";
@@ -18,7 +20,7 @@ describe("Request logger tests", () => {
   };
 
   before(async () => {
-    container = await createContainer(appConfig);
+    container = GLOBAL.container;
     app = container.resolve("app");
     loggerStreamOriginal = container.resolve("loggerStream");
 
