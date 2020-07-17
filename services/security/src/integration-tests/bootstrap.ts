@@ -107,6 +107,9 @@ before("Create test DB and create container and dependencies", async function ()
 
 beforeEach("Clear DB and init users and policies", async function () {
   const { dbConnection } = global.getBootstrap();
+
+  this.timeout(5000);
+
   if (dbConnection) {
     await clearDb(dbConnection);
     await InitiateTestUsers();

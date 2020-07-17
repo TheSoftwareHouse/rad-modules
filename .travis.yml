@@ -15,7 +15,7 @@ jobs:
         - npm run lint
 
     - stage: integration-tests       
-      # security-12
+      # security
       script:
         - npm run docker-build-security-prod
         - npm run security-integration
