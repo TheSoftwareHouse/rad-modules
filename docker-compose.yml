@@ -123,7 +123,7 @@ services:
   security-integration-tests:
     image: security-service-prod:latest
     working_dir: /app/build/services/security
-    command: [sh, -c, "npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/{,!(authorization-strategies)/**}/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit && sleep 20 && AUTHENTICATION_STRATEGY=keycloak node ./node_modules/.bin/mocha \"src/integration-tests/authorization-strategies/keycloak-authentication-client.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit", ]
+    command: [sh, -c, "npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/{,!(authorization-strategies)/**}/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --timeout 5000 --exit && sleep 20 && AUTHENTICATION_STRATEGY=keycloak node ./node_modules/.bin/mocha \"src/integration-tests/authorization-strategies/keycloak-authentication-client.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit", ]
     environment:
       OAUTH_ENABLED_PROVIDERS: "google,facebook"
       OAUTH_CREATE_USER_ACCOUNT: "true"
