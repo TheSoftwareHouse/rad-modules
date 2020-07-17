@@ -7,7 +7,8 @@ before_script:
   - npm install
 jobs:
   include:    
-    - stage: compile      
+    - stage: compile
+      if: branch = master
       name: "Compile TypeScript and Lint"
       script:
         - npm run docker-build-watcher
@@ -18,33 +19,39 @@ jobs:
       script:
         - npm run docker-build-security-prod
         - npm run security-integration
-      name: "Security integration tests"
+      name: "Security integration tests"      
+      if: branch = master
     - # mailer
       script:
         - npm run docker-build-mailer-prod
         - npm run mailer-integration
       env: TRANSPORT_SMTP_HOST=test
       name: "Mailer integration tests"
+      if: branch = master
     - # notifications
       script:
         - npm run docker-build-notifications-prod
         - npm run notifications-integration
       name: "Notifications integration tests"
+      if: branch = master
     - # scheduler
       script:
         - npm run docker-build-scheduler-prod
       name: "Scheduler integration tests"
+      if: branch = master
     - # gateway
       script:
         - npm run docker-build-gateway-prod
         - npm run docker-build-security-prod
         - npm run gateway-integration
       name: "Gateway integration tests"
+      if: branch = master
     - # pdf
       script:
         - npm run docker-build-pdf-prod
         - npm run pdf-integration
       name: "Pdf integration tests"
+      if: branch = master
     
     - stage: deploy-redocs
       if: branch = master
