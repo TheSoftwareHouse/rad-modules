@@ -7,7 +7,7 @@ const siteConfig = {
   projectName: "rad-modules-docs",
   organizationName: "TheSoftwareHouse",
 
-  headerLinks: [{ search: true }, { href: "https://github.com/TheSoftwareHouse", label: "GitHub" }],
+  headerLinks: [{ search: true }, { href: "https://github.com/TheSoftwareHouse/rad-modules", label: "GitHub" }],
 
   headerIcon: "img/favicon.ico",
   footerIcon: "img/favicon.ico",
