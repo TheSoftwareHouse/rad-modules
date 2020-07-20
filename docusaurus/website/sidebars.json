@@ -5,6 +5,7 @@
       "security/security-index",
       "security/security-getting-started",
       "security/security-api-documentation",
+      "security/security-keycloak-integration",
       "security/security-advanced-configuration",
       "security/security-abac"
     ],

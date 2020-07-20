@@ -700,3 +700,38 @@ AUTHENTICATION_STRATEGY:
 - **_Description_**: The variable specifies which authentication strategy will be enabled.
     - Accepted values: `custom`, `keycloak`
 - **_Default_**: `custom`
+
+KEYCLOAK_CLIENT_CONFIG_JSON_PATH:
+
+- **_Description_**: The variable specifies the path to keycloak realm import file.
+- **_Default_**: `"/app/services/security/init-data-volume/keycloak.json"`
+
+KEYCLOAK_REALM_NAME
+
+- **_Description_**: Realm name. A realm manages a set of users, credentials, roles, and groups. A user belongs to and logs into a realm. Realms are isolated from one another and can only manage and authenticate the users that they control.
+- **_Default_**: `"rad-security-auth"`
+
+KEYCLOAK_ADMIN_USERNAME
+
+- **_Description_**: Keycloak user name with `admin` roles
+- **_Default_**: `"admin"`
+
+KEYCLOAK_ADMIN_PASSWORD
+
+- **_Description_**: Password for the `KEYCLOAK_ADMIN_USERNAME`
+- **_Default_**: `"password"`
+
+KEYCLOAK_CLIENT_SECRET
+
+- **_Description_**: For confidential clients, a client secret
+- **_Default_**: `"7680c12c-4430-40e0-8968-b73c99b4dcf0"`
+
+KEYCLOAK_CLIENT_ID
+
+- **_Description_**: Keycloak OpenID client name
+- **_Default_**: `"rad-security"`
+
+KEYCLOAK_SECURITY_CLIENT_ID
+
+- **_Description_**: Keycloak OpenID client ID
+- **_Default_**: `"6c3465b1-2674-4704-a940-c41194dbd95"`
