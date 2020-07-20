@@ -35,7 +35,7 @@
     "pg": "7.12.1",
     "pug": "2.0.4",
     "randexp": "0.5.3",
-    "redis": "2.8.0",
+    "redis": "3.0.2",
     "swagger-jsdoc": "4.0.0",
     "swagger-ui-express": "4.1.4",
     "tslib": "1.11.2",
@@ -64,7 +64,6 @@
     "@types/uuid": "7.0.2",
     "mocha": "7.1.1",
     "plop": "2.6.0",
-    "redis": "3.0.2",
     "supertest": "4.0.2",
     "typescript": "3.8.3"
   }
