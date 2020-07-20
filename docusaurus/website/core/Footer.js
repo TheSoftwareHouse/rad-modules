@@ -53,7 +53,7 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>Support:</h5>
-            <a href="https://github.com/TheSoftwareHouse/rad-modules-docs">GitHub</a>
+            <a href="https://github.com/TheSoftwareHouse">GitHub</a>
             <a href="mailto:hello@tsh.io">hello@tsh.io</a>
           </div>
         </section>
