@@ -27,6 +27,21 @@ describe("Scheduler tests", () => {
       });
   });
 
+  it("Should return only one job that match the filter", async () => {
+    await createJobs();
+
+    const testName = "A super test1";
+
+    return request(GLOBAL.container.resolve("app"))
+      .get(`/api/scheduling/get-jobs?filter[name][eq]=${testName}`)
+      .expect(200)
+      .expect((res) => {
+        assert(Array.isArray(res.body.jobs));
+        deepStrictEqual(res.body.jobs.length, 1);
+        deepStrictEqual(res.body.jobs.pop().name, testName);
+      });
+  });
+
   it("Should return only jobs that match the filter", async () => {
     await createJobs();
     return request(GLOBAL.container.resolve("app"))

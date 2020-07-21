@@ -16,6 +16,7 @@ export const getJobsActionValidation = celebrate(
         Joi.string().valid("id", "name", "service", "action", "status", "createdAt", "updatedAt"),
         Joi.object({
           include: Joi.string(),
+          in: Joi.string(),
           eq: Joi.string(),
           eqOr: Joi.string(),
           neq: Joi.string(),

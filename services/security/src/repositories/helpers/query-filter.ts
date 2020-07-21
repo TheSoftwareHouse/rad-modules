@@ -1,6 +1,6 @@
 export const OPERATORS: any = {
   eq: (value: any) => ({ operator: "=", orAnd: "AND", value }),
-  eqOr: (value: any) => ({ operator: "=", orAnd: "Or", value }),
+  eqOr: (value: any) => ({ operator: "=", orAnd: "OR", value }),
   neq: (value: any) => ({ operator: "<>", orAnd: "AND", value }),
   neqOr: (value: any) => ({ operator: "<>", orAnd: "OR", value }),
   lt: (value: any) => ({ operator: "<", orAnd: "AND", value }),
@@ -8,11 +8,13 @@ export const OPERATORS: any = {
   lte: (value: any) => ({ operator: "<=", orAnd: "AND", value }),
   lteOr: (value: any) => ({ operator: "<=", orAnd: "OR", value }),
   gt: (value: any) => ({ operator: ">", orAnd: "AND", value }),
-  gtOr: (value: any) => ({ operator: ">", orAnd: "Or", value }),
+  gtOr: (value: any) => ({ operator: ">", orAnd: "OR", value }),
   gte: (value: any) => ({ operator: ">=", orAnd: "AND", value }),
   gteOr: (value: any) => ({ operator: ">=", orAnd: "OR", value }),
   include: (pattern: string) => ({ operator: "like", orAnd: "AND", value: `%${pattern}%` }),
-  includeOr: (pattern: string) => ({ operator: "like", orAnd: "Or", value: `%${pattern}%` }),
+  includeOr: (pattern: string) => ({ operator: "like", orAnd: "OR", value: `%${pattern}%` }),
+  in: (array: string) => ({ operator: "IN", orAnd: "AND", value: array.toString() }),
+  inOr: (array: string) => ({ operator: "IN", orAnd: "OR", value: array.toString() }),
 };
 
 export const KEYCLOAKOPERATORS: any = {
