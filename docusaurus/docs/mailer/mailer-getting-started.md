@@ -148,34 +148,32 @@ We can send our first email from mailer service:
 
 2. Past sample request body with required data
 ```javascript
-{
-  "emails": [
-    {
-      "sender": {
-        "name": "Administrator",
-        "email": "admin@example.com"
-      },
-      "recipient": {
-        "to": [
-          "example@example.com"
-        ]
-      },
-      "template": {
-        "id": "registration",
-        "parameters": {
-          "username": "example@example.com",
-          "password": "******"
-        }
-      },
-      "attachments": [
-        {
-          "fileName": "some-empty-file.txt",
-          "content": "IA=="
-        }
-      ]
+[
+  {
+   "sender": {
+    "name": "Administrator",
+    "email": "admin@example.com"
+   },
+   "recipient": {
+    "to": [
+     "example@example.com"
+    ]
+   },
+   "template": {
+    "id": "hello-word",
+    "parameters": {
+     "username": "example@example.com",
+     "password": "******"
     }
-  ]
-}
+   },
+   "attachments": [
+    {
+     "fileName": "some-empty-file.txt",
+     "content": "IA=="
+    }
+   ]
+  }  
+]
 ```
 
 3.  Click "Execute" button
