@@ -137,8 +137,10 @@ services:
 
   mailer-integration-tests:
     image: mailer-service-prod:latest
-    working_dir: /app/build/services/mailer
-    command: [sh, -c, "npm i mocha && find ./src/integration-tests -name '*.spec.js' -exec ./node_modules/.bin/mocha --exit {} \\;"]
+    working_dir: /app/build/services/mailer    
+    command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
+    depends_on:
+      - redis
     networks:
       - app
 
