@@ -11,7 +11,14 @@ export default class GetServicesHandler implements Handler<GetServicesCommand> {
   public commandType: string = GET_SERVICES_COMMAND_TYPE;
 
   async execute(_command: GetServicesCommand) {
-    return this.dependencies.manifest;
+    return this.dependencies.manifest.map((entry) => {
+      return {
+        service: entry.name,
+        actions: entry.actions.map((action: any) => {
+          return action.type;
+        }),
+      };
+    });
     // execute body
   }
 }
