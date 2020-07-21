@@ -173,6 +173,16 @@ services:
         aliases:
           - pdf
 
+  scheduler-integration-tests:
+    image: scheduler-service-prod:latest
+    working_dir: /app/build/services/scheduler
+    command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - app
+
   keycloak:
     image: jboss/keycloak
     command: ["-Djboss.socket.binding.port-offset=10"]
