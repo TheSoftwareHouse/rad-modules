@@ -37,6 +37,7 @@ jobs:
     - # scheduler
       script:
         - npm run docker-build-scheduler-prod
+        - npm run scheduler-integration
       name: "Scheduler integration tests"
       if: branch = master
     - # gateway
