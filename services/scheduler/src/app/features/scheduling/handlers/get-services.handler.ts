@@ -1,8 +1,9 @@
 import { Handler } from "../../../../../../../shared/command-bus";
 import { GET_SERVICES_COMMAND_TYPE, GetServicesCommand } from "../commands/get-services.command";
+import { ManifestService, ManifestServiceAction } from "../../../../scheduler";
 
 export interface GetServicesHandlerProps {
-  manifest: any[];
+  manifest: ManifestService[];
 }
 
 export default class GetServicesHandler implements Handler<GetServicesCommand> {
@@ -14,11 +15,10 @@ export default class GetServicesHandler implements Handler<GetServicesCommand> {
     return this.dependencies.manifest.map((entry) => {
       return {
         service: entry.name,
-        actions: entry.actions.map((action: any) => {
+        actions: entry.actions.map((action: ManifestServiceAction) => {
           return action.type;
         }),
       };
     });
-    // execute body
   }
 }

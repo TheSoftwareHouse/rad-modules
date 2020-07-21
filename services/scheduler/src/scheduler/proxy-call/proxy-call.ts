@@ -3,22 +3,14 @@ import { TransportProtocol } from "../../../../../shared/enums/transport-protoco
 import { buildRequestInit } from "./build-request-init";
 import { buildApiUrl } from "./build-api-url";
 import { Logger } from "winston";
+import { ManifestService, ManifestServiceAction } from "../index";
 
-type ServiceAction = {
-  type: string;
-  http: {
-    uri: string;
-    method: string;
-  };
-};
-
-type ManifestService = {
-  url: string;
-  name: string;
-  actions: ServiceAction[];
-};
-
-const httpStrategy = async (service: ManifestService, foundAction: ServiceAction, payload: any, logger: Logger) => {
+const httpStrategy = async (
+  service: ManifestService,
+  foundAction: ManifestServiceAction,
+  payload: any,
+  logger: Logger,
+) => {
   const response = await fetch(
     buildApiUrl(service.url, foundAction.http.uri, payload ? payload.queryParameters : undefined),
     buildRequestInit(
