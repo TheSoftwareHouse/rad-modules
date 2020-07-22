@@ -27,7 +27,7 @@ describe("Scheduler tests", () => {
       });
   });
 
-  it("Should return only one job that match the filter", async () => {
+  it("Query Filter - 'eq' operator test", async () => {
     await createJobs();
 
     const testName = "A super test1";
@@ -39,6 +39,18 @@ describe("Scheduler tests", () => {
         assert(Array.isArray(res.body.jobs));
         deepStrictEqual(res.body.jobs.length, 1);
         deepStrictEqual(res.body.jobs.pop().name, testName);
+      });
+  });
+
+  it("Query Filter - 'in' operator test", async () => {
+    await createJobs();
+
+    return request(GLOBAL.container.resolve("app"))
+      .get("/api/scheduling/get-jobs?filter[name][in]=A super test1,E test5")
+      .expect(200)
+      .expect((res) => {
+        assert(Array.isArray(res.body.jobs));
+        deepStrictEqual(res.body.jobs.length, 2);
       });
   });
 
