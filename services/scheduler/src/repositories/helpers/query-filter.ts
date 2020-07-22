@@ -1,13 +1,3 @@
-function reduceCommaStringToArrayString(str: string) {
-  const result = str.split(",").reduce((acumulator: string, value: any, index: number) => {
-    const _acu = index > 0 ? `${acumulator},` : "";
-
-    return Number.isNaN(value) ? `${_acu}${value}` : `${_acu}${value}`;
-  }, "");
-
-  return result.split(",");
-}
-
 export const OPERATORS: any = {
   eq: (value: any) => ({ operator: "=", orAnd: "AND", value }),
   eqOr: (value: any) => ({ operator: "=", orAnd: "OR", value }),
@@ -23,8 +13,8 @@ export const OPERATORS: any = {
   gteOr: (value: any) => ({ operator: ">=", orAnd: "OR", value }),
   include: (pattern: string) => ({ operator: "like", orAnd: "AND", value: `%${pattern}%` }),
   includeOr: (pattern: string) => ({ operator: "like", orAnd: "OR", value: `%${pattern}%` }),
-  in: (array: string) => ({ operator: "IN", orAnd: "AND", value: reduceCommaStringToArrayString(array) }),
-  inOr: (array: string) => ({ operator: "IN", orAnd: "OR", value: reduceCommaStringToArrayString(array) }),
+  in: (array: string) => ({ operator: "IN", orAnd: "AND", value: array.split(",") }),
+  inOr: (array: string) => ({ operator: "IN", orAnd: "OR", value: array.split(",") }),
 };
 
 export type FilterOperators =
