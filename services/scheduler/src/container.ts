@@ -3,7 +3,7 @@ import { BullScheduler } from "./scheduler/producer/bull.scheduler";
 import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
 import { AwilixContainer, Lifetime } from "awilix";
-import { AppConfig } from "./config/config";
+import { AppConfig, manifestSchema } from "./config/config";
 import { createRouter } from "./app/applications/http/router";
 import { CommandBus } from "../../../shared/command-bus";
 import { createApp } from "./app/application-factories/create-http-app";
@@ -19,9 +19,18 @@ import { loggerConfiguration } from "./utils/logger-configuration";
 import { requestLogger } from "./middleware/request-logger";
 import { createConnection, getCustomRepository } from "typeorm";
 import { JobsTypeormRepository } from "./repositories/jobs.typeorm.repository";
+import { ManifestService } from "./scheduler";
 // ROUTING_IMPORTS
 
 const HANDLER_REGEX = /.+Handler$/;
+
+const getMergedManifest = async (manifestPath: string, manifestServices: ManifestService[]) => {
+  if (fs.existsSync(manifestPath)) {
+    const externalManifest = await import(manifestPath);
+    return [...externalManifest, ...manifestServices];
+  }
+  return manifestServices;
+};
 
 export async function createContainer(config: AppConfig): Promise<AwilixContainer> {
   const { error } = appConfigSchema.validate(config);
@@ -46,7 +55,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     loggerStream: awilix.asValue(loggerStream),
     requestLogger: awilix.asFunction(requestLogger),
   });
-  
+
   const dbConnection = await createConnection(config.dbConfig);
   await dbConnection.runMigrations();
 
@@ -63,23 +72,18 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     jobsRepository: awilix.asValue(getCustomRepository(JobsTypeormRepository)),
   });
 
-  const handlersScope = container.createScope();
-
-  if (fs.existsSync(config.externalManifestPath)) {
-    const externalManifest = await import(config.externalManifestPath);
-    const mergedManifest = [...externalManifest, ...manifest];
-
-    container.register({ manifest: awilix.asValue(mergedManifest) });
-  } else {
-    container.register({ manifest: awilix.asValue(manifest) });
+  const mergedManifest = await getMergedManifest(config.externalManifestPath, manifest as ManifestService[]);
+  const manifestValidationResult = manifestSchema.validate(mergedManifest);
+  if (manifestValidationResult.error) {
+    throw manifestValidationResult.error;
   }
+  container.register({ manifest: awilix.asValue(mergedManifest) });
 
   container.register({
-    commandBus: awilix
-      .asClass(CommandBus)
-      .classic()
-      .singleton(),
+    commandBus: awilix.asClass(CommandBus).classic().singleton(),
   });
+
+  const handlersScope = container.createScope();
 
   handlersScope.loadModules(["src/**/*.handler.ts", "src/**/*.handler.js"], {
     formatName: "camelCase",
@@ -90,8 +94,8 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   });
 
   const handlers = Object.keys(handlersScope.registrations)
-    .filter(key => key.match(HANDLER_REGEX))
-    .map(key => handlersScope.resolve(key));
+    .filter((key) => key.match(HANDLER_REGEX))
+    .map((key) => handlersScope.resolve(key));
 
   container.register({
     handlers: awilix.asValue(handlers),
