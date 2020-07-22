@@ -1,7 +1,7 @@
 import { JobModel, JobStatus } from "../app/features/scheduling/models/job.model";
 import { JobsRepository } from "./jobs.repository";
 import { EntityRepository, Repository } from "typeorm";
-import { createTypeORMFilter, QueryObject } from "../../../security/src/repositories/helpers/query-filter";
+import { createTypeORMFilter, QueryObject } from "./helpers/query-filter";
 
 @EntityRepository(JobModel)
 export class JobsTypeormRepository extends Repository<JobModel> implements JobsRepository {

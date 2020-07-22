@@ -13,25 +13,8 @@ export const OPERATORS: any = {
   gteOr: (value: any) => ({ operator: ">=", orAnd: "OR", value }),
   include: (pattern: string) => ({ operator: "like", orAnd: "AND", value: `%${pattern}%` }),
   includeOr: (pattern: string) => ({ operator: "like", orAnd: "OR", value: `%${pattern}%` }),
-  in: (array: string) => ({ operator: "IN", orAnd: "AND", value: array.toString() }),
-  inOr: (array: string) => ({ operator: "IN", orAnd: "OR", value: array.toString() }),
-};
-
-export const KEYCLOAKOPERATORS: any = {
-  eq: (key: any, value: any) => (item: any) => item[key] === value,
-  eqOr: (key: any, value: any) => (item: any) => item[key] === value,
-  neq: (key: any, value: any) => (item: any) => item[key] !== value,
-  neqOr: (key: any, value: any) => (item: any) => item[key] !== value,
-  lt: (key: any, value: any) => (item: any) => item[key] < value,
-  ltOr: (key: any, value: any) => (item: any) => item[key] < value,
-  lte: (key: any, value: any) => (item: any) => item[key] <= value,
-  lteOr: (key: any, value: any) => (item: any) => item[key] <= value,
-  gt: (key: any, value: any) => (item: any) => item[key] > value,
-  gtOr: (key: any, value: any) => (item: any) => item[key] > value,
-  gte: (key: any, value: any) => (item: any) => item[key] >= value,
-  gteOr: (key: any, value: any) => (item: any) => item[key] >= value,
-  include: (key: any, value: any) => (item: any) => item[key].toLowerCase().includes(value.toLowerCase()),
-  includeOr: (key: any, value: any) => (item: any) => item[key].toLowerCase().includes(value.toLowerCase()),
+  in: (array: string) => ({ operator: "IN", orAnd: "AND", value: array.split(",") }),
+  inOr: (array: string) => ({ operator: "IN", orAnd: "OR", value: array.split(",") }),
 };
 
 export type FilterOperators =
@@ -46,7 +29,9 @@ export type FilterOperators =
   | "gte"
   | "gteOr"
   | "include"
-  | "includeOr";
+  | "includeOr"
+  | "in"
+  | "inOr";
 
 export interface QueryObject {
   page: number;
@@ -60,6 +45,7 @@ export function createTypeORMFilter(query: QueryObject, prefix = "", operators =
     where: "",
     operands: {},
   };
+
   let id = 0;
   Object.entries(query.filter).forEach((filter) => {
     const [column, formula] = filter;
@@ -74,6 +60,12 @@ export function createTypeORMFilter(query: QueryObject, prefix = "", operators =
             filterObject.where === ""
               ? `LOWER(${_prefix}${column}) ${_filter.operator} LOWER(:${id})`
               : ` ${_filter.orAnd} LOWER(${_prefix}${column}) ${_filter.operator} LOWER(:${id})`;
+        } else if (operator === "in" || operator === "inOr") {
+          filterObject.where +=
+            filterObject.where === ""
+              ? `${_prefix}${column} ${_filter.operator} (:...${id})`
+              : ` ${_filter.orAnd} ${_prefix}${column} ${_filter.operator} (:...${id})`;
+          filterObject.operands[`${id}`] = _filter.value;
         } else {
           filterObject.where +=
             filterObject.where === ""
@@ -83,27 +75,11 @@ export function createTypeORMFilter(query: QueryObject, prefix = "", operators =
         }
 
         filterObject.operands[`${id}`] = _filter.value;
+
         id += 1;
       }
     });
   });
 
   return filterObject;
-}
-
-export function createKeycloakFilter(query: QueryObject, operators = KEYCLOAKOPERATORS) {
-  const filterObjects: any[] = [];
-  Object.entries(query.filter).forEach((filter) => {
-    const [column, formula] = filter;
-
-    Object.entries(formula as object).forEach((type) => {
-      const [operator, operand] = type;
-      const filterFunction = operators[operator](column, operand);
-      if (typeof filterFunction === "function") {
-        filterObjects.push({ or: operand.includes("Or"), filterFunction });
-      }
-    });
-  });
-
-  return filterObjects;
 }

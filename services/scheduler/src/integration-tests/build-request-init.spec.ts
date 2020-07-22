@@ -1,5 +1,5 @@
 import * as assert from "assert";
-import { buildRequestInit } from "./build-request-init";
+import { buildRequestInit } from "../scheduler/proxy-call/build-request-init";
 
 const contentTypeHeaders = { "Content-Type": "application/json" };
 
@@ -7,7 +7,7 @@ describe("Build-request-init tests", () => {
   it("Should build POST request-init without body.", async () => {
     const requestInit = buildRequestInit("POST", undefined);
 
-    assert.deepEqual(requestInit, {
+    assert.deepStrictEqual(requestInit, {
       method: "POST",
       body: undefined,
       headers: contentTypeHeaders,
@@ -18,7 +18,7 @@ describe("Build-request-init tests", () => {
     const body = { a: 1, b: 2 };
     const requestInit = buildRequestInit("POST", body);
 
-    assert.deepEqual(requestInit, {
+    assert.deepStrictEqual(requestInit, {
       method: "POST",
       body: JSON.stringify(body),
       headers: contentTypeHeaders,
@@ -29,7 +29,7 @@ describe("Build-request-init tests", () => {
     const body = { a: 1, b: 2 };
     const requestInit = buildRequestInit("POST", body, { Authorization: "Bearer token", Custom: "custom value" });
 
-    assert.deepEqual(requestInit, {
+    assert.deepStrictEqual(requestInit, {
       method: "POST",
       body: JSON.stringify(body),
       headers: {
