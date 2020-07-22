@@ -1,24 +1,27 @@
-/* eslint-disable import/first */
-
-process.env.TRANSPORT_TYPE = "sendgrid";
-
-import { CREATED } from "http-status-codes";
-import * as request from "supertest";
-import { Application } from "../app/application.types";
 import "mocha";
-import { createContainer } from "../container";
-import { appConfig } from "../config/config";
+import * as request from "supertest";
+import { CREATED } from "http-status-codes";
+import { asValue } from "awilix";
 import { base64JpgFile, base64PdfFile } from "./resources";
+import { GlobalData } from "./bootstrap";
 
 describe("SendGrid transport tests", () => {
-  let app: Application;
+  const GLOBAL = {} as GlobalData;
+  let originalMailConfig = {};
 
   before(async () => {
-    const container = await createContainer(appConfig);
-    app = container.resolve("app");
+    const { getBootstrap } = global as GlobalData;
+    GLOBAL.bootstrap = getBootstrap();
+    const { container } = GLOBAL.bootstrap;
+
+    originalMailConfig = container.resolve("mailerConfig");
+    container.register("mailerConfig", asValue({ ...originalMailConfig, type: "sendgrid" }));
   });
 
   it("Should send a mail.", () => {
+    const { container } = GLOBAL.bootstrap;
+    const app = container.resolve("app");
+
     const body = {
       emails: [
         {

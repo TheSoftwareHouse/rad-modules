@@ -92,7 +92,7 @@ export const appConfig: AppConfig = {
     smtpConfig: {
       transportConfig: {
         pool: process.env.TRANSPORT_SMTP_POOL ? process.env.TRANSPORT_SMTP_POOL.toLowerCase() === "true" : true,
-        host: process.env.TRANSPORT_SMTP_HOST,
+        host: process.env.TRANSPORT_SMTP_HOST || "smtp",
         port: +(process.env.TRANSPORT_SMTP_PORT || 465),
         secure: process.env.TRANSPORT_SMTP_SECURE ? process.env.TRANSPORT_SMTP_SECURE.toLowerCase() === "true" : true,
         auth:
@@ -125,6 +125,6 @@ export const appConfig: AppConfig = {
       : ["password", "token", "accessToken", "accessKey", "authorization"],
   },
   redisUrl: process.env.REDIS_URL || "redis://redis:6379",
-  redisPrefix: process.env.REDIS_PREFIX || "rad-modules:security:",
+  redisPrefix: process.env.REDIS_PREFIX || "rad-modules:mailer:",
   queueName: "emails",
 };

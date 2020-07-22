@@ -1,14 +1,12 @@
 import * as assert from "assert";
 import * as request from "supertest";
-import { Application } from "../app/application.types";
-import { asValue, AwilixContainer } from "awilix";
+import { asValue } from "awilix";
 import { appConfig } from "../config/config";
 import { deepCloneAndHideKeys } from "../middleware/request-logger";
-import { createContainer } from "../container";
+import { GlobalData } from "./bootstrap";
 
 describe("Request logger tests", () => {
-  let app: Application;
-  let container: AwilixContainer;
+  const GLOBAL = {} as GlobalData;
   let middlewareMessageText = "";
   let loggerStreamOriginal: any;
   const newLoggerStream = {
@@ -18,16 +16,17 @@ describe("Request logger tests", () => {
   };
 
   before(async () => {
-    container = await createContainer(appConfig);
-    app = container.resolve("app");
+    const { getBootstrap } = global as GlobalData;
+    GLOBAL.bootstrap = getBootstrap();
+    const { container } = GLOBAL.bootstrap;
     loggerStreamOriginal = container.resolve("loggerStream");
-
     container.register("loggerStream", asValue(newLoggerStream));
-
-    app = container.resolve("app");
   });
 
   it("Should display proper log via requestLogger", async () => {
+    const { container } = GLOBAL.bootstrap;
+    container.register("loggerStream", asValue(newLoggerStream));
+    const app = container.resolve("app");
     const validRegexp = /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body {"username":"user1","password":"passw0rd"} - api-key unknown - authorization unknown\b/;
     const oldKeysToHide = appConfig.requestLogger.keysToHide;
 
@@ -41,6 +40,8 @@ describe("Request logger tests", () => {
   });
 
   it("Should display proper log via requestLogger even if wrong body parameters", async () => {
+    const { container } = GLOBAL.bootstrap;
+    const app = container.resolve("app");
     const validRegexp = /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body {"username":"wrongUser","password":"Hidden property, type = string"} - api-key unknown - authorization unknown\b/;
 
     await request(app).post("/api").send({ username: "wrongUser", password: "wrongPassword" });
@@ -49,6 +50,8 @@ describe("Request logger tests", () => {
   });
 
   it("Should hide authorization info if provided", async () => {
+    const { container } = GLOBAL.bootstrap;
+    const app = container.resolve("app");
     const validRegexp = /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body no-body - api-key unknown - authorization Hidden, last six chars: .{6,6}\b/;
 
     await request(app).post("/api").set("Authorization", "Bearer InvalidTokenJustToTestIfItWillBeHidden");
@@ -81,6 +84,7 @@ describe("Request logger tests", () => {
   });
 
   after(() => {
+    const { container } = GLOBAL.bootstrap;
     container.register("loggerStream", asValue(loggerStreamOriginal));
   });
 });
