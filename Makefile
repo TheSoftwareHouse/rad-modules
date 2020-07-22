@@ -24,18 +24,6 @@ docker-build-prod:
 	npm run docker-build-gateway-prod
 	npm run docker-build-pdf-prod
 
-get-all-swagger-definitions:
-	cd ./services/security && npm run generate-swagger-definitions
-	cp ./services/security/swagger/security.json ./api-docs	
-	cd ./services/notifications && npm run generate-swagger-definitions
-	cp ./services/notifications/swagger/notifications.json ./api-docs
-	cd ./services/scheduler && npm run generate-swagger-definitions
-	cp ./services/scheduler/swagger/scheduler.json ./api-docs
-	cd ./services/mailer && npm run generate-swagger-definitions
-	cp ./services/mailer/swagger/mailer.json ./api-docs
-	cd ./services/pdf && npm run generate-swagger-definitions
-	cp ./services/pdf/swagger/pdf.json ./api-docs
-
 npm-install-in-all-build-services:	
 	cd ./build/services/mailer && npm i
 	cd ./build/services/notifications && npm i
@@ -48,10 +36,7 @@ watch:
 	npm run watch
 
 clean:
-	-docker rm radmodules_security_1 -f
-	-docker rm radmodules_redis_1 -f
-	-docker rm radmodules_mailhog_1 -f
-	-docker rm radmodules_pdf_1 -f
+	-docker rm $$(docker ps -aq -f name=rad-modules) -f
 	-docker rm builder -f
 	-rm -rf ./**/node_modules
 	-docker rmi notifications-service -f
