@@ -40,18 +40,6 @@ export const getServicesActionValidation = celebrate(
  *                     type: array
  *                     items:
  *                       type: string
- *       400:
- *         description: Bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref:  "#/definitions/BadRequestError"
- *       401:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               $ref:  "#/definitions/UnauthorizedError"
  *       500:
  *         description: Internal Server Error
  *         content:

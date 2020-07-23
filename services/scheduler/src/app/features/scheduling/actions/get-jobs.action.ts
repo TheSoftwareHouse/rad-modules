@@ -105,12 +105,6 @@ export const getJobsActionValidation = celebrate(
  *           application/json:
  *             schema:
  *               $ref:  "#/definitions/BadRequestError"
- *       401:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               $ref:  "#/definitions/UnauthorizedError"
  *       500:
  *         description: Internal Server Error
  *         content:
