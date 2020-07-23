@@ -28,15 +28,17 @@ export const manifestSchema = Joi.array()
     Joi.object().keys({
       url: Joi.string().required(),
       name: Joi.string().required(),
-      actions: Joi.array().items(
-        Joi.object().keys({
-          type: Joi.string().required(),
-          http: Joi.object().keys({
-            uri: Joi.string().required(),
-            method: Joi.string().valid("GET", "POST", "PUT", "PATCH", "DELETE"),
+      actions: Joi.array()
+        .items(
+          Joi.object().keys({
+            type: Joi.string().required(),
+            http: Joi.object().keys({
+              uri: Joi.string().required(),
+              method: Joi.string().valid("GET", "POST", "PUT", "PATCH", "DELETE").required(),
+            }),
           }),
-        }),
-      ),
+        )
+        .required(),
     }),
   )
   .required();
