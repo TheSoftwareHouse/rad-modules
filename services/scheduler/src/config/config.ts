@@ -23,6 +23,26 @@ export const appConfigSchema = Joi.object({
   dbConfig: DbConfigSchema.required(),
 }).required();
 
+export const manifestSchema = Joi.array()
+  .items(
+    Joi.object().keys({
+      url: Joi.string().required(),
+      name: Joi.string().required(),
+      actions: Joi.array()
+        .items(
+          Joi.object().keys({
+            type: Joi.string().required(),
+            http: Joi.object().keys({
+              uri: Joi.string().required(),
+              method: Joi.string().valid("GET", "POST", "PUT", "PATCH", "DELETE").required(),
+            }),
+          }),
+        )
+        .required(),
+    }),
+  )
+  .required();
+
 export enum MorganFormatTypes {
   Combined = "combined",
   Common = "common",

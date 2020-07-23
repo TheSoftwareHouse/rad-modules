@@ -4,7 +4,7 @@ import { GlobalData } from "../bootstrap";
 import { createJobs } from "../helper";
 import { deepStrictEqual } from "assert";
 
-describe("Scheduler tests", () => {
+describe("Scheduler tests: get jobs", () => {
   const GLOBAL = global as GlobalData;
 
   it("Should return empty set when there is no jobs", async () => {

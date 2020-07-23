@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 
 ## scheduler
 
+### 2020-07-23 v0.0.10
+Added
+- Endpoint that returns all services and actions that can be scheduled
+
 ### 2020-07-17 v0.0.9
 Added
 - Endpoint that returns list of jobs
