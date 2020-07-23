@@ -13,14 +13,14 @@
       {
         "type": "getUsers",
         "http": {
-          "uri": "/api/users/get-users",
+          "uri": "/api/users/users",
           "method": "GET"
         }
       }
     ]
   },
   {
-    "url": "http://pdf:50054",
+    "url": "http://mailer:50050",
     "name": "mailer",
     "actions": [
       {
