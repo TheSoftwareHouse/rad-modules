@@ -10,7 +10,7 @@
     "create-migration": "docker-compose run --rm -w /app/services/security js ./node_modules/.bin/typeorm migration:create -f ../../build/services/security/src/config/db.config -n",
     "generate-migration": "docker-compose run --rm -w /app/services/security js ./node_modules/.bin/typeorm migration:generate -f ../../build/services/security/src/config/db.config -n",
     "run-migrations": "docker-compose run --rm -w /app/services/security js ./node_modules/.bin/typeorm migration:run -f ../../build/services/security/src/config/db.config",
-    "integration": "docker-compose run --rm security node ./node_modules/.bin/mocha \"src/integration-tests/{,!(authorization-strategies)/**}/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --timeout 5000 --exit",
+    "integration": "docker-compose run --rm security node ./node_modules/.bin/mocha \"src/integration-tests/{,!(authorization-strategies)/**}/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --timeout 10000 --exit",
     "integration-keycloak": "docker-compose run --rm security sh -c \"AUTHENTICATION_STRATEGY=keycloak node ./node_modules/.bin/mocha 'src/integration-tests/authorization-strategies/*.spec.js' --file='src/integration-tests/bootstrap.js' --exit\"",
     "update-version": "git show origin/master:services/security/package.json | jq -r '.version' | perl -pe 's/^((\\d+\\.)*)(\\d+)(.*)$/$1.($3+1).$4/e' | xargs -L1 -I'{}' jq '.version=\"{}\"' package.json > package.json_tmp && mv package.json_tmp package.json"
   },
