@@ -24,16 +24,19 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
     queue.process(async (message, done) => {
       if (this.isOtherServiceJob(message.data)) {
         logger.info(`Handling job with id ${message.id}, payload:`, message.data);
+        try {
+          // todo: strategy should probably be coming from config
+          const result = await proxyCall(
+            message.data.action,
+            message.data.service,
+            message.data.payload,
+            TransportProtocol.HTTP,
+          );
 
-        // todo: strategy should probably be coming from config
-        const result = await proxyCall(
-          message.data.action,
-          message.data.service,
-          message.data.payload,
-          TransportProtocol.HTTP,
-        );
-
-        logger.info("Job proxied call result:", result);
+          logger.info("Job proxied call result:", result);
+        } catch (err) {
+          logger.error(err);
+        }
       } else {
         throw new Error("Failed to handle a job - action or service are missing.");
       }
