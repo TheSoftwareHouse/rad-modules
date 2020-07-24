@@ -63,7 +63,7 @@ export class JobModel {
   @Column()
   action: string;
 
-  @Column("enum", { enum: JobStatus, nullable: true })
+  @Column("enum", { enum: JobStatus, nullable: false, default: JobStatus.Active })
   status?: JobStatus;
 
   @Column({ type: "jsonb", nullable: true })
