@@ -3,6 +3,8 @@ import * as morgan from "morgan";
 import { Request } from "express";
 import { appConfig, MorganFormatTypes } from "../config/config";
 
+const qs = require("qs");
+
 interface RequestLoggerProps {
   requestLoggerFormat: MorganFormatTypes;
   loggerStream: morgan.StreamOptions;
@@ -34,12 +36,21 @@ const tryGetHeaderValue = (req: Request, headerName: string) => {
 export const requestLogger = ({ requestLoggerFormat, loggerStream }: RequestLoggerProps) => {
   morgan.token("body", (req) => {
     const { body } = req;
-
     if (body && Object.keys(body).length) {
       return displayAllowedPropertiesFromBody(body);
     }
-
     return "no-body";
+  });
+
+  morgan.token("url", (req) => {
+    const { keysToHide } = appConfig.requestLogger;
+    if (keysToHide.length && req.query) {
+      const queryWithHiddenKeys = deepCloneAndHideKeys(req.query, keysToHide);
+      const queryStringWithHiddenKeys = qs.stringify(queryWithHiddenKeys, { encode: false });
+      const urlPath = req.url.split("?")[0];
+      return `${urlPath}?${queryStringWithHiddenKeys}`;
+    }
+    return req.url;
   });
 
   morgan.token("apiKey", (req) => {
