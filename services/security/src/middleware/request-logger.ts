@@ -44,13 +44,14 @@ export const requestLogger = ({ requestLoggerFormat, loggerStream }: RequestLogg
 
   morgan.token("url", (req) => {
     const { keysToHide } = appConfig.requestLogger;
-    if (keysToHide.length && req.query) {
+    const url = req.originalUrl ?? req.url;
+    if (keysToHide.length && !_.isEmpty(req.query)) {
       const queryWithHiddenKeys = deepCloneAndHideKeys(req.query, keysToHide);
       const queryStringWithHiddenKeys = qs.stringify(queryWithHiddenKeys, { encode: false });
-      const urlPath = req.url.split("?")[0];
+      const urlPath = url.split("?")[0];
       return `${urlPath}?${queryStringWithHiddenKeys}`;
     }
-    return req.url;
+    return url;
   });
 
   morgan.token("apiKey", (req) => {

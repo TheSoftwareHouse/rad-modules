@@ -23,14 +23,22 @@ describe("Middleware test", () => {
     container.register("loggerStream", asValue(newLoggerStream));
   });
 
-  it("Should display obfuscate value in log via requestLogger if key set in keysToHide", async () => {
+  it("Should display obfuscate value from body in log via requestLogger if key set in keysToHide", async () => {
     const { container } = GLOBAL.bootstrap;
-    container.register("loggerStream", asValue(newLoggerStream));
     const app = container.resolve("app");
     const validRegexp = /::ffff:127.0.0.1 POST \/api\/users\/login \d+ \d+.\d+ ms - req-body {"username":"user1","password":"Hidden property, type = string"} - api-key unknown - authorization unknown\b/;
 
     await request(app).post("/api/users/login").send({ username: "user1", password: "passw0rd" });
 
+    assert(validRegexp.test(middlewareMessageText));
+  });
+
+  it("Should display obfuscate value in query string in log via requestLogger if key set in keysToHide", async () => {
+    const { container } = GLOBAL.bootstrap;
+    const app = container.resolve("app");
+    const validRegexp = /::ffff:127.0.0.1 GET \/some-endpoint\?username=user1&password=Hidden property, type = string \d+ \d+.\d+ ms - req-body no-body - api-key unknown - authorization unknown\b/;
+
+    await request(app).get("/some-endpoint").query({ username: "user1", password: "passw0rd" });
     assert(validRegexp.test(middlewareMessageText));
   });
 
