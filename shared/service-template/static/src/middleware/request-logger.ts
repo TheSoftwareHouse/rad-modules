@@ -3,6 +3,8 @@ import * as morgan from "morgan";
 import { Request } from "express";
 import { appConfig, MorganFormatTypes } from "../config/config";
 
+const qs = require("qs");
+
 interface RequestLoggerProps {
   requestLoggerFormat: MorganFormatTypes;
   loggerStream: morgan.StreamOptions;
@@ -32,21 +34,31 @@ const tryGetHeaderValue = (req: Request, headerName: string) => {
 };
 
 export const requestLogger = ({ requestLoggerFormat, loggerStream }: RequestLoggerProps) => {
-  morgan.token("body", req => {
+  morgan.token("body", (req) => {
     const { body } = req;
-
     if (body && Object.keys(body).length) {
       return displayAllowedPropertiesFromBody(body);
     }
-
     return "no-body";
   });
 
-  morgan.token("apiKey", req => {
+  morgan.token("url", (req) => {
+    const { keysToHide } = appConfig.requestLogger;
+    const url = req.originalUrl ?? req.url;
+    if (keysToHide.length && !_.isEmpty(req.query)) {
+      const queryWithHiddenKeys = deepCloneAndHideKeys(req.query, keysToHide);
+      const queryStringWithHiddenKeys = qs.stringify(queryWithHiddenKeys, { encode: false });
+      const urlPath = url.split("?")[0];
+      return `${urlPath}?${queryStringWithHiddenKeys}`;
+    }
+    return url;
+  });
+
+  morgan.token("apiKey", (req) => {
     return tryGetHeaderValue(req, appConfig.apiKeyHeaderName);
   });
 
-  morgan.token("authorization", req => {
+  morgan.token("authorization", (req) => {
     return tryGetHeaderValue(req, "authorization");
   });
 
