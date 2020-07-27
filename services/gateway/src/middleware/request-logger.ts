@@ -1,9 +1,8 @@
 import * as _ from "lodash";
 import * as morgan from "morgan";
+import * as qs from "qs";
 import { Request } from "express";
 import { appConfig, MorganFormatTypes } from "../config/config";
-
-const qs = require("qs");
 
 interface RequestLoggerProps {
   requestLoggerFormat: MorganFormatTypes;
