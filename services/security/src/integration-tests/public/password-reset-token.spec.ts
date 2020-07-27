@@ -16,7 +16,7 @@ const [userWithAdminPanelAttr, normalUser] = usersFixture;
     the accessToken will have higher privileges to do operations that normal user can't
 */
 
-describe("password-reset-token.action", () => {
+describe("public password-reset-token.action", () => {
   const GLOBAL = {} as GlobalData;
 
   before(() => {
