@@ -1,7 +1,7 @@
 import "mocha";
 import { AwilixContainer } from "awilix";
 import { createConnection, Connection } from "typeorm";
-import { appConfig, SuperAdminConfig } from "../config/config";
+import { AppConfig, appConfig, SuperAdminConfig } from "../config/config";
 import { createContainer } from "../container";
 import { InitialUsersProperties, InitialUsers, InitialUserData } from "../init/initial-users";
 import { EntityManager } from "typeorm";
@@ -24,6 +24,7 @@ export interface BootstrapData {
   policyRepository: PolicyRepository;
   authClient: AuthenticationClient;
   initialUsersProperties: InitialUsersProperties;
+  apiKeyRegex: RegExp;
 }
 
 export type GetBootstrap = () => BootstrapData;
@@ -77,6 +78,7 @@ before("Create test DB and create container and dependencies", async function ()
 
   const container = await createContainer(appConfig);
   const app = container.resolve<Application>("app");
+  const apiKeyRegex = container.resolve<RegExp>("apiKeyRegex");
   const superAdminUser = container.resolve<SuperAdminConfig>("superAdminUser");
   const usersRepository = container.resolve<UsersTypeormRepository>("usersRepository");
   const policyRepository = container.resolve<PolicyRepository>("policyRepository");
@@ -102,6 +104,7 @@ before("Create test DB and create container and dependencies", async function ()
       policyRepository,
       authClient,
       initialUsersProperties,
+      apiKeyRegex,
     });
 });
 

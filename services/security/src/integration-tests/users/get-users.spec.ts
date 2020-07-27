@@ -7,7 +7,7 @@ import { isUuid, isNotEmptyString } from "../test-utils";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
-describe("users.action", () => {
+describe("get-users.action", () => {
   const DEFAULT_LIMIT = 25;
   const GLOBAL = {} as GlobalData;
 

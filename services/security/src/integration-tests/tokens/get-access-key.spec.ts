@@ -1,8 +1,7 @@
-import { CREATED, NO_CONTENT, OK, BAD_REQUEST, UNAUTHORIZED } from "http-status-codes";
+import { CREATED, OK, BAD_REQUEST } from "http-status-codes";
 import * as request from "supertest";
 import * as assert from "assert";
 import { deepEqualOmit, isUuid, isValidTokenType, isNotEmptyString } from "../test-utils";
-import { BadRequestResponses } from "../fixtures/response.fixture";
 import { GlobalData } from "../bootstrap";
 import { appConfig } from "../../config/config";
 
@@ -15,51 +14,6 @@ describe("Access API key tests", () => {
   before(() => {
     const { getBootstrap } = global as GlobalData;
     GLOBAL.bootstrap = getBootstrap();
-  });
-
-  it("Should create new access API key", async () => {
-    const { authClient, app } = GLOBAL.bootstrap;
-    const { accessToken } = await authClient.login(username, password);
-
-    return request(app)
-      .post("/api/tokens/create-access-key")
-      .set("Authorization", `Bearer ${accessToken}`)
-      .expect("Content-Type", /json/)
-      .expect(CREATED)
-      .then((data) => (data.body.apiKey.match(/^[a-z0-9\\-]{36}$/) === null ? assert.fail() : assert.ok("ok")));
-  });
-
-  it("Should return response body with defined props", async () => {
-    const { authClient, app } = GLOBAL.bootstrap;
-    const { accessToken } = await authClient.login(username, password);
-
-    const { body } = await request(app)
-      .post("/api/tokens/create-access-key")
-      .set("Authorization", `Bearer ${accessToken}`)
-      .expect("Content-Type", /json/)
-      .expect(CREATED);
-
-    assert(isNotEmptyString(body.apiKey) && isUuid(body.apiKey));
-    assert(isNotEmptyString(body.type) && isValidTokenType(body.type));
-    assert(isNotEmptyString(body.createdBy));
-  });
-
-  it("Should remove access API key", async () => {
-    const { authClient, app } = GLOBAL.bootstrap;
-    const { accessToken } = await authClient.login(username, password);
-
-    return request(app)
-      .post("/api/tokens/create-access-key")
-      .set("Authorization", `Bearer ${accessToken}`)
-      .expect("Content-Type", /json/)
-      .expect(CREATED)
-      .then((data) => {
-        const { apiKey } = data.body;
-        return request(app)
-          .delete(`/api/tokens/remove-access-key/${apiKey}`)
-          .set("Authorization", `Bearer ${accessToken}`)
-          .expect(NO_CONTENT);
-      });
   });
 
   it("Should return bad request if wrong query parameters", async () => {
@@ -199,17 +153,5 @@ describe("Access API key tests", () => {
       .expect(CREATED);
 
     assert(isNotEmptyString(addUserBody.newUserId) && isUuid(addUserBody.newUserId));
-  });
-
-  it("Should throw error if wrong access key provided", async () => {
-    const { app } = GLOBAL.bootstrap;
-
-    return request(app)
-      .post("/api/users/add-user")
-      .set(appConfig.apiKeyHeaderName, "WrongAccessKey")
-      .send({ username: "NewInActiveUser", password: "randomPassword" })
-      .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
-      .expect(deepEqualOmit(BadRequestResponses.accessKeyWrong));
   });
 });

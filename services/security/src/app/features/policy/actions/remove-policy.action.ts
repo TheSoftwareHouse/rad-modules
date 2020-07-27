@@ -92,7 +92,7 @@ export const removePolicyAction = ({ commandBus }: RemovePolicyActionProps) => (
       }),
     )
     .then(() => {
-      res.status(NO_CONTENT).type("application/json").send();
+      res.status(NO_CONTENT).send();
     })
     .catch(next);
 };

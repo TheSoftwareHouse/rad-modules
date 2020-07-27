@@ -17,12 +17,7 @@ export const resetPasswordActionValidation = celebrate(
     body: {
       newPassword: Joi.string()
         .regex(appConfig.passwordRegex)
-        .error(
-          (errors: any) =>
-            new Error(
-              errors.map((e: any) => `${e.context.label} does not meet criteria: ${appConfig.passwordValidationError}`),
-            ),
-        ),
+        .error(new Error(`newPassword does not meet criteria: ${appConfig.passwordValidationError}`)),
     },
   },
   { abortEarly: false },

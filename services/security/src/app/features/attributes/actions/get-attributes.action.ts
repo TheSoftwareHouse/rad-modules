@@ -78,7 +78,7 @@ export const getAttributesActionValidation = celebrate(
  *             schema:
  *               type: object
  *               properties:
- *                 users:
+ *                 attributes:
  *                   type: An array of objects
  *                   example: [{key: "f2fd043c-44d3-49f6-9a5a-c486f9f47258", name: "attr1", username: "superadmin"}]
  *                 total:
