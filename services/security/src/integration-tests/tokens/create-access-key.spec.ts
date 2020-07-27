@@ -17,7 +17,7 @@ describe("Access API key tests", () => {
   });
 
   it("Should create new access API key", async () => {
-    const { authClient, app } = GLOBAL.bootstrap;
+    const { authClient, app, apiKeyRegex } = GLOBAL.bootstrap;
     const { accessToken } = await authClient.login(username, password);
 
     return request(app)
@@ -25,7 +25,7 @@ describe("Access API key tests", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(CREATED)
-      .then((data) => (data.body.apiKey.match(/^[a-z0-9\\-]{36}$/) === null ? assert.fail() : assert.ok("ok")));
+      .then((data) => (data.body.apiKey.match(apiKeyRegex) === null ? assert.fail() : assert.ok("ok")));
   });
 
   it("Should return response body with defined props", async () => {

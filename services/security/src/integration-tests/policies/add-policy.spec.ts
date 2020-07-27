@@ -1,5 +1,5 @@
 import * as request from "supertest";
-import { CREATED, CONFLICT } from "http-status-codes";
+import { CREATED, CONFLICT, BAD_REQUEST } from "http-status-codes";
 import * as assert from "assert";
 import { usersFixture } from "../fixtures/users.fixture";
 import { deepEqualOmit, isUuid, isNotEmptyString } from "../test-utils";
@@ -41,13 +41,12 @@ describe("Policy test", () => {
     const attribute = "test_attribute";
     const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
 
-    const { status } = await request(app)
+    await request(app)
       .post("/api/policy/add-policy")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ resource, attribute })
+      .expect(CREATED)
       .expect("Content-Type", /json/);
-
-    assert(status === CREATED || status === CONFLICT);
 
     return request(app)
       .post("/api/policy/add-policy")
@@ -56,5 +55,25 @@ describe("Policy test", () => {
       .expect("Content-Type", /json/)
       .expect(CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.policyAlreadyExists));
+  });
+
+  it("Should return bad request status if user try to add policy with wrong request payload", async () => {
+    const { authClient, app } = GLOBAL.bootstrap;
+    const resource = "test_resource";
+    const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
+
+    await request(app)
+      .post("/api/policy/add-policy")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ resource: "", attribute: "" })
+      .expect(BAD_REQUEST)
+      .expect("Content-Type", /json/);
+
+    return request(app)
+      .post("/api/policy/add-policy")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ resource })
+      .expect(BAD_REQUEST)
+      .expect("Content-Type", /json/);
   });
 });

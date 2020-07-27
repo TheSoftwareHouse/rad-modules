@@ -188,6 +188,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     keycloakAuthenticationClientConfig: awilix.asValue(keycloakAuthenticationClientConfig),
     keycloakManagerConfig: awilix.asValue(keycloakManagerConfig),
     apiKeyHeaderName: awilix.asValue(config.apiKeyHeaderName),
+    apiKeyRegex: awilix.asValue(config.apiKeyRegex),
   });
 
   const handlersScope = container.createScope();
