@@ -23,7 +23,7 @@
     "lodash": "4.17.19",
     "morgan": "1.10.0",
     "node-fetch": "2.6.0",
-    "qs": "^6.9.4",
+    "qs": "6.9.4",
     "swagger-jsdoc": "4.0.0",
     "swagger-ui-express": "4.1.4",
     "uuid": "7.0.3",
