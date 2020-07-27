@@ -4,6 +4,8 @@ import { asValue } from "awilix";
 import { appConfig } from "../config/config";
 import { deepCloneAndHideKeys } from "../middleware/request-logger";
 import { GlobalData } from "./bootstrap";
+import * as awilix from "awilix";
+import { strictEqual } from "assert";
 
 describe("Middleware test", () => {
   const GLOBAL = {} as GlobalData;
@@ -78,6 +80,38 @@ describe("Middleware test", () => {
     await request(app).post("/api/tokens/create-access-key").set("Authorization", `Bearer ${accessToken}`);
 
     assert(validRegexp.test(middlewareMessageText));
+  });
+
+  it("Should hide given headers info if provided", async () => {
+    const { container } = GLOBAL.bootstrap;
+    container.register("requestLoggerFormat", awilix.asValue(":headers"));
+
+    await request(container.resolve("app"))
+      .post("/api/some-endpoint")
+      .set("token", "my-secret-token-that-is-hidden")
+      .set("x-allowed-header", "my-value");
+    const logAsJson = JSON.parse(middlewareMessageText);
+
+    strictEqual(logAsJson.token, "Hidden property, type = string");
+    strictEqual(logAsJson["x-allowed-header"], "my-value");
+  });
+
+  it("Should hide given header value if provided", async () => {
+    const { container } = GLOBAL.bootstrap;
+    container.register("requestLoggerFormat", awilix.asValue(":req[token]"));
+
+    await request(container.resolve("app")).post("/api/some-endpoint").set("token", "my-secret-token-that-is-hidden");
+
+    strictEqual(middlewareMessageText, "Hidden, last six chars: hidden\n");
+  });
+
+  it("Should not hide given header value if it is not in configuration keysToHide", async () => {
+    const { container } = GLOBAL.bootstrap;
+    container.register("requestLoggerFormat", awilix.asValue(":req[my-token]"));
+
+    await request(container.resolve("app")).post("/api/some-endpoint").set("my-token", "my-visible-token");
+
+    strictEqual(middlewareMessageText, "my-visible-token\n");
   });
 
   it("Should obfuscate nested keys declared in array", async () => {
