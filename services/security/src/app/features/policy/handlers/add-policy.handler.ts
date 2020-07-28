@@ -2,9 +2,11 @@ import { PolicyModel } from "../models/policy.model";
 import { PolicyRepository } from "../../../../repositories/policy.repository";
 import { Handler } from "../../../../../../../shared/command-bus";
 import { ADD_POLICY_COMMAND_TYPE, AddPolicyCommand } from "../commands/add-policy.command";
+import { EventDispatcher } from "../../../../shared/event-dispatcher";
 
 export interface AddPolicyHandlerProps {
   policyRepository: PolicyRepository;
+  eventDispatcher: EventDispatcher;
 }
 
 export default class AddPolicyHandler implements Handler<AddPolicyCommand> {
@@ -17,6 +19,10 @@ export default class AddPolicyHandler implements Handler<AddPolicyCommand> {
     const { attribute, resource } = command.payload;
 
     const newPolicy = await policyRepository.addPolicy(PolicyModel.create({ attribute, resource }));
+    await this.dependencies.eventDispatcher.dispatch({
+      name: "PolicyAdded",
+      payload: newPolicy,
+    });
     return { id: newPolicy.id };
   }
 }
