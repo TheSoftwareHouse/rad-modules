@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import * as morgan from "morgan";
+import * as qs from "qs";
 import { Request } from "express";
 import { appConfig, MorganFormatTypes } from "../config/config";
 
@@ -34,12 +35,38 @@ const tryGetHeaderValue = (req: Request, headerName: string) => {
 export const requestLogger = ({ requestLoggerFormat, loggerStream }: RequestLoggerProps) => {
   morgan.token("body", (req) => {
     const { body } = req;
-
     if (body && Object.keys(body).length) {
       return displayAllowedPropertiesFromBody(body);
     }
-
     return "no-body";
+  });
+
+  morgan.token("url", (req) => {
+    const { keysToHide } = appConfig.requestLogger;
+    const url = req.originalUrl !== null && req.originalUrl !== undefined ? req.originalUrl : req.url;
+    if (keysToHide.length && !_.isEmpty(req.query)) {
+      const queryWithHiddenKeys = deepCloneAndHideKeys(req.query, keysToHide);
+      const queryStringWithHiddenKeys = qs.stringify(queryWithHiddenKeys, { encode: false });
+      const urlPath = url.split("?")[0];
+      return `${urlPath}?${queryStringWithHiddenKeys}`;
+    }
+    return url;
+  });
+
+  morgan.token("req", (req, _res, field) => {
+    if (field !== undefined) {
+      const { keysToHide } = appConfig.requestLogger;
+      const name = field as string;
+      const headerValue = req.header(name) !== null && req.header(name) !== undefined ? req.header(name) : "";
+      return keysToHide.includes(field as string) ? obfuscateString(headerValue!) : headerValue;
+    }
+    return "";
+  });
+
+  morgan.token("headers", (req) => {
+    const { keysToHide } = appConfig.requestLogger;
+    const headersWithHiddenKeys = deepCloneAndHideKeys({ ...req.headers }, keysToHide);
+    return JSON.stringify(headersWithHiddenKeys);
   });
 
   morgan.token("apiKey", (req) => {

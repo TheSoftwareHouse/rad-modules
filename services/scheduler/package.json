@@ -29,6 +29,7 @@
     "node-fetch": "2.6.0",
     "pg": "7.12.1",
     "plop": "2.6.0",
+    "qs": "6.9.4",
     "redis": "3.0.2",
     "swagger-jsdoc": "4.0.0",
     "swagger-ui-express": "4.1.4",
