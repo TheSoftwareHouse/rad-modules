@@ -54,6 +54,7 @@ import { KeycloakManager } from "./utils/keycloak/keycloak-manager";
 import { UsersKeycloakRepository } from "./repositories/keycloak/users.keycloak.repository";
 import { PolicyKeycloakRepository } from "./repositories/keycloak/policy.keycloak.repository";
 import { EventDispatcher } from "./shared/event-dispatcher";
+import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subscriber";
 
 // MODELS_IMPORTS
 
@@ -193,8 +194,9 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     apiKeyRegex: awilix.asValue(config.apiKeyRegex),
   });
 
+  const eventDispatcher = new EventDispatcher(logger, [new PolicyEventSubscriber({ logger })]);
   container.register({
-    eventDispatcher: awilix.asClass(EventDispatcher).classic().singleton(),
+    eventDispatcher: awilix.asValue(eventDispatcher),
   });
 
   const handlersScope = container.createScope();
