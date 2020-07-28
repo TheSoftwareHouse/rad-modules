@@ -73,3 +73,39 @@ Security service provides easy integration with existing or new one Keycloak ser
       - app
     restart: always
 ```
+The above configuration creates a new Keycloak REALM fully configured to work with the rad-security service that
+contains the initial OpenID client configuration with the "superadmin" user, and the attribute and policy configuration (ABAC).
+
+To create a new configuration in an existing Keycloak system, follow these steps:
+
+## Login to Keycloak
+![keycloak-main-page](assets/security/keycloak/3.png)
+
+## Create new ClientID endpoint
+- Set the `Client ID` and `Name`
+- Set the `Access Type` to `Confidential`
+- Enable `Direct Access Grants Enable`, `Service Account Enabled` and `Authorization Enabled`
+- Set the `Valid Redirect URIs`
+- Save configuration
+
+![keycloak-clientid](assets/security/keycloak/5.png)
+
+Got to `Authorization` -> `Resources` and click `Create`
+
+This is an ABAC configuration. For example, we would like to create a new resource called `api/users` with the `ADMIN_PANEL` attribute
+
+![keycloak-new-resource](assets/security/keycloak/7.png)
+
+We need have to create an ABAC policy. Go to `Authorization` -> `Policies` and click `Create js policy`
+
+![keycloak-new-resource](assets/security/keycloak/9.png)
+
+Now we have a simple configured Keycloak client for rad-security.
+
+## Add the superadmin user
+
+![keycloak-new-resource](assets/security/keycloak/13.png)
+
+## Add attribute for the superadmin user
+
+![keycloak-new-resource](assets/security/keycloak/14.png)
