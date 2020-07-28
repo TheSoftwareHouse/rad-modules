@@ -19,7 +19,7 @@
     }
   },
   "include": [
-    "./src/**/*.ts", "../../integration-tests/src/application.integration.spec.ts"
+    "./src/**/*.ts", "../../integration-tests/src/application.integration.spec.ts", "../../shared/test-utils.ts"
   ],
   "exclude": ["node_modules", "build/**"]
 }

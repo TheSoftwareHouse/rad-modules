@@ -3,7 +3,7 @@ import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
 import { BadRequestResponses, UsersResponses } from "../fixtures/response.fixture";
-import { deepEqualOmit } from "../test-utils";
+import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { decode } from "jsonwebtoken";
 import { GlobalData } from "../bootstrap";
 

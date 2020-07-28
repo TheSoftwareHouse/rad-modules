@@ -1,7 +1,7 @@
 import { CREATED, OK, BAD_REQUEST } from "http-status-codes";
 import * as request from "supertest";
 import * as assert from "assert";
-import { deepEqualOmit, isUuid, isValidTokenType, isNotEmptyString } from "../test-utils";
+import { deepEqualOmit, isUuid, isValidTokenType, isNotEmptyString } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 import { appConfig } from "../../config/config";
 

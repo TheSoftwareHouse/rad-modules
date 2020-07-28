@@ -4,7 +4,7 @@ import { v4 } from "uuid";
 import { usersFixture } from "../fixtures/users.fixture";
 import { UsersResponses, BadRequestResponses } from "../fixtures/response.fixture";
 import { GlobalData } from "../bootstrap";
-import { deepEqualOmit } from "../test-utils";
+import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { asValue } from "awilix";
 
 const [userWithAdminPanelAttr] = usersFixture;

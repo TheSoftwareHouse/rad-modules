@@ -4,7 +4,7 @@ import { OK, UNAUTHORIZED, CREATED, NO_CONTENT, CONFLICT } from "http-status-cod
 import { usersFixture } from "./fixtures/users.fixture";
 import { TEST_ATTRIBUTE_NAME, TEST_RESOURCE_VALUE } from "./fixtures/policies.fixture";
 import { AclResponses, BadRequestResponses } from "./fixtures/response.fixture";
-import { deepEqualOmit } from "./test-utils";
+import { deepEqualOmit } from "../../../../shared/test-utils";
 import { GlobalData } from "./bootstrap";
 
 const [userWithAdminPanelAttr] = usersFixture;
