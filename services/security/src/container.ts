@@ -55,6 +55,7 @@ import { UsersKeycloakRepository } from "./repositories/keycloak/users.keycloak.
 import { PolicyKeycloakRepository } from "./repositories/keycloak/policy.keycloak.repository";
 import { EventDispatcher } from "./shared/event-dispatcher";
 import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subscriber";
+import UserEventSubscriber from "./app/features/users/subscribers/user.subscriber";
 
 // MODELS_IMPORTS
 
@@ -201,7 +202,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   });
 
   container.register({
-    eventSubscribers: asArray<any>([awilix.asClass(PolicyEventSubscriber)]),
+    eventSubscribers: asArray<any>([awilix.asClass(PolicyEventSubscriber), awilix.asClass(UserEventSubscriber)]),
     eventDispatcher: awilix.asClass(EventDispatcher).classic().singleton(),
   });
 

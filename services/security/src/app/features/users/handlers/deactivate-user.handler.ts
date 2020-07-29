@@ -5,11 +5,13 @@ import { NotFoundError } from "../../../../errors/not-found.error";
 import { ActivationTokenUtils } from "../../../../tokens/activation-token-utils";
 import { ConflictError } from "../../../../errors/conflict.error";
 import { SuperAdminConfig } from "../../../../config/config";
+import { EventDispatcher } from "../../../../shared/event-dispatcher";
 
 export interface DeactivateUserHandlerProps {
   usersRepository: UsersRepository;
   activationTokenUtils: ActivationTokenUtils;
   superAdminUser: SuperAdminConfig;
+  eventDispatcher: EventDispatcher;
 }
 
 export default class DeactivateUserHandler implements Handler<DeactivateUserCommand> {
@@ -34,7 +36,12 @@ export default class DeactivateUserHandler implements Handler<DeactivateUserComm
     user.deactivationDate = new Date();
     user.activationToken = activationTokenUtils.getActivationToken(user.username, true);
     user.activationTokenExpireDate = activationTokenUtils.getActivationTokenExpireDate(true);
-    await usersRepository.save(user);
+    const savedUser = await usersRepository.save(user);
+
+    await this.dependencies.eventDispatcher.dispatch({
+      name: "UserDeactivated",
+      payload: savedUser,
+    });
 
     return {
       userId: user.id,

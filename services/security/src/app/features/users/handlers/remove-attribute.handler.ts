@@ -3,10 +3,12 @@ import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { Handler } from "../../../../../../../shared/command-bus";
 import { REMOVE_ATTRIBUTE_COMMAND_TYPE, RemoveAttributeCommand } from "../commands/remove-attribute.command";
 import { AttributesRepository } from "../../../../repositories/attributes.repostiory";
+import { EventDispatcher } from "../../../../shared/event-dispatcher";
 
 export interface RemoveAttributeHandlerProps {
   usersRepository: UsersRepository;
   attributesRepository: AttributesRepository;
+  eventDispatcher: EventDispatcher;
 }
 
 export default class RemoveAttributeHandler implements Handler<RemoveAttributeCommand> {
@@ -38,5 +40,9 @@ export default class RemoveAttributeHandler implements Handler<RemoveAttributeCo
     user.attributes = user.attributes.filter((attr) => !attributes.includes(attr.name));
 
     await attributesRepository.delete(attributesIds as string[]);
+    await this.dependencies.eventDispatcher.dispatch({
+      name: "UserAttributeRemoved",
+      payload: attributes,
+    });
   }
 }

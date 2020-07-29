@@ -3,10 +3,12 @@ import { ADD_ATTRIBUTE_COMMAND_TYPE, AddAttributeCommand } from "../commands/add
 import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { NotFoundError } from "../../../../errors/not-found.error";
 import { UsersService } from "../services/users-service";
+import { EventDispatcher } from "../../../../shared/event-dispatcher";
 
 export interface AddAttributeHandlerProps {
   usersRepository: UsersRepository;
   usersService: UsersService;
+  eventDispatcher: EventDispatcher;
 }
 
 export default class AddAttributeHandler implements Handler<AddAttributeCommand> {
@@ -24,6 +26,10 @@ export default class AddAttributeHandler implements Handler<AddAttributeCommand>
       throw new NotFoundError(`User with id ${userId} doesn't exist.`);
     }
 
-    await usersService.addAttributes(user, attributes);
+    const savedUser = await usersService.addAttributes(user, attributes);
+    await this.dependencies.eventDispatcher.dispatch({
+      name: "UserAttributeAdded",
+      payload: savedUser,
+    });
   }
 }

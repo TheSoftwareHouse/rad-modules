@@ -8,6 +8,7 @@ import { ActivationTokenUtils } from "../../../../tokens/activation-token-utils"
 import { Mailer } from "../../../../utils/mailer/mailer";
 import { Logger } from "winston";
 import { UsersService } from "../services/users-service";
+import { EventDispatcher } from "../../../../shared/event-dispatcher";
 
 export interface AddUserHandlerProps {
   usersRepository: UsersRepository;
@@ -15,6 +16,7 @@ export interface AddUserHandlerProps {
   activationTokenUtils: ActivationTokenUtils;
   mailer: Mailer;
   logger: Logger;
+  eventDispatcher: EventDispatcher;
 }
 
 export default class AddUserHandler implements Handler<AddUserCommand> {
@@ -53,6 +55,10 @@ export default class AddUserHandler implements Handler<AddUserCommand> {
     mailer
       .sendCreateUser(username, username, username)
       .catch((error) => logger.error(error instanceof Error ? error.message : "Unknown error while sending email"));
+    await this.dependencies.eventDispatcher.dispatch({
+      name: "UserAdded",
+      payload: newUser,
+    });
     return {
       newUserId: newUser.id,
     };

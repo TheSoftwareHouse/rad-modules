@@ -1,5 +1,5 @@
 import { AlreadyExistsError } from "../../../../errors/already-exists.error";
-import { hashValue, hashWithSha512, hashWithSha1 } from "../../../../../../../shared/crypto";
+import { hashValue, hashWithSha1, hashWithSha512 } from "../../../../../../../shared/crypto";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { createUserModel, getAlreadyExistsAttributes, UserModelGeneric } from "../models/user.model";
 import { AttributeModel, AttributeModelGeneric } from "../models/attribute.model";
@@ -60,9 +60,7 @@ export class UsersService {
       activationTokenExpireDate,
       attributes: [],
     });
-    const newUser = await usersRepository.addUser(userModel);
-
-    return newUser;
+    return usersRepository.addUser(userModel);
   }
 
   public async createOauthUser(username: string) {
@@ -111,7 +109,7 @@ export class UsersService {
       .map((attribute) => AttributeModel.create({ name: attribute }));
     user.attributes.push(...attributesToSave);
 
-    await usersRepository.save(user);
+    return usersRepository.save(user);
   }
 
   public generateResetPasswordToken(username: string) {
