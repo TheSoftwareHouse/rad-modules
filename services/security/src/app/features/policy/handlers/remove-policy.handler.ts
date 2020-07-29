@@ -35,7 +35,13 @@ export default class RemovePolicyHandler implements Handler<RemovePolicyCommand>
     await policyRepository.delete(idsToRemove as string[]);
     await this.dependencies.eventDispatcher.dispatch({
       name: "PoliciesRemoved",
-      payload: policies,
+      payload: policies.map((policy) => {
+        return {
+          policyId: policy.id,
+          attributeName: policy.attribute,
+          resourceName: policy.resource,
+        };
+      }),
     });
   }
 }

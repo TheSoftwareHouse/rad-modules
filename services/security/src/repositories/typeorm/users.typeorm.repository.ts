@@ -1,30 +1,24 @@
 import { UserModel, UserModelGeneric } from "../../app/features/users/models/user.model";
 import { UsersRepository } from "../users.repostiory";
-import { Repository, EntityRepository } from "typeorm";
+import { EntityRepository, Repository } from "typeorm";
 import { createTypeORMFilter, QueryObject } from "../helpers/query-filter";
 
 @EntityRepository(UserModel)
 export class UsersTypeormRepository extends Repository<UserModel> implements UsersRepository {
   public async addUser(user: UserModelGeneric) {
-    const newUser = await this.save(user);
-
-    return newUser;
+    return this.save(user);
   }
 
   public async findByUsername(username: string) {
-    const user = await this.findOne({ where: { username }, relations: ["attributes"] });
-
-    return user;
+    return this.findOne({ where: { username }, relations: ["attributes"] });
   }
 
   public async findById(id: string) {
-    const user = await this.findOne({ where: { id }, relations: ["attributes"] });
-
-    return user;
+    return this.findOne({ where: { id }, relations: ["attributes"] });
   }
 
   public findByActivationToken(activationToken: string) {
-    return this.findOne({ where: { activationToken } });
+    return this.findOne({ where: { activationToken }, relations: ["attributes"] });
   }
 
   public getAllUsersDisplayModel() {

@@ -42,7 +42,15 @@ export default class RemoveAttributeHandler implements Handler<RemoveAttributeCo
     await attributesRepository.delete(attributesIds as string[]);
     await this.dependencies.eventDispatcher.dispatch({
       name: "UserAttributeRemoved",
-      payload: attributes,
+      payload: {
+        userId: user.id,
+        attributes: user.attributes.map((attribute) => {
+          return {
+            attributeId: attribute.id,
+            attributeName: attribute.name,
+          };
+        }),
+      },
     });
   }
 }

@@ -21,7 +21,11 @@ export default class AddPolicyHandler implements Handler<AddPolicyCommand> {
     const newPolicy = await policyRepository.addPolicy(PolicyModel.create({ attribute, resource }));
     await this.dependencies.eventDispatcher.dispatch({
       name: "PolicyAdded",
-      payload: newPolicy,
+      payload: {
+        policyId: newPolicy.id,
+        attributeName: newPolicy.attribute,
+        resourceName: newPolicy.resource,
+      },
     });
     return { id: newPolicy.id };
   }

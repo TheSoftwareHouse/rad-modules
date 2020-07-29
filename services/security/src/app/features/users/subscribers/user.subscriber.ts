@@ -1,13 +1,14 @@
-import { Event, EventSubscriberInterface, EventSubscribersMeta } from "../../../../shared/event-dispatcher";
+import { EventSubscriberInterface, EventSubscribersMeta } from "../../../../shared/event-dispatcher";
 import { Logger } from "winston";
 import { PolicyEventSubscriberProps } from "../../policy/subscribers/policy.subscriber";
-
-export interface UserAttributeAddedEvent extends Event {}
-export interface UserAttributeRemovedEvent extends Event {}
-export interface UserActivatedEvent extends Event {}
-export interface UserDeactivatedEvent extends Event {}
-export interface UserAddedEvent extends Event {}
-export interface UserRemovedEvent extends Event {}
+import {
+  UserActivatedEvent,
+  UserAddedEvent,
+  UserAttributeAddedEvent,
+  UserAttributeRemovedEvent,
+  UserDeactivatedEvent,
+  UserRemovedEvent,
+} from "./user.event";
 
 export interface UserEventSubscriberProps {
   logger: Logger;

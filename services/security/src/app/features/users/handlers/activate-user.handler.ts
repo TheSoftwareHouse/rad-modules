@@ -39,7 +39,15 @@ export default class ActiveUserHandler implements Handler<ActivateUserCommand> {
     const savedUser = await usersRepository.save(user);
     await this.dependencies.eventDispatcher.dispatch({
       name: "UserActivated",
-      payload: savedUser,
+      payload: {
+        userId: savedUser.id,
+        attributes: savedUser.attributes.map((attribute) => {
+          return {
+            attributeId: attribute.id,
+            attributeName: attribute.name,
+          };
+        }),
+      },
     });
 
     return {

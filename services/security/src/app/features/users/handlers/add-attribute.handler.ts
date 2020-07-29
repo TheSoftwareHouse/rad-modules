@@ -29,7 +29,15 @@ export default class AddAttributeHandler implements Handler<AddAttributeCommand>
     const savedUser = await usersService.addAttributes(user, attributes);
     await this.dependencies.eventDispatcher.dispatch({
       name: "UserAttributeAdded",
-      payload: savedUser,
+      payload: {
+        userId: savedUser.id,
+        attributes: savedUser.attributes.map((attribute) => {
+          return {
+            attributeId: attribute.id,
+            attributeName: attribute.name,
+          };
+        }),
+      },
     });
   }
 }

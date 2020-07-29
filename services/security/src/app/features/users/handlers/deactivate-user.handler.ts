@@ -36,11 +36,19 @@ export default class DeactivateUserHandler implements Handler<DeactivateUserComm
     user.deactivationDate = new Date();
     user.activationToken = activationTokenUtils.getActivationToken(user.username, true);
     user.activationTokenExpireDate = activationTokenUtils.getActivationTokenExpireDate(true);
-    const savedUser = await usersRepository.save(user);
+    await usersRepository.save(user);
 
     await this.dependencies.eventDispatcher.dispatch({
       name: "UserDeactivated",
-      payload: savedUser,
+      payload: {
+        userId: user.id,
+        attributes: user.attributes.map((attribute) => {
+          return {
+            attributeId: attribute.id,
+            attributeName: attribute.name,
+          };
+        }),
+      },
     });
 
     return {
