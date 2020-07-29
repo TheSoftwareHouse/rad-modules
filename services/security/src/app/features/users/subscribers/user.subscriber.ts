@@ -18,36 +18,36 @@ export default class UserEventSubscriber implements EventSubscriberInterface {
 
   getSubscribedEvents(): EventSubscribersMeta[] {
     return [
-      { name: "userAttributeAdded", method: "UserAttributeAdded" },
-      { name: "userAttributeRemoved", method: "UserAttributeRemoved" },
-      { name: "userActivated", method: "UserActivated" },
-      { name: "userDeactivated", method: "UserDeactivated" },
-      { name: "userAdded", method: "UserAdded" },
-      { name: "userRemoved", method: "UserRemoved" },
+      { name: "UserAttributeAdded", method: "userAttributeAdded" },
+      { name: "UserAttributeRemoved", method: "userAttributeRemoved" },
+      { name: "UserActivated", method: "userActivated" },
+      { name: "UserDeactivated", method: "userDeactivated" },
+      { name: "UserAdded", method: "userAdded" },
+      { name: "UserRemoved", method: "userRemoved" },
     ];
   }
 
-  public async UserAttributeAdded(event: UserAttributeAddedEvent) {
+  public async userAttributeAdded(event: UserAttributeAddedEvent) {
     this.dependencies.logger.info(`UserAttributeAdded: ${JSON.stringify(event.payload)}`);
   }
 
-  public async UserAttributeRemoved(event: UserAttributeRemovedEvent) {
+  public async userAttributeRemoved(event: UserAttributeRemovedEvent) {
     this.dependencies.logger.info(`UserAttributeRemoved: ${JSON.stringify(event.payload)}`);
   }
 
-  public async UserActivated(event: UserActivatedEvent) {
+  public async userActivated(event: UserActivatedEvent) {
     this.dependencies.logger.info(`UserActivated: ${JSON.stringify(event.payload)}`);
   }
 
-  public async UserDeactivated(event: UserDeactivatedEvent) {
+  public async userDeactivated(event: UserDeactivatedEvent) {
     this.dependencies.logger.info(`UserDeactivated: ${JSON.stringify(event.payload)}`);
   }
 
-  public async UserAdded(event: UserAddedEvent) {
+  public async userAdded(event: UserAddedEvent) {
     this.dependencies.logger.info(`UserAdded: ${JSON.stringify(event.payload)}`);
   }
 
-  public async UserRemoved(event: UserRemovedEvent) {
+  public async userRemoved(event: UserRemovedEvent) {
     this.dependencies.logger.info(`UserRemoved: ${JSON.stringify(event.payload)}`);
   }
 }
