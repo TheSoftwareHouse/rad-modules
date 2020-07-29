@@ -5,7 +5,7 @@ import { UsersTypeormRepository } from "./repositories/typeorm/users.typeorm.rep
 import { UsersService } from "./app/features/users/services/users-service";
 import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
-import { AwilixContainer, Lifetime } from "awilix";
+import { AwilixContainer, Lifetime, Resolver } from "awilix";
 import {
   AppConfig,
   appConfigSchema,
@@ -61,6 +61,12 @@ import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subs
 // ROUTING_IMPORTS
 
 const HANDLER_REGEX = /.+Handler$/;
+
+function asArray<T>(resolvers: Resolver<T>[]): Resolver<T[]> {
+  return {
+    resolve: (container: AwilixContainer) => resolvers.map((r: Resolver<T>) => container.build(r)),
+  };
+}
 
 function getRepositories(strategy: AuthenticationStrategy) {
   switch (strategy) {
@@ -194,9 +200,9 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     apiKeyRegex: awilix.asValue(config.apiKeyRegex),
   });
 
-  const eventDispatcher = new EventDispatcher(logger, [new PolicyEventSubscriber({ logger })]);
   container.register({
-    eventDispatcher: awilix.asValue(eventDispatcher),
+    eventSubscribers: asArray<any>([awilix.asClass(PolicyEventSubscriber)]),
+    eventDispatcher: awilix.asClass(EventDispatcher).classic().singleton(),
   });
 
   const handlersScope = container.createScope();
