@@ -1,19 +1,21 @@
+import * as awilix from "awilix";
+import { createLogger } from "winston";
+import { AwilixContainer, Lifetime } from "awilix";
+import { createConnection, getCustomRepository } from "typeorm";
+import { JwtUtils } from "./tokens/jwt-utils";
+import { createApp } from "./app/application-factories/create-http-app";
+import { CommandBus } from "../../../shared/command-bus";
+import { createRouter } from "./app/applications/http/router";
+import { errorHandler } from "./middleware/error-handler";
+import { requestLogger } from "./middleware/request-logger";
 import { TransportProtocol } from "../../../shared/enums/transport-protocol";
 import { ApplicationFactory } from "./app/application-factory";
-import * as awilix from "awilix";
-import { AwilixContainer, Lifetime } from "awilix";
-import { AppConfig } from "./config/config";
-import { createRouter } from "./app/applications/http/router";
-import { CommandBus } from "../../../shared/command-bus";
-import { createApp } from "./app/application-factories/create-http-app";
-import { errorHandler } from "./middleware/error-handler";
-import { appConfigSchema } from "./config/config";
-import { notificationsRouting } from "./app/features/notifications/routing";
-import { JwtUtils } from "./tokens/jwt-utils";
 import { NotificationsBroker } from "./notifications-broker/notifications-broker";
 import { loggerConfiguration } from "./utils/logger-configuration";
-import { createLogger } from "winston";
-import { requestLogger } from "./middleware/request-logger";
+import { notificationsRouting } from "./app/features/notifications/routing";
+import { AppConfig, appConfigSchema } from "./config/config";
+import { NotificationsTypeormRepository } from "./repositories/typeorm/notifications.typeorm.repository";
+import { CustomBroker } from "./notifications-broker/brokers/custom-broker";
 // ROUTING_IMPORTS
 
 const HANDLER_REGEX = /.+Handler$/;
@@ -27,11 +29,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
 
   const container: AwilixContainer = awilix.createContainer({
     injectionMode: awilix.InjectionMode.PROXY,
-  });
-
-  container.register({
-    errorHandler: awilix.asValue(errorHandler),
-  });
+  });  
 
   const logger = createLogger(loggerConfiguration(config.logger.logLevel));
   const { requestLoggerFormat } = config.requestLogger;
@@ -44,6 +42,25 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     requestLoggerFormat: awilix.asValue(requestLoggerFormat),
     loggerStream: awilix.asValue(loggerStream),
     requestLogger: awilix.asFunction(requestLogger),
+  });
+
+  const dbConnection = await createConnection(config.dbConfig);
+  await dbConnection.runMigrations();
+
+  container.register({
+    dbConnection: awilix.asValue(dbConnection),
+    errorHandler: awilix.asValue(errorHandler),
+    socketDefaultName: awilix.asValue("default-all"),
+    socketAuthorizedName: awilix.asValue("default-authorized"),
+    socketUnauthorizedName: awilix.asValue("default-unauthorized"),
+  });
+
+  container.register({
+    notificationsRepository: awilix.asValue(getCustomRepository(NotificationsTypeormRepository)),
+  });
+
+  container.register({
+    customBroker: awilix.asClass(CustomBroker),
   });
 
   const handlersScope = container.createScope();

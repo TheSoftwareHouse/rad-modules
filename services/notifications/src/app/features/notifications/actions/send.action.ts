@@ -44,7 +44,16 @@ export const sendActionValidation = celebrate(
  *                required: true
  *     responses:
  *       201:
- *         description: Notification created
+ *         description: Notification/s created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 notificationsIds:
+ *                   type: array
+ *                   items:
+ *                     type: string
  *       400:
  *         description: Bad Request
  *         content:
@@ -62,8 +71,8 @@ export const sendAction = ({ commandBus }: SendActionProps) => (req: Request, re
   const { channels, message } = req.body;
   commandBus
     .execute(new SendCommand({ channels, message }))
-    .then(() => {
-      res.status(CREATED).type("application/json").json({});
+    .then((commandResult) => {
+      res.status(CREATED).type("application/json").json(commandResult);
       // response
     })
     .catch(next);
