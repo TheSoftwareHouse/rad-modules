@@ -1,16 +1,13 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from "typeorm";
 
 type jsonB = { [key: string]: any };
 
 export enum JobStatus {
-  Completed = "Completed",
-  Failed = "Failed",
-  Delayed = "Delayed",
-  Active = "Active",
-  Waiting = "Waiting",
-  Paused = "Paused",
-  Stuck = "Stuck",
-  Deleted = "Deleted",
+  Completed = "completed",
+  Failed = "failed",
+  Active = "active",
+  Paused = "paused",
+  Deleted = "deleted",
 }
 
 export interface jobOptions {
@@ -31,12 +28,12 @@ export interface jobOptions {
 }
 
 interface JobModelProps {
-  id: string;
+  id?: string;
   name: string;
   service: string;
   action: string;
   cron?: string;
-  status?: JobStatus;
+  status: JobStatus;
   jobOptions?: jobOptions;
   payload?: jsonB;
 }
@@ -51,7 +48,7 @@ export class JobModel {
     return entity;
   }
 
-  @PrimaryColumn({ type: "uuid", nullable: false })
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
@@ -63,8 +60,8 @@ export class JobModel {
   @Column()
   action: string;
 
-  @Column("enum", { enum: JobStatus, nullable: false, default: JobStatus.Active })
-  status?: JobStatus;
+  @Column("enum", { enum: JobStatus, nullable: false, default: JobStatus.Paused })
+  status: JobStatus;
 
   @Column({ type: "jsonb", nullable: true })
   jobOptions?: jobOptions;

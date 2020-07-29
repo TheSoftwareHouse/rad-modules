@@ -30,13 +30,14 @@ export class BullScheduler implements Scheduler {
     };
   }
 
-  public async scheduleJob(action: string, service: string, options: jobOptions = {}, payload?: any) {
+  public async scheduleJob(name: string, action: string, service: string, options: jobOptions = {}, payload?: any) {
     const { attempts: defaultAttempts, timeBetweenAttemptsInMs } = this.dependencies.schedulerConfig;
     const customJobId = v4();
     const { attempts, backoff, cron, ...restOptions } = options;
 
     await this.queue.add(
       {
+        name,
         action,
         service,
         payload,

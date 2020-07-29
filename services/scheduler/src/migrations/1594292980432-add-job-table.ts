@@ -9,7 +9,7 @@ export class addJobTable1594292980432 implements MigrationInterface {
       undefined,
     );
     await queryRunner.query(
-      `CREATE TABLE "Job" ("id" uuid NOT NULL, "name" character varying NOT NULL, "service" character varying NOT NULL, "action" character varying NOT NULL, "status" "Job_status_enum", "jobOptions" jsonb, "payload" jsonb, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_981d90e7185b9ec1ee6b814ec21" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "Job" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "service" character varying NOT NULL, "action" character varying NOT NULL, "status" "Job_status_enum", "jobOptions" jsonb, "payload" jsonb, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_981d90e7185b9ec1ee6b814ec21" PRIMARY KEY ("id"))`,
       undefined,
     );
   }

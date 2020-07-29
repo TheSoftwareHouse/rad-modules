@@ -17,8 +17,12 @@ export class JobsTypeormRepository extends Repository<JobModel> implements JobsR
     return this.findOne({ where: { id } });
   }
 
-  public async updateStatus(id: string, status: JobStatus) {
-    return this.update(id, { status });
+  public async updateStatus(name: string, status: JobStatus) {
+    return this.update({ name }, { status });
+  }
+
+  public async updateJob(name: string, job: Partial<JobModel>) {
+    return this.update({ name }, job);
   }
 
   public async getJobs(queryObject: QueryObject) {
