@@ -56,6 +56,7 @@ import { PolicyKeycloakRepository } from "./repositories/keycloak/policy.keycloa
 import { EventDispatcher } from "./shared/event-dispatcher";
 import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subscriber";
 import UserEventSubscriber from "./app/features/users/subscribers/user.subscriber";
+import { httpEventHandler } from "./shared/event-dispatcher/http-event-hander";
 
 // MODELS_IMPORTS
 
@@ -202,8 +203,10 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   });
 
   container.register({
+    eventDispatcherCallbackUrl: awilix.asValue(config.eventDispatcherCallbackUrl),
     eventSubscribers: asArray<any>([awilix.asClass(PolicyEventSubscriber), awilix.asClass(UserEventSubscriber)]),
     eventDispatcher: awilix.asClass(EventDispatcher).classic().singleton(),
+    httpEventHandler: awilix.asFunction(httpEventHandler),
   });
 
   const handlersScope = container.createScope();
