@@ -1,11 +1,14 @@
-import { CREATED, OK, BAD_REQUEST, NOT_FOUND, NO_CONTENT } from "http-status-codes";
+import { BAD_REQUEST, CREATED, NO_CONTENT, NOT_FOUND, OK } from "http-status-codes";
 import * as assert from "assert";
+import { deepStrictEqual } from "assert";
 import * as request from "supertest";
 import { v4 } from "uuid";
 import { usersFixture } from "../fixtures/users.fixture";
 import { BadRequestResponses, UsersResponses } from "../fixtures/response.fixture";
 import { deepEqualOmit, isNotEmptyString, isUuid } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
+import * as awilix from "awilix";
+import { UserAttributeRemovedEvent } from "../../app/features/users/subscribers/user.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -105,5 +108,42 @@ describe("remove-attribute.action", () => {
       .expect("Content-Type", /json/)
       .expect(NOT_FOUND)
       .expect(deepEqualOmit(BadRequestResponses.userHasNotAttributesErrorFactory(attributesThatUserNotHaveAdded)));
+  });
+
+  it("Should trigger UserAttributeRemoved", async () => {
+    let triggeredEvent: UserAttributeRemovedEvent = { name: "Event", payload: { userId: "", attributes: [] } };
+    GLOBAL.bootstrap.container.register({
+      httpEventHandler: awilix.asFunction(() => (event: UserAttributeRemovedEvent) => {
+        triggeredEvent = event;
+      }),
+    });
+    const newUsername = v4();
+    const attributes = ["attr1", "attr2"];
+    const { authClient, app } = GLOBAL.bootstrap;
+    const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
+    const addUserResponse = await request(app)
+      .post("/api/users/add-user")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ username: newUsername, password: "randomPassword" })
+      .expect(CREATED);
+    const { newUserId: userId } = addUserResponse.body;
+    await request(app)
+      .post("/api/users/add-attribute")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ userId, attributes })
+      .expect(CREATED);
+
+    await request(app)
+      .delete(`/api/users/remove-attribute?userId=${userId}&attributes=${attributes.join(",")}`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .expect(NO_CONTENT);
+
+    deepStrictEqual(triggeredEvent, {
+      name: "UserAttributeRemoved",
+      payload: {
+        userId,
+        attributes: [],
+      },
+    });
   });
 });

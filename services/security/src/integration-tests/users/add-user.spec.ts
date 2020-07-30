@@ -7,6 +7,9 @@ import { BadRequestResponses } from "../fixtures/response.fixture";
 import { deepEqualOmit, isNotEmptyString, isUuid } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 import { TEST_ATTRIBUTE_NAME } from "../fixtures/policies.fixture";
+import { deepStrictEqual } from "assert";
+import { Event } from "../../shared/event-dispatcher";
+import * as awilix from "awilix";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -128,5 +131,31 @@ describe("add-user.action", () => {
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
       .expect(deepEqualOmit({ error: '"attributes" does not contain 1 required value(s)' }));
+  });
+
+  it("Should trigger UserAdded", async () => {
+    let triggeredEvent: Event = { name: "Event", payload: {} };
+    GLOBAL.bootstrap.container.register({
+      httpEventHandler: awilix.asFunction(() => (event: Event) => {
+        triggeredEvent = event;
+      }),
+    });
+    const { authClient, app } = GLOBAL.bootstrap;
+    const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
+
+    const { body } = await request(app)
+      .post("/api/users/add-user")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ username: "randomUserName", password: "randomPassword" })
+      .expect("Content-Type", /json/)
+      .expect(CREATED);
+
+    deepStrictEqual(triggeredEvent, {
+      name: "UserAdded",
+      payload: {
+        userId: body?.newUserId,
+        attributes: [],
+      },
+    });
   });
 });
