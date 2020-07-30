@@ -5,6 +5,9 @@ import { usersFixture } from "../fixtures/users.fixture";
 import { deepEqualOmit, isUuid, isNotEmptyString } from "../../../../../shared/test-utils";
 import { BadRequestResponses } from "../fixtures/response.fixture";
 import { GlobalData } from "../bootstrap";
+import { Event } from "../../shared/event-dispatcher";
+import * as awilix from "awilix";
+import { deepStrictEqual } from "assert";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -75,5 +78,34 @@ describe("Policy test", () => {
       .send({ resource })
       .expect(BAD_REQUEST)
       .expect("Content-Type", /json/);
+  });
+
+  it("Should trigger PolicyAdded", async () => {
+    let triggeredEvent: Event | undefined;
+    GLOBAL.bootstrap.container.register({
+      httpEventHandler: awilix.asFunction(() => (event: Event) => {
+        triggeredEvent = event;
+      }),
+    });
+    const { authClient, app } = GLOBAL.bootstrap;
+    const resourceName = "resourceName";
+    const attributeName = "attributeName";
+    const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
+    const { body, status } = await request(app)
+      .post("/api/policy/add-policy")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ resource: resourceName, attribute: attributeName })
+      .expect("Content-Type", /json/);
+    assert(status === CREATED || status === CONFLICT);
+
+    // noinspection JSUnusedAssignment
+    deepStrictEqual(triggeredEvent, {
+      name: "PolicyAdded",
+      payload: {
+        policyId: body.id,
+        attributeName,
+        resourceName,
+      },
+    });
   });
 });
