@@ -123,10 +123,9 @@ describe("send.action", () => {
 
     assert(isUuid(firstNotification.id));
     assert(isDate(firstNotification.createdAt));
-    assert(isDate(firstNotification.updatedAt));
     assert.deepStrictEqual(notifications.length, 1);
     assert.deepStrictEqual(total, 1);
-    assert.deepStrictEqual(firstNotification.chanel, "default-all");
+    assert.deepStrictEqual(firstNotification.channel, "default-all");
     assert.deepStrictEqual(firstNotification.message, "123");
   });
 
@@ -140,8 +139,8 @@ describe("send.action", () => {
     assert.deepStrictEqual(notifications.length, 3);
     assert.deepStrictEqual(total, 3);
     assert(notifications.every(({ message }) => message === "123"));
-    assert(notifications.some(({ chanel }) => chanel === "test1"));
-    assert(notifications.some(({ chanel }) => chanel === "test2"));
-    assert(notifications.some(({ chanel }) => chanel === "test3"));
+    assert(notifications.some(({ channel }) => channel === "test1"));
+    assert(notifications.some(({ channel }) => channel === "test2"));
+    assert(notifications.some(({ channel }) => channel === "test3"));
   });
 });

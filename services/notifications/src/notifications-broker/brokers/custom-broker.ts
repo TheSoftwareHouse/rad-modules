@@ -55,7 +55,7 @@ export class CustomBroker implements GenericNotificationsBroker {
 
     this.io.to(socketDefaultName).emit(socketDefaultName, message);
     const notification = await notificationsRepository.addNotification(
-      NotificationModel.create({ chanel: socketDefaultName, message }),
+      NotificationModel.create({ channel: socketDefaultName, message }),
     );
 
     return [notification.id];

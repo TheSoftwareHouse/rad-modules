@@ -1,7 +1,7 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, CreateDateColumn, PrimaryGeneratedColumn, Index } from "typeorm";
 
 interface NotificationModelProps {
-  chanel: string;
+  channel: string;
   message: string;
 }
 
@@ -17,9 +17,9 @@ export class NotificationModel {
   }
 
   public static createMany(channels: string[], message: string): NotificationModel[] {
-    const entities = channels.map((chanel) => {
+    const entities = channels.map((channel) => {
       const entity = new NotificationModel();
-      Object.assign(entity, { chanel, message });
+      Object.assign(entity, { channel, message });
 
       return entity;
     });
@@ -30,15 +30,13 @@ export class NotificationModel {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Index()
   @Column({ nullable: false })
-  chanel: string;
+  channel: string;
 
   @Column({ nullable: false })
   message: string;
 
   @CreateDateColumn({ type: "timestamp" })
   createdAt: Date;
-
-  @UpdateDateColumn({ type: "timestamp" })
-  updatedAt: Date;
 }
