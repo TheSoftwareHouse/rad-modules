@@ -307,6 +307,40 @@ COPY templates /app/services/security/src/utils/mailer/templates
 COPY init-data-volume /app/services/security/init-data-volume
 ```
 
+## Notification about changes in policies and users
+
+Each time the policy is added or removed you can be informed about it. Also changes in users (adding/removing attributes, adding/removing users, changing activation state of the user) triggers notification.
+The payload of notification is object of type:
+
+```
+{
+  event: string;
+  payload: {}
+}
+```
+`event` is event name. The `payload` depends on event type and can be one of:
+- policy event payload:
+```
+{
+  policyId: string;
+  attributeName: string;
+  resourceName: string;
+}
+```
+- user event payload:
+```
+{
+  userId: string;
+  attributes: [
+    {
+      attributeId: string;
+      attributeName: string;
+    }
+];
+}
+```
+You can configure callback URL of the notification by setting environment variable `EVENT_DISPATCHER_CALLBACK_URL`. By default this variable is empty so no notifications are sent.
+
 ## Configuration setting that you can overwrite via environment variables
 
 API_URL:
@@ -735,3 +769,8 @@ KEYCLOAK_SECURITY_CLIENT_ID
 
 - **_Description_**: Keycloak OpenID client ID
 - **_Default_**: `"6c3465b1-2674-4704-a940-c41194dbd95"`
+
+EVENT_DISPATCHER_CALLBACK_URL
+
+- **_Description_**: Callback URL of notifications that are sent after changes in policies and users
+- **_Default_**: `""`
