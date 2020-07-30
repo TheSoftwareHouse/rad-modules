@@ -37,4 +37,8 @@ export class JobsTypeormRepository extends Repository<JobModel> implements JobsR
       .getManyAndCount();
     return { jobs, total };
   }
+
+  public async getJob(job: Partial<JobModel>) {
+    return this.findOne({ where: job });
+  }
 }

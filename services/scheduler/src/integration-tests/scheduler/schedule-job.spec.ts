@@ -21,7 +21,7 @@ describe("Scheduler tests: schedule job", () => {
         const job = await jobRepository.findById(id);
         deepStrictEqual(job!.service, service);
         deepStrictEqual(job!.action, action);
-        strictEqual(job!.status, JobStatus.Paused);
+        strictEqual(job!.status, JobStatus.New);
         strictEqual(job!.jobOptions, null);
       });
   });
@@ -40,7 +40,7 @@ describe("Scheduler tests: schedule job", () => {
         const job = await jobRepository.findById(id);
         deepStrictEqual(job!.service, service);
         deepStrictEqual(job!.action, action);
-        strictEqual(job!.status, JobStatus.Paused);
+        strictEqual(job!.status, JobStatus.New);
         strictEqual(job!.jobOptions!.cron, cron);
       });
   });

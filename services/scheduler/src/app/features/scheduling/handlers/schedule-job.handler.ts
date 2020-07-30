@@ -16,12 +16,14 @@ export default class ScheduleJobHandler implements Handler<ScheduleJobCommand> {
 
   async execute(command: ScheduleJobCommand) {
     const { scheduler, jobsRepository } = this.dependencies;
-    const { name, action, service, payload, jobOptions, status } = command.payload;
+    const { name, action, service, payload, jobOptions, startImmediately } = command.payload;
+    const status = startImmediately ? JobStatus.New : JobStatus.Paused;
 
-    if (status === JobStatus.Active) {
-      await scheduler.scheduleJob(name, action, service, jobOptions, payload);
-    }
     const { id } = await jobsRepository.addJob(JobModel.create({ name, action, service, jobOptions, payload, status }));
+
+    if (startImmediately) {
+      await scheduler.scheduleJob(name, action, service, status, jobOptions, payload);
+    }
 
     return { id };
   }

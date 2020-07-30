@@ -9,4 +9,5 @@ export interface JobsRepository {
   updateStatus: (name: string, status: JobStatus) => Promise<UpdateResult>;
   updateJob: (name: string, job: Partial<JobModel>) => Promise<UpdateResult>;
   getJobs: (payload: QueryObject) => Promise<{ jobs: JobModel[]; total: number }>;
+  getJob: (job: Partial<JobModel>) => Promise<JobModel | undefined>;
 }

@@ -3,7 +3,6 @@ import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "../../../../../../../shared/command-bus";
 import { ScheduleJobCommand } from "../commands/schedule-job.command";
 import { CREATED } from "http-status-codes";
-import { JobStatus } from "../models/job.model";
 
 export interface ScheduleJobActionProps {
   commandBus: CommandBus;
@@ -40,7 +39,7 @@ export const scheduleJobActionValidation = celebrate(
         removeOnFail: Joi.boolean().optional(),
         stackTraceLimit: Joi.number().optional(),
       }).optional(),
-      status: Joi.string().valid("active", "paused").optional(),
+      startImmediately: Joi.boolean().optional(),
     }).required(),
   },
   { abortEarly: false },
@@ -143,12 +142,9 @@ export const scheduleJobActionValidation = celebrate(
  *                    type: number
  *                    description: Limits the amount of stack trace lines that will be recorded in the stacktrace.
  *                    required: false
- *              status:
- *                type: string
- *                enum:
- *                  - active
- *                  - paused
- *                default: paused
+ *              startImmediately:
+ *                type: boolean
+ *                default: true
  *                required: false
  *     responses:
  *       201:
@@ -186,7 +182,7 @@ export const scheduleJobAction = ({ commandBus }: ScheduleJobActionProps) => (
         service: req.body.service,
         payload: req.body.payload,
         jobOptions: req.body.jobOptions,
-        status: req.body.status ?? JobStatus.Paused,
+        startImmediately: req.body.startImmediately ?? true,
       }),
     )
     .then((commandResult) => {

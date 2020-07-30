@@ -1,12 +1,13 @@
-import { jobOptions } from "../../app/features/scheduling/models/job.model";
+import { jobOptions, JobStatus } from "../../app/features/scheduling/models/job.model";
 
 export interface Scheduler {
   scheduleJob: (
     name: string,
     action: string,
     service: string,
+    dbStatus: JobStatus,
     jobOptions?: jobOptions,
     payload?: any,
   ) => Promise<{ id: string }>;
-  cancelJob: (id: string, cron: string) => Promise<void>;
+  cancelJob: (jobName: string) => Promise<void>;
 }

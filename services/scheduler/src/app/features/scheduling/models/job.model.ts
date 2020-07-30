@@ -3,9 +3,10 @@ import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedCol
 type jsonB = { [key: string]: any };
 
 export enum JobStatus {
+  New = "new",
+  Active = "active",
   Completed = "completed",
   Failed = "failed",
-  Active = "active",
   Paused = "paused",
   Deleted = "deleted",
 }
@@ -28,7 +29,7 @@ export interface jobOptions {
 }
 
 interface JobModelProps {
-  id?: string;
+  id: string;
   name: string;
   service: string;
   action: string;
@@ -60,7 +61,7 @@ export class JobModel {
   @Column()
   action: string;
 
-  @Column("enum", { enum: JobStatus, nullable: false, default: JobStatus.Paused })
+  @Column("enum", { enum: JobStatus, nullable: false, default: JobStatus.New })
   status: JobStatus;
 
   @Column({ type: "jsonb", nullable: true })

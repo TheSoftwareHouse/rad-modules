@@ -3,9 +3,10 @@ import { ProxyCall } from "../proxy-call/proxy-call";
 import { SchedulerConsumer } from "./consumer.types";
 import { SchedulerConfig } from "../../config/config";
 import * as Bull from "bull";
+import { Job } from "bull";
 import { Logger } from "winston";
 import { JobsRepository } from "../../repositories/jobs.repository";
-import { JobStatus } from "../../app/features/scheduling/models/job.model";
+import { JobModel, JobStatus } from "../../app/features/scheduling/models/job.model";
 
 type BullSchedulerConsumerProps = {
   schedulerConfig: SchedulerConfig;
@@ -17,6 +18,13 @@ type BullSchedulerConsumerProps = {
 
 export class BullSchedulerConsumer implements SchedulerConsumer {
   constructor(private dependencies: BullSchedulerConsumerProps) {}
+
+  private updateJob(jobName: string, job: Partial<JobModel>) {
+    const { jobsRepository, logger } = this.dependencies;
+    return jobsRepository.updateJob(jobName, job).catch((error) => {
+      logger.error(`Error while updating job: ${error.message}`);
+    });
+  }
 
   public startListening() {
     const { queueName } = this.dependencies.schedulerConfig;
@@ -33,34 +41,38 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
     });
     queue
       .on("error", (error: Error) => {
-        logger.error(`An error occured: ${error.message}`);
+        logger.error(`Bull queue error: ${error.message}`);
       })
-      .on("active", (job: any) => {
-        logger.info(`A job '${job?.data?.name}' has started`);
+      .on("active", async (job: Job) => {
+        const name = job?.data?.name;
+
+        logger.info(`A job '${name}' has started`);
+        await this.updateJob(name, { status: JobStatus.Active });
       })
       .on("completed", async (job, result: string) => {
-        if (job.finishedOn) {
-          if (job?.opts?.repeat) {
-            await jobsRepository.updateJob(job?.data?.name, {});
-          } else {
-            await jobsRepository.updateStatus(job?.data?.name, JobStatus.Completed);
-          }
-        }
-        logger.info(`A job '${job?.data?.name}' successfully completed with a result: ${result}`);
-      })
+        const name = job?.data?.name;
 
-      .on("failed", async (job, error: Error) => {
+        logger.info(`A job '${name}' successfully completed with a result: ${result}`);
         if (job.finishedOn) {
-          if (job?.opts?.repeat) {
-            await jobsRepository.updateJob(job?.data?.name, {});
-          } else {
-            await jobsRepository.updateStatus(job?.data?.name, JobStatus.Failed);
-          }
+          await this.updateJob(name, job?.opts?.repeat ? {} : { status: JobStatus.Completed });
         }
-        logger.error(`A job '${job?.data?.name}' failed with reason: ${error.message}`);
       })
-      .on("removed", (job) => {
-        logger.info(`A job '${job?.data?.name}' successfully removed.`);
+      .on("failed", async (job: Job, error: Error) => {
+        const name = job?.data?.name;
+
+        logger.error(`A job '${name}' failed with reason: ${error.message}`);
+        if (job.finishedOn) {
+          await this.updateJob(name, job?.opts?.repeat ? {} : { status: JobStatus.Failed });
+        }
+      })
+      .on("removed", async (job: Job) => {
+        const name = job?.data?.name;
+
+        logger.info(`A job '${name}' was removed`);
+        const dbJob = await jobsRepository.getJob({ name });
+        if (dbJob?.status !== JobStatus.Paused) {
+          await this.updateJob(name, { status: JobStatus.Deleted });
+        }
       });
   }
 

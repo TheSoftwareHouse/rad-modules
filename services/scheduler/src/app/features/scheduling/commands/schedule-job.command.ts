@@ -1,5 +1,5 @@
 import { Command } from "../../../../../../../shared/command-bus";
-import { jobOptions, JobStatus } from "../models/job.model";
+import { jobOptions } from "../models/job.model";
 
 export const SCHEDULE_JOB_COMMAND_TYPE = "scheduling/SCHEDULEJOB";
 
@@ -15,7 +15,7 @@ export interface ScheduleJobCommandPayload {
     body: any;
   };
   jobOptions?: jobOptions;
-  status: JobStatus;
+  startImmediately: boolean;
 }
 
 export class ScheduleJobCommand implements Command<ScheduleJobCommandPayload> {
