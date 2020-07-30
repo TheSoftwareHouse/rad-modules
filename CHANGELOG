@@ -7,6 +7,22 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2020-07-30 v0.0.59
+Added
+- Notification callback after changes in policies / users / attributes
+
+## scheduler
+
+### 2020-07-23 v0.0.10
+Added
+- Endpoint that returns all services and actions that can be scheduled
+
+### 2020-07-17 v0.0.9
+Added
+- Endpoint that returns list of jobs
+
+## security
+
 ### 2020-07-07 v0.0.58
 Added
 - Keycloak authentication strategy
