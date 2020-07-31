@@ -4,6 +4,7 @@ import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { NotFoundError } from "../../../../errors/not-found.error";
 import { UsersService } from "../services/users-service";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
+import { UserAttributeAddedEvent } from "../subscribers/events/user-attribute-added.event";
 
 export interface AddAttributeHandlerProps {
   usersRepository: UsersRepository;
@@ -27,17 +28,16 @@ export default class AddAttributeHandler implements Handler<AddAttributeCommand>
     }
 
     const savedUser = await usersService.addAttributes(user, attributes);
-    await this.dependencies.eventDispatcher.dispatch({
-      name: "UserAttributeAdded",
-      payload: {
-        userId: savedUser.id,
+    await this.dependencies.eventDispatcher.dispatch(
+      new UserAttributeAddedEvent({
+        userId: savedUser.id!,
         attributes: savedUser.attributes.map((attribute) => {
           return {
-            id: attribute.id,
+            id: attribute.id!,
             name: attribute.name,
           };
         }),
-      },
-    });
+      }),
+    );
   }
 }

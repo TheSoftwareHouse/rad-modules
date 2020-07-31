@@ -3,6 +3,7 @@ import { DELETE_USER_COMMAND_TYPE, DeleteUserCommand } from "../commands/delete-
 import { UsersService } from "../services/users-service";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
+import { UserRemovedEvent } from "../subscribers/events/user-removed.event";
 
 export interface DeleteUserHandlerProps {
   usersService: UsersService;
@@ -21,17 +22,16 @@ export default class DeleteUserHandler implements Handler<DeleteUserCommand> {
     // we need user object to put is in dispather
     const user = await usersRepository.findById(userId)!;
     await usersService.deleteUser(userId);
-    await this.dependencies.eventDispatcher.dispatch({
-      name: "UserRemoved",
-      payload: {
-        userId: user!.id,
+    await this.dependencies.eventDispatcher.dispatch(
+      new UserRemovedEvent({
+        userId: user!.id!,
         attributes: user!.attributes.map((attribute) => {
           return {
-            id: attribute.id,
+            id: attribute.id!,
             name: attribute.name,
           };
         }),
-      },
-    });
+      }),
+    );
   }
 }

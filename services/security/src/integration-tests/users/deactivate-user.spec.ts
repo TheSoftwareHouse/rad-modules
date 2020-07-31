@@ -8,6 +8,7 @@ import { isDate, isNotEmptyString, isUuid } from "../../../../../shared/test-uti
 import { Event } from "../../shared/event-dispatcher";
 import * as awilix from "awilix";
 import { deepStrictEqual } from "assert";
+import { UserDeactivatedEvent } from "../../app/features/users/subscribers/events/user-deactivated.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -93,13 +94,7 @@ describe("deactivate-user.action", () => {
     assert(isUuid(body.userId));
 
     // noinspection JSUnusedAssignment
-    deepStrictEqual(triggeredEvent, {
-      name: "UserDeactivated",
-      payload: {
-        userId: body.userId,
-        attributes: [],
-      },
-    });
+    deepStrictEqual(triggeredEvent, new UserDeactivatedEvent({ userId: body.userId, attributes: [] }));
 
     container.register("userActivationConfig", asValue(userActivationConfigOriginal));
   });

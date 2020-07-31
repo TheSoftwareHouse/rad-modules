@@ -10,6 +10,7 @@ import { TEST_ATTRIBUTE_NAME } from "../fixtures/policies.fixture";
 import { deepStrictEqual } from "assert";
 import { Event } from "../../shared/event-dispatcher";
 import * as awilix from "awilix";
+import { UserAddedEvent } from "../../app/features/users/subscribers/events/user-added.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -150,12 +151,6 @@ describe("add-user.action", () => {
       .expect("Content-Type", /json/)
       .expect(CREATED);
 
-    deepStrictEqual(triggeredEvent, {
-      name: "UserAdded",
-      payload: {
-        userId: body?.newUserId,
-        attributes: [],
-      },
-    });
+    deepStrictEqual(triggeredEvent, new UserAddedEvent({ userId: body?.newUserId, attributes: [] }));
   });
 });

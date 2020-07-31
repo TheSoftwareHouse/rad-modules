@@ -1,14 +1,12 @@
 import { EventSubscriberInterface, EventSubscribersMeta } from "../../../../shared/event-dispatcher";
 import { Logger } from "winston";
-import {
-  UserActivatedEvent,
-  UserAddedEvent,
-  UserAttributeAddedEvent,
-  UserAttributeRemovedEvent,
-  UserDeactivatedEvent,
-  UserRemovedEvent,
-} from "./user.event";
 import { EventHandler } from "../../../../shared/event-dispatcher/http-event-hander";
+import { UserAttributeAddedEvent } from "./events/user-attribute-added.event";
+import { UserAttributeRemovedEvent } from "./events/user-attribute-removed.event";
+import { UserActivatedEvent } from "./events/user-activated.event";
+import { UserDeactivatedEvent } from "./events/user-deactivated.event";
+import { UserAddedEvent } from "./events/user-added.event";
+import { UserRemovedEvent } from "./events/user-removed.event";
 
 export interface UserEventSubscriberProps {
   logger: Logger;

@@ -1,7 +1,8 @@
 import { EventSubscriberInterface, EventSubscribersMeta } from "../../../../shared/event-dispatcher";
 import { Logger } from "winston";
-import { PolicyAddedEvent, PolicyRemovedEvent } from "./policy.event";
 import { EventHandler } from "../../../../shared/event-dispatcher/http-event-hander";
+import { PolicyAddedEvent } from "./events/policy-added.event";
+import { PolicyRemovedEvent } from "./events/policy-removed.event";
 
 export interface PolicyEventSubscriberProps {
   logger: Logger;

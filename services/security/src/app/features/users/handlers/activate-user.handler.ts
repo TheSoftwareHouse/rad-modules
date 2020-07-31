@@ -5,6 +5,7 @@ import { NotFoundError } from "../../../../errors/not-found.error";
 import { NoLongerAvailableError } from "../../../../errors/no-longer-available.error";
 import { ActivationTokenUtils } from "../../../../tokens/activation-token-utils";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
+import { UserActivatedEvent } from "../subscribers/events/user-activated.event";
 
 export interface ActiveUserHandlerProps {
   usersRepository: UsersRepository;
@@ -37,18 +38,17 @@ export default class ActiveUserHandler implements Handler<ActivateUserCommand> {
     user.activationTokenExpireDate = null;
 
     const savedUser = await usersRepository.save(user);
-    await this.dependencies.eventDispatcher.dispatch({
-      name: "UserActivated",
-      payload: {
-        userId: savedUser.id,
+    await this.dependencies.eventDispatcher.dispatch(
+      new UserActivatedEvent({
+        userId: savedUser.id!,
         attributes: savedUser.attributes.map((attribute) => {
           return {
-            id: attribute.id,
+            id: attribute.id!,
             name: attribute.name,
           };
         }),
-      },
-    });
+      }),
+    );
 
     return {
       userId: user.id,

@@ -5,6 +5,7 @@ import { Mailer } from "../../../../utils/mailer/mailer";
 import { Logger } from "winston";
 import { UsersService } from "../services/users-service";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
+import { UserAddedEvent } from "../subscribers/events/user-added.event";
 
 export interface AddUserHandlerProps {
   usersRepository: UsersRepository;
@@ -32,18 +33,17 @@ export default class AddUserHandler implements Handler<AddUserCommand> {
     mailer
       .sendCreateUser(username, username, username)
       .catch((error) => logger.error(error instanceof Error ? error.message : "Unknown error while sending email"));
-    await this.dependencies.eventDispatcher.dispatch({
-      name: "UserAdded",
-      payload: {
-        userId: newUser.id,
+    await this.dependencies.eventDispatcher.dispatch(
+      new UserAddedEvent({
+        userId: newUser.id!,
         attributes: newUser.attributes?.map((attribute) => {
           return {
-            id: attribute.id,
+            id: attribute.id!,
             name: attribute.name,
           };
         }),
-      },
-    });
+      }),
+    );
     return {
       newUserId: newUser.id,
     };

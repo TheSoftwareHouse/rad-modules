@@ -8,7 +8,7 @@ import { BadRequestResponses, UsersResponses } from "../fixtures/response.fixtur
 import { deepEqualOmit, isNotEmptyString, isUuid } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 import * as awilix from "awilix";
-import { UserAttributeRemovedEvent } from "../../app/features/users/subscribers/user.event";
+import { UserAttributeRemovedEvent } from "../../app/features/users/subscribers/events/user-attribute-removed.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -138,12 +138,6 @@ describe("remove-attribute.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect(NO_CONTENT);
 
-    deepStrictEqual(triggeredEvent, {
-      name: "UserAttributeRemoved",
-      payload: {
-        userId,
-        attributes: [],
-      },
-    });
+    deepStrictEqual(triggeredEvent, new UserAttributeRemovedEvent({ userId, attributes: [] }));
   });
 });

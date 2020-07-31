@@ -9,6 +9,7 @@ import { GlobalData } from "../bootstrap";
 import { Event } from "../../shared/event-dispatcher";
 import * as awilix from "awilix";
 import { deepStrictEqual } from "assert";
+import { UserActivatedEvent } from "../../app/features/users/subscribers/events/user-activated.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -143,13 +144,7 @@ describe("activate-user.action", () => {
     assert(typeof body?.isActive === "boolean");
     assert(body?.isActive === true);
 
-    deepStrictEqual(triggeredEvent, {
-      name: "UserActivated",
-      payload: {
-        userId: user!.id,
-        attributes: [],
-      },
-    });
+    deepStrictEqual(triggeredEvent, new UserActivatedEvent({ userId: user!.id, attributes: [] }));
 
     container.register("userActivationConfig", asValue(userActivationConfigOriginal));
   });

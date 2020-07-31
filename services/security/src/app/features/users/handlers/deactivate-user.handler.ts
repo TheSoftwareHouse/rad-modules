@@ -6,6 +6,7 @@ import { ActivationTokenUtils } from "../../../../tokens/activation-token-utils"
 import { ConflictError } from "../../../../errors/conflict.error";
 import { SuperAdminConfig } from "../../../../config/config";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
+import { UserDeactivatedEvent } from "../subscribers/events/user-deactivated.event";
 
 export interface DeactivateUserHandlerProps {
   usersRepository: UsersRepository;
@@ -38,18 +39,17 @@ export default class DeactivateUserHandler implements Handler<DeactivateUserComm
     user.activationTokenExpireDate = activationTokenUtils.getActivationTokenExpireDate(true);
     await usersRepository.save(user);
 
-    await this.dependencies.eventDispatcher.dispatch({
-      name: "UserDeactivated",
-      payload: {
-        userId: user.id,
+    await this.dependencies.eventDispatcher.dispatch(
+      new UserDeactivatedEvent({
+        userId: user.id!,
         attributes: user.attributes.map((attribute) => {
           return {
-            id: attribute.id,
+            id: attribute.id!,
             name: attribute.name,
           };
         }),
-      },
-    });
+      }),
+    );
 
     return {
       userId: user.id,

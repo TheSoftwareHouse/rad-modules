@@ -8,7 +8,7 @@ import { deepEqualOmit } from "../../../../../shared/test-utils";
 import * as awilix from "awilix";
 import { asValue } from "awilix";
 import { strictEqual } from "assert";
-import { UserAttributeAddedEvent } from "../../app/features/users/subscribers/user.event";
+import { UserAttributeAddedEvent } from "../../app/features/users/subscribers/events/user-attribute-added.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 

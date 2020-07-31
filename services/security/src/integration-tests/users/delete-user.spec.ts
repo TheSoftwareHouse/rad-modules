@@ -8,6 +8,7 @@ import { GlobalData } from "../bootstrap";
 import { Event } from "../../shared/event-dispatcher";
 import * as awilix from "awilix";
 import { deepStrictEqual } from "assert";
+import { UserRemovedEvent } from "../../app/features/users/subscribers/events/user-removed.event";
 
 const [userWithAdminPanelAttr, normalUser] = usersFixture;
 
@@ -107,12 +108,6 @@ describe("delete-user.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect(NO_CONTENT);
 
-    deepStrictEqual(triggeredEvent, {
-      name: "UserRemoved",
-      payload: {
-        userId: userToDelete!.id,
-        attributes: [],
-      },
-    });
+    deepStrictEqual(triggeredEvent, new UserRemovedEvent({ userId: userToDelete!.id, attributes: [] }));
   });
 });
