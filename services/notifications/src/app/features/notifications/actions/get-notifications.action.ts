@@ -89,22 +89,21 @@ export const getNotificationsActionValidation = celebrate(
  *               type: object
  *               properties:
  *                 notifications:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       example: "00000000-0000-0000-0000-000000000001"
- *                     channel:
- *                       type: string
- *                       example: "default-all"
- *                     message:
- *                       type: string
- *                       example: "Hello!"
- *                     createdAt:
- *                       type: string
- *                       example: "2020-07-16T10:00:00.000Z"
+ *                   type: array
+ *                   items:
+ *                     properties:
+ *                      id:
+ *                        type: string
+ *                        example: 00000000-0000-0000-0000-000000000001
+ *                      channel:
+ *                        type: string
+ *                        example: default-all
+ *                      message:
+ *                        type: string
+ *                        example: Hello
+ *                      createdAt:
+ *                        type: string
+ *                        example: 2020-07-16T10:00:00.000Z
  *                 total:
  *                   type: number
  *                   example: 1
