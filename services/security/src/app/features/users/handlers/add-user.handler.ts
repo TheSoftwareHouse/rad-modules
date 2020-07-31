@@ -38,8 +38,8 @@ export default class AddUserHandler implements Handler<AddUserCommand> {
         userId: newUser.id,
         attributes: newUser.attributes?.map((attribute) => {
           return {
-            attributeId: attribute.id,
-            attributeName: attribute.name,
+            id: attribute.id,
+            name: attribute.name,
           };
         }),
       },

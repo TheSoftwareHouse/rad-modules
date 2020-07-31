@@ -44,8 +44,8 @@ export default class DeactivateUserHandler implements Handler<DeactivateUserComm
         userId: user.id,
         attributes: user.attributes.map((attribute) => {
           return {
-            attributeId: attribute.id,
-            attributeName: attribute.name,
+            id: attribute.id,
+            name: attribute.name,
           };
         }),
       },

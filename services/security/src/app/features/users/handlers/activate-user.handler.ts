@@ -43,8 +43,8 @@ export default class ActiveUserHandler implements Handler<ActivateUserCommand> {
         userId: savedUser.id,
         attributes: savedUser.attributes.map((attribute) => {
           return {
-            attributeId: attribute.id,
-            attributeName: attribute.name,
+            id: attribute.id,
+            name: attribute.name,
           };
         }),
       },

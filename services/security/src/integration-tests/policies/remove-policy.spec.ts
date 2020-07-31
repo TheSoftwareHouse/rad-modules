@@ -67,13 +67,13 @@ describe("Remove policy test", () => {
       }),
     });
     const { authClient, app } = GLOBAL.bootstrap;
-    const resourceName = "resource_to_remove";
-    const attributeName = "attribute_to_remove";
+    const resource = "resource_to_remove";
+    const attribute = "attribute_to_remove";
     const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
     const { body } = await request(app)
       .post("/api/policy/add-policy")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ resource: resourceName, attribute: attributeName })
+      .send({ resource, attribute })
       .expect(CREATED);
 
     await request(app)
@@ -84,13 +84,7 @@ describe("Remove policy test", () => {
     // noinspection JSUnusedAssignment
     deepStrictEqual(triggeredEvent, {
       name: "PoliciesRemoved",
-      payload: [
-        {
-          policyId: body.id,
-          attributeName,
-          resourceName,
-        },
-      ],
+      payload: [{ id: body.id, attribute, resource }],
     });
   });
 });

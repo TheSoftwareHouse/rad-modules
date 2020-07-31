@@ -1,9 +1,9 @@
 import { Event } from "../../../../shared/event-dispatcher";
 
 interface PolicyEventPayload {
-  policyId: string;
-  attributeName: string;
-  resourceName: string;
+  id: string;
+  attribute: string;
+  resource: string;
 }
 
 export interface PolicyAddedEvent extends Event {

@@ -218,8 +218,8 @@ describe("add-attribute.action", () => {
 
     strictEqual(triggeredEvent?.name, "UserAttributeAdded");
     strictEqual(triggeredEvent?.payload.userId, response.body.newUserId);
-    strictEqual(triggeredEvent?.payload.attributes[0].attributeName, attributes[0]);
-    strictEqual(triggeredEvent?.payload.attributes[1].attributeName, attributes[1]);
+    strictEqual(triggeredEvent?.payload.attributes[0].name, attributes[0]);
+    strictEqual(triggeredEvent?.payload.attributes[1].name, attributes[1]);
   });
 
   after(() => {

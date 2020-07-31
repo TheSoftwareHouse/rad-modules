@@ -27,8 +27,8 @@ export default class DeleteUserHandler implements Handler<DeleteUserCommand> {
         userId: user!.id,
         attributes: user!.attributes.map((attribute) => {
           return {
-            attributeId: attribute.id,
-            attributeName: attribute.name,
+            id: attribute.id,
+            name: attribute.name,
           };
         }),
       },

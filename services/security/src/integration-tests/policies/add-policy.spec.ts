@@ -88,24 +88,20 @@ describe("Policy test", () => {
       }),
     });
     const { authClient, app } = GLOBAL.bootstrap;
-    const resourceName = "resourceName";
-    const attributeName = "attributeName";
+    const resource = "resourceName";
+    const attribute = "attributeName";
     const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
     const { body, status } = await request(app)
       .post("/api/policy/add-policy")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ resource: resourceName, attribute: attributeName })
+      .send({ resource, attribute })
       .expect("Content-Type", /json/);
     assert(status === CREATED || status === CONFLICT);
 
     // noinspection JSUnusedAssignment
     deepStrictEqual(triggeredEvent, {
       name: "PolicyAdded",
-      payload: {
-        policyId: body.id,
-        attributeName,
-        resourceName,
-      },
+      payload: { id: body.id, attribute, resource },
     });
   });
 });

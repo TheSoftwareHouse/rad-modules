@@ -1,8 +1,8 @@
 import { Event } from "../../../../shared/event-dispatcher";
 
 export interface UserEventAttributePayload {
-  attributeId: string;
-  attributeName: string;
+  id: string;
+  name: string;
 }
 
 export interface UserEventPayload {
