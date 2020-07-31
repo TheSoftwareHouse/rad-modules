@@ -86,7 +86,7 @@ export const appConfigSchema = Joi.object({
   adminPanelPolicies: AdminPanelPoliciesSchema,
   mailer: MailerSchema.required(),
   requestLogger: RequestLoggerSchema.required(),
-  eventDispatcherCallbackUrl: Joi.string().allow("").required(),
+  eventDispatcherCallbackUrls: Joi.array().items(Joi.string().allow("").required()).required(),
 }).required();
 
 export const initialUsersDataSchema = Joi.array().items(usersDataSchema).required();
@@ -160,7 +160,7 @@ export type AppConfig = {
   adminPanelPolicies: AdminPanelPoliciesConfig;
   mailer: MailerConfig;
   requestLogger: RequestLoggerConfig;
-  eventDispatcherCallbackUrl: string;
+  eventDispatcherCallbackUrls: string[];
 };
 
 export const appConfig: AppConfig = {
@@ -221,7 +221,7 @@ export const appConfig: AppConfig = {
   adminPanelPolicies: getAdminPanelPoliciesConfig(),
   mailer: getMailerConfig(),
   requestLogger: getRequestLoggerConfig(),
-  eventDispatcherCallbackUrl: process.env.EVENT_DISPATCHER_CALLBACK_URL || "",
+  eventDispatcherCallbackUrls: (process.env.EVENT_DISPATCHER_CALLBACK_URLS || "").split(","),
 };
 
 export { MailerConfig, MailerType } from "./mailer.config";

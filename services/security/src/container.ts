@@ -203,7 +203,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   });
 
   container.register({
-    eventDispatcherCallbackUrl: awilix.asValue(config.eventDispatcherCallbackUrl),
+    eventDispatcherCallbackUrls: awilix.asValue(config.eventDispatcherCallbackUrls),
     eventSubscribers: asArray<any>([awilix.asClass(PolicyEventSubscriber), awilix.asClass(UserEventSubscriber)]),
     eventDispatcher: awilix.asClass(EventDispatcher).classic().singleton(),
     httpEventHandler: awilix.asFunction(httpEventHandler),

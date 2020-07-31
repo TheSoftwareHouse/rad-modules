@@ -339,7 +339,7 @@ The payload of notification is object of type:
 ];
 }
 ```
-You can configure callback URL of the notification by setting environment variable `EVENT_DISPATCHER_CALLBACK_URL`. By default this variable is empty so no notifications are sent.
+You can configure callback URLs of the notification by setting environment variable `EVENT_DISPATCHER_CALLBACK_URLS`. By default this variable is empty so no notifications are sent.
 
 ## Configuration setting that you can overwrite via environment variables
 
@@ -770,7 +770,7 @@ KEYCLOAK_SECURITY_CLIENT_ID
 - **_Description_**: Keycloak OpenID client ID
 - **_Default_**: `"6c3465b1-2674-4704-a940-c41194dbd95"`
 
-EVENT_DISPATCHER_CALLBACK_URL
+EVENT_DISPATCHER_CALLBACK_URLS
 
-- **_Description_**: Callback URL of notifications that are sent after changes in policies and users
+- **_Description_**: Callback URLs of notifications that are sent after changes in policies and users, comma separated.
 - **_Default_**: `""`
