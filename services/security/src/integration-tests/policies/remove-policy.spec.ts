@@ -9,6 +9,7 @@ import { GlobalData } from "../bootstrap";
 import { Event } from "../../shared/event-dispatcher";
 import * as awilix from "awilix";
 import { deepStrictEqual } from "assert";
+import { PolicyRemovedEvent } from "../../app/features/policy/subscribers/events/policy-removed.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -82,9 +83,6 @@ describe("Remove policy test", () => {
       .expect(NO_CONTENT);
 
     // noinspection JSUnusedAssignment
-    deepStrictEqual(triggeredEvent, {
-      name: "PoliciesRemoved",
-      payload: [{ id: body.id, attribute, resource }],
-    });
+    deepStrictEqual(triggeredEvent, new PolicyRemovedEvent([{ id: body.id, attribute, resource }]));
   });
 });

@@ -5,6 +5,6 @@ export class PolicyAddedEvent implements Event {
   name: string;
 
   public constructor(public payload: PolicyEventPayload) {
-    this.name = "PolicyAdded";
+    this.name = "PolicyAddedEvent";
   }
 }

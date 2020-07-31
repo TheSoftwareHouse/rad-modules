@@ -8,6 +8,7 @@ import { GlobalData } from "../bootstrap";
 import { Event } from "../../shared/event-dispatcher";
 import * as awilix from "awilix";
 import { deepStrictEqual } from "assert";
+import { PolicyAddedEvent } from "../../app/features/policy/subscribers/events/policy-added.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -99,9 +100,6 @@ describe("Policy test", () => {
     assert(status === CREATED || status === CONFLICT);
 
     // noinspection JSUnusedAssignment
-    deepStrictEqual(triggeredEvent, {
-      name: "PolicyAdded",
-      payload: { id: body.id, attribute, resource },
-    });
+    deepStrictEqual(triggeredEvent, new PolicyAddedEvent({ id: body.id, attribute, resource }));
   });
 });

@@ -14,18 +14,18 @@ export default class PolicyEventSubscriber implements EventSubscriberInterface {
 
   getSubscribedEvents(): EventSubscribersMeta[] {
     return [
-      { name: "PolicyAdded", method: "policyAdded" },
-      { name: "PoliciesRemoved", method: "policiesRemoved" },
+      { name: PolicyAddedEvent.name, method: "policyAdded" },
+      { name: PolicyRemovedEvent.name, method: "policiesRemoved" },
     ];
   }
 
   public async policyAdded(event: PolicyAddedEvent) {
-    this.dependencies.logger.info(`PolicyAdded: ${JSON.stringify(event.payload)}`);
+    this.dependencies.logger.info(`${typeof event}: ${JSON.stringify(event.payload)}`);
     return this.dependencies.httpEventHandler(event);
   }
 
   public async policiesRemoved(event: PolicyRemovedEvent) {
-    this.dependencies.logger.info(`PoliciesRemoved: ${JSON.stringify(event.payload)}`);
+    this.dependencies.logger.info(`${typeof event}: ${JSON.stringify(event.payload)}`);
     return this.dependencies.httpEventHandler(event);
   }
 }

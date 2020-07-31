@@ -216,7 +216,9 @@ describe("add-attribute.action", () => {
       .send({ userId: response.body.newUserId, attributes })
       .expect(CREATED);
 
-    strictEqual(triggeredEvent?.name, "UserAttributeAdded");
+    // eslint-disable-next-line no-console
+    console.log(triggeredEvent);
+    strictEqual(triggeredEvent?.name, "UserAttributeAddedEvent");
     strictEqual(triggeredEvent?.payload.userId, response.body.newUserId);
     strictEqual(triggeredEvent?.payload.attributes[0].name, attributes[0]);
     strictEqual(triggeredEvent?.payload.attributes[1].name, attributes[1]);

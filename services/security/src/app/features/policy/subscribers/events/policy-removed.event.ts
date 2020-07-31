@@ -5,6 +5,6 @@ export class PolicyRemovedEvent implements Event {
   name: string;
 
   public constructor(public payload: PolicyEventPayload[]) {
-    this.name = "PolicyRemoved";
+    this.name = "PolicyRemovedEvent";
   }
 }

@@ -5,6 +5,7 @@ import { NotFoundError } from "../../../../errors/not-found.error";
 import { AdminPanelPoliciesConfig } from "../../../../config/config";
 import { ConflictError } from "../../../../errors/conflict.error";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
+import { PolicyRemovedEvent } from "../subscribers/events/policy-removed.event";
 
 interface RemovePolicyHandlerProps {
   policyRepository: PolicyRepository;
@@ -33,13 +34,14 @@ export default class RemovePolicyHandler implements Handler<RemovePolicyCommand>
     }
     const idsToRemove = policies.map((policy) => policy.id);
     await policyRepository.delete(idsToRemove as string[]);
-    await this.dependencies.eventDispatcher.dispatch({
-      name: "PoliciesRemoved",
-      payload: policies.map((policy) => ({
-        id: policy.id,
-        attribute: policy.attribute,
-        resource: policy.resource,
-      })),
-    });
+    await this.dependencies.eventDispatcher.dispatch(
+      new PolicyRemovedEvent(
+        policies.map((policy) => ({
+          id: policy.id!,
+          attribute: policy.attribute,
+          resource: policy.resource,
+        })),
+      ),
+    );
   }
 }
