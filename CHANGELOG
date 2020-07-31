@@ -104,6 +104,8 @@ Changed
 ## notifications
 
 ### 2020-07-29 v0.0.10
+Added
+- `get-notifications` endpoint to fetch notifications information
 Changed
 - Send notification endpoint returns `notificationsIds` in the response body
 
