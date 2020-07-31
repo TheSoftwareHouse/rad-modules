@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import { TransportProtocol } from "../../../shared/enums/transport-protocol";
 import { TokensRedisRepository } from "./repositories/tokens.redis.repository";
 import { RedisRepository } from "./repositories/redis.repository";
@@ -207,6 +208,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     eventSubscribers: asArray<any>([awilix.asClass(PolicyEventSubscriber), awilix.asClass(UserEventSubscriber)]),
     eventDispatcher: awilix.asClass(EventDispatcher).classic().singleton(),
     httpEventHandler: awilix.asFunction(httpEventHandler),
+    myFetch: awilix.asFunction(() => fetch),
   });
 
   const handlersScope = container.createScope();
