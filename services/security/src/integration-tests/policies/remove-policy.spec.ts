@@ -3,7 +3,7 @@ import * as querystring from "querystring";
 import { CREATED, CONFLICT, NO_CONTENT } from "http-status-codes";
 import { appConfig } from "../../config/config";
 import { usersFixture } from "../fixtures/users.fixture";
-import { deepEqualOmit } from "../test-utils";
+import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { BadRequestResponses } from "../fixtures/response.fixture";
 import { GlobalData } from "../bootstrap";
 

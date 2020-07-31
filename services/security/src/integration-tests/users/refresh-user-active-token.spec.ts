@@ -4,7 +4,7 @@ import * as request from "supertest";
 import { asValue } from "awilix";
 import { usersFixture } from "../fixtures/users.fixture";
 import { GlobalData } from "../bootstrap";
-import { isNotEmptyString } from "../test-utils";
+import { isNotEmptyString } from "../../../../../shared/test-utils";
 
 const [userWithAdminPanelAttr] = usersFixture;
 

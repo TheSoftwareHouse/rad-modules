@@ -4,7 +4,7 @@ import { GlobalData } from "../bootstrap";
 import { appConfig } from "../../config/config";
 import { usersFixture } from "../fixtures/users.fixture";
 import { UsersResponses, BadRequestResponses } from "../fixtures/response.fixture";
-import { deepEqualOmit } from "../test-utils";
+import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { asValue } from "awilix";
 
 const [userWithAdminPanelAttr, normalUser, superAdminUser] = usersFixture; // eslint-disable-line

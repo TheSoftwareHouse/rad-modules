@@ -2,7 +2,7 @@ import * as request from "supertest";
 import { OK, BAD_REQUEST } from "http-status-codes";
 import * as assert from "assert";
 import { usersFixture } from "../fixtures/users.fixture";
-import { deepEqualOmit, isUuid, isNotEmptyString } from "../test-utils";
+import { deepEqualOmit, isUuid, isNotEmptyString } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 
 const [userWithAdminPanelAttr] = usersFixture;

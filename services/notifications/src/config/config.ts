@@ -1,5 +1,6 @@
-import { TransportProtocol } from "../../../../shared/enums/transport-protocol";
 import { Joi } from "celebrate";
+import { DbConfigSchema, DbConfig, getDbConfig } from "./db.config";
+import { TransportProtocol } from "../../../../shared/enums/transport-protocol";
 
 const tokenConfigSchema = Joi.object({
   expirationInSeconds: Joi.number().positive().required(),
@@ -21,6 +22,7 @@ export const appConfigSchema = Joi.object({
     requestLoggerFormat: Joi.string().required(),
     keysToHide: Joi.array().items(Joi.string()).required(),
   }).required(),
+  dbConfig: DbConfigSchema.required(),
 });
 
 export enum MorganFormatTypes {
@@ -58,6 +60,7 @@ export type AppConfig = {
     requestLoggerFormat: MorganFormatTypes | string;
     keysToHide: string[];
   };
+  dbConfig: DbConfig;
 };
 
 export const appConfig: AppConfig = {
@@ -82,4 +85,5 @@ export const appConfig: AppConfig = {
       ? (process.env.REQUEST_BODY_KEYS_TO_HIDE || "").split(",")
       : ["password", "token", "accessToken", "accessKey", "authorization"],
   },
+  dbConfig: getDbConfig(),
 };

@@ -2,10 +2,11 @@ import { TransportType } from "../config/config";
 import { CustomBroker } from "./brokers/custom-broker";
 import { JwtUtils } from "../tokens/jwt-utils";
 import { Logger } from "winston";
+import { NotificationsRepository } from "../repositories/notifications.repository";
 
 export interface GenericNotificationsBroker {
   start: () => Promise<void>;
-  send: (usersId: string[], message: string) => Promise<void>;
+  send: (usersId: string[], message: string) => Promise<string[]>;
 }
 
 export interface NotificationsBrokerProps {
@@ -14,6 +15,11 @@ export interface NotificationsBrokerProps {
   allowAnonymous: boolean;
   jwtUtils: JwtUtils;
   logger: Logger;
+  socketDefaultName: string;
+  socketAuthorizedName: string;
+  socketUnauthorizedName: string;
+  notificationsRepository: NotificationsRepository;
+  customBroker: CustomBroker;
 }
 
 export class NotificationsBroker implements GenericNotificationsBroker {
@@ -22,13 +28,8 @@ export class NotificationsBroker implements GenericNotificationsBroker {
   constructor(dependencies: NotificationsBrokerProps) {
     switch (dependencies.transportType) {
       case TransportType.WebSocket: {
-        const { transportConfig, allowAnonymous, jwtUtils, logger } = dependencies;
-        this.broker = new CustomBroker({
-          transportConfig,
-          allowAnonymous,
-          jwtUtils,
-          logger,
-        });
+        const { customBroker } = dependencies;
+        this.broker = customBroker;
 
         break;
       }
@@ -41,7 +42,7 @@ export class NotificationsBroker implements GenericNotificationsBroker {
     return this.broker.start();
   }
 
-  public send(usersId: string[], message: string) {
+  public async send(usersId: string[], message: string) {
     return this.broker.send(usersId, message);
   }
 }

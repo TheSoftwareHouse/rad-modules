@@ -71,6 +71,8 @@ services:
     working_dir: /app/build/services/notifications
     command: [sh, -c, 'node-dev ./src/index.js']
     hostname: notifications
+    depends_on:
+      - postgres  
     volumes:
       - build:/app/build
     networks:
@@ -95,7 +97,7 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USERNAME: postgres
-      POSTGRES_MULTIPLE_DATABASES: users,scheduler
+      POSTGRES_MULTIPLE_DATABASES: users,scheduler,notifications
     networks:
       - app
 
@@ -148,6 +150,8 @@ services:
     image: notifications-service-prod:latest
     working_dir: /app/build/services/notifications
     command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
+    depends_on:
+      - postgres
     networks:
       - app
 

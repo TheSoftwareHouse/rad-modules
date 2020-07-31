@@ -13,6 +13,8 @@ export default class SendHandler implements Handler<SendCommand> {
 
   async execute(command: SendCommand) {
     const { channels = [], message } = command.payload;
-    this.dependencies.notificationsBroker.send(channels, message);
+    const notificationsIds = await this.dependencies.notificationsBroker.send(channels, message);
+
+    return { notificationsIds };
   }
 }

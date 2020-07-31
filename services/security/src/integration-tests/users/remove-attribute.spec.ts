@@ -4,7 +4,7 @@ import * as request from "supertest";
 import { v4 } from "uuid";
 import { usersFixture } from "../fixtures/users.fixture";
 import { BadRequestResponses, UsersResponses } from "../fixtures/response.fixture";
-import { deepEqualOmit, isNotEmptyString, isUuid } from "../test-utils";
+import { deepEqualOmit, isNotEmptyString, isUuid } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 
 const [userWithAdminPanelAttr] = usersFixture;

@@ -4,7 +4,7 @@ import * as assert from "assert";
 import { v4 } from "uuid";
 import { usersFixture } from "../fixtures/users.fixture";
 import { BadRequestResponses } from "../fixtures/response.fixture";
-import { deepEqualOmit } from "../test-utils";
+import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 
 const [userWithAdminPanelAttr, normalUser] = usersFixture;
