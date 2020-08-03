@@ -76,8 +76,8 @@ describe("Scheduler tests: get jobs", () => {
         assert(Array.isArray(res.body.jobs));
         deepStrictEqual(res.body.jobs.length, 5);
         deepStrictEqual(
-          res.body.jobs.map((job: any) => job.name).sort(),
-          ["A super test1", "B test2", "C super test3", "D super test4", "E test5"].sort(),
+          res.body.jobs.map((job: any) => job.name),
+          ["E test5", "D super test4", "C super test3", "B test2", "A super test1"],
         );
       });
   });

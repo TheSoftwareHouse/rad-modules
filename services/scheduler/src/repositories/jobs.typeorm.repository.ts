@@ -2,11 +2,19 @@ import { JobModel, JobStatus } from "../app/features/scheduling/models/job.model
 import { JobsRepository } from "./jobs.repository";
 import { EntityRepository, Repository } from "typeorm";
 import { createTypeORMFilter, QueryObject } from "./helpers/query-filter";
+import { ConflictError } from "../errors/conflict.error";
 
 @EntityRepository(JobModel)
 export class JobsTypeormRepository extends Repository<JobModel> implements JobsRepository {
+  readonly PG_UNIQUE_CONSTRAINT_VIOLATION = "23505";
+
   public async addJob(job: JobModel) {
-    return this.save(job);
+    return this.save(job).catch((error) => {
+      if (error?.code === this.PG_UNIQUE_CONSTRAINT_VIOLATION) {
+        throw new ConflictError(`Job with name ${job.name} already exists`);
+      }
+      throw error;
+    });
   }
 
   public async addJobs(jobs: JobModel[]) {

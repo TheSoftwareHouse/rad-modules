@@ -34,7 +34,8 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
 
     queue.process(async (message) => {
       if (this.isOtherServiceJob(message.data)) {
-        return proxyCall(message.data.action, message.data.service, message.data.payload, TransportProtocol.HTTP);
+        const { action, service, payload } = message.data;
+        return proxyCall(action, service, payload, TransportProtocol.HTTP);
       }
       logger.error("Failed to handle a job - action or service are missing.");
       return Promise.resolve();

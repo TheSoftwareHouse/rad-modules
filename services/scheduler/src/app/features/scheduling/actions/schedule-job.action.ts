@@ -162,6 +162,16 @@ export const scheduleJobActionValidation = celebrate(
  *           application/json:
  *             schema:
  *               $ref:  "#/definitions/BadRequestError"
+ *       409:
+ *         description: Already Exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                error:
+ *                  type: string
+ *                  example: Job with name example-job already exists
  *       500:
  *         description: Internal Server Error
  *         content:

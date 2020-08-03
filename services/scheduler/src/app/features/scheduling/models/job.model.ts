@@ -1,4 +1,4 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 type jsonB = { [key: string]: any };
 
@@ -52,6 +52,7 @@ export class JobModel {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Unique("Duplicate name", ["name"])
   @Column()
   name: string;
 
