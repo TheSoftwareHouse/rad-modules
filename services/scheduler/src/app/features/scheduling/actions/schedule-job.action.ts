@@ -18,7 +18,11 @@ export const scheduleJobActionValidation = celebrate(
       name: Joi.string().required(),
       action: Joi.string().required(),
       service: Joi.string().required(),
-      payload: Joi.object().unknown(),
+      payload: Joi.object({
+        headers: Joi.object().pattern(/.*/, [Joi.string()]).optional(),
+        body: Joi.object().unknown().optional(),
+        queryParameters: Joi.object().unknown().optional(),
+      }),
       jobOptions: Joi.object({
         priority: Joi.number().optional(),
         delay: Joi.number().optional(),
@@ -35,6 +39,7 @@ export const scheduleJobActionValidation = celebrate(
         removeOnFail: Joi.boolean().optional(),
         stackTraceLimit: Joi.number().optional(),
       }).optional(),
+      startImmediately: Joi.boolean().optional(),
     }).required(),
   },
   { abortEarly: false },
@@ -137,6 +142,10 @@ export const scheduleJobActionValidation = celebrate(
  *                    type: number
  *                    description: Limits the amount of stack trace lines that will be recorded in the stacktrace.
  *                    required: false
+ *              startImmediately:
+ *                type: boolean
+ *                default: true
+ *                required: false
  *     responses:
  *       201:
  *         description: Job scheduled
@@ -153,6 +162,16 @@ export const scheduleJobActionValidation = celebrate(
  *           application/json:
  *             schema:
  *               $ref:  "#/definitions/BadRequestError"
+ *       409:
+ *         description: Already Exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                error:
+ *                  type: string
+ *                  example: Job with name example-job already exists
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -173,6 +192,7 @@ export const scheduleJobAction = ({ commandBus }: ScheduleJobActionProps) => (
         service: req.body.service,
         payload: req.body.payload,
         jobOptions: req.body.jobOptions,
+        startImmediately: req.body.startImmediately ?? true,
       }),
     )
     .then((commandResult) => {

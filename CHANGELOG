@@ -78,6 +78,10 @@ Changed
 
 ## scheduler
 
+### 2020-07-23 v0.0.11
+Added
+- Update job status in db
+
 ### 2020-07-23 v0.0.10
 Added
 - Endpoint that returns all services and actions that can be scheduled

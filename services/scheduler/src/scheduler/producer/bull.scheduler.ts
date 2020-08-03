@@ -2,7 +2,8 @@ import { Scheduler } from "./scheduler.types";
 import { v4 } from "uuid";
 import * as Bull from "bull";
 import { SchedulerConfig } from "../../config/config";
-import { jobOptions } from "../../app/features/scheduling/models/job.model";
+import { jobOptions, JobStatus } from "../../app/features/scheduling/models/job.model";
+import { Job } from "bull";
 
 type BullSchedulerProps = {
   schedulerConfig: SchedulerConfig;
@@ -30,16 +31,25 @@ export class BullScheduler implements Scheduler {
     };
   }
 
-  public async scheduleJob(action: string, service: string, options: jobOptions = {}, payload?: any) {
+  public async scheduleJob(
+    name: string,
+    action: string,
+    service: string,
+    dbStatus: JobStatus,
+    options: jobOptions = {},
+    payload?: any,
+  ) {
     const { attempts: defaultAttempts, timeBetweenAttemptsInMs } = this.dependencies.schedulerConfig;
     const customJobId = v4();
     const { attempts, backoff, cron, ...restOptions } = options;
 
     await this.queue.add(
       {
+        name,
         action,
         service,
         payload,
+        dbStatus,
       },
       {
         jobId: customJobId,
@@ -53,7 +63,11 @@ export class BullScheduler implements Scheduler {
     return { id: customJobId };
   }
 
-  public async cancelJob(jobId: string, cron: string) {
-    return this.queue.removeRepeatable({ jobId, cron });
+  public async cancelJob(jobName: string) {
+    const jobs = await this.queue.getJobs(["active", "waiting", "delayed"]);
+    const jobToDelete = jobs.find((job: Job) => job?.data?.name === jobName);
+    if (jobToDelete) {
+      await jobToDelete.remove();
+    }
   }
 }

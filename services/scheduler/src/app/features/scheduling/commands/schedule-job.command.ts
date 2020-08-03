@@ -7,8 +7,15 @@ export interface ScheduleJobCommandPayload {
   name: string;
   service: string;
   action: string;
-  payload?: any;
+  payload?: {
+    headers: {
+      [key: string]: string;
+    };
+    queryParameters: any;
+    body: any;
+  };
   jobOptions?: jobOptions;
+  startImmediately: boolean;
 }
 
 export class ScheduleJobCommand implements Command<ScheduleJobCommandPayload> {

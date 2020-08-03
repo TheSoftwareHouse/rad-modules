@@ -3,46 +3,78 @@ import { ProxyCall } from "../proxy-call/proxy-call";
 import { SchedulerConsumer } from "./consumer.types";
 import { SchedulerConfig } from "../../config/config";
 import * as Bull from "bull";
+import { Job } from "bull";
 import { Logger } from "winston";
+import { JobsRepository } from "../../repositories/jobs.repository";
+import { JobModel, JobStatus } from "../../app/features/scheduling/models/job.model";
 
 type BullSchedulerConsumerProps = {
   schedulerConfig: SchedulerConfig;
   redisUrl: string;
   proxyCall: ProxyCall;
   logger: Logger;
+  jobsRepository: JobsRepository;
 };
 
 export class BullSchedulerConsumer implements SchedulerConsumer {
   constructor(private dependencies: BullSchedulerConsumerProps) {}
 
+  private updateJob(jobName: string, job: Partial<JobModel>) {
+    const { jobsRepository, logger } = this.dependencies;
+    return jobsRepository.updateJob(jobName, job).catch((error) => {
+      logger.error(`Error while updating job: ${error.message}`);
+    });
+  }
+
   public startListening() {
     const { queueName } = this.dependencies.schedulerConfig;
-    const { redisUrl, proxyCall, logger } = this.dependencies;
+    const { redisUrl, proxyCall, logger, jobsRepository } = this.dependencies;
 
     const queue = new Bull(queueName, redisUrl);
 
-    queue.process(async (message, done) => {
+    queue.process(async (message) => {
       if (this.isOtherServiceJob(message.data)) {
-        logger.info(`Handling job with id ${message.id}, payload:`, message.data);
-        try {
-          // todo: strategy should probably be coming from config
-          const result = await proxyCall(
-            message.data.action,
-            message.data.service,
-            message.data.payload,
-            TransportProtocol.HTTP,
-          );
-
-          logger.info("Job proxied call result:", result);
-        } catch (err) {
-          logger.error(err);
-        }
-      } else {
-        throw new Error("Failed to handle a job - action or service are missing.");
+        const { action, service, payload } = message.data;
+        return proxyCall(action, service, payload, TransportProtocol.HTTP);
       }
-
-      done();
+      logger.error("Failed to handle a job - action or service are missing.");
+      return Promise.resolve();
     });
+    queue
+      .on("error", (error: Error) => {
+        logger.error(`Bull queue error: ${error.message}`);
+      })
+      .on("active", async (job: Job) => {
+        const name = job?.data?.name;
+
+        logger.info(`A job '${name}' has started`);
+        await this.updateJob(name, { status: JobStatus.Active });
+      })
+      .on("completed", async (job, result: string) => {
+        const name = job?.data?.name;
+
+        logger.info(`A job '${name}' successfully completed with a result: ${result}`);
+        if (job.finishedOn) {
+          await this.updateJob(name, job?.opts?.repeat ? {} : { status: JobStatus.Completed });
+        }
+      })
+      .on("failed", async (job: Job, error: Error) => {
+        const name = job?.data?.name;
+
+        logger.error(`A job '${name}' failed with reason: ${error.message}`);
+        if (job.finishedOn) {
+          await this.updateJob(name, job?.opts?.repeat ? {} : { status: JobStatus.Failed });
+        }
+      })
+      .on("removed", async (job: Job) => {
+        const name = job?.data?.name;
+
+        logger.info(`A job '${name}' was removed`);
+        const dbJob = await jobsRepository.getJob({ name });
+        if (dbJob?.status !== JobStatus.Paused) {
+          await this.updateJob(name, { status: JobStatus.Deleted });
+        }
+      });
   }
 
   private isOtherServiceJob(job: any) {

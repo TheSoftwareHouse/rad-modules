@@ -4,7 +4,6 @@ import { Scheduler } from "../../../../scheduler/producer/scheduler.types";
 import { JobsRepository } from "../../../../repositories/jobs.repository";
 import { NotFoundError } from "../../../../errors/not-found.error";
 import { JobStatus } from "../models/job.model";
-import { AppError } from "../../../../errors/app.error";
 
 export interface CancelJobHandlerProps {
   scheduler: Scheduler;
@@ -22,15 +21,10 @@ export default class CancelJobHandler implements Handler<CancelJobCommand> {
 
     const job = await jobsRepository.findById(id);
 
-    if (!job || !job?.jobOptions?.cron || job?.status === JobStatus.Deleted) {
-      throw new NotFoundError("Job not found, job not repeatable or job already deleted");
+    if (!job || job?.status === JobStatus.Deleted) {
+      throw new NotFoundError("Job not found");
     }
 
-    try {
-      await scheduler.cancelJob(id, job.jobOptions.cron);
-      await jobsRepository.updateStatus(id, JobStatus.Deleted);
-    } catch (err) {
-      throw new AppError(err);
-    }
+    return scheduler.cancelJob(job.name);
   }
 }

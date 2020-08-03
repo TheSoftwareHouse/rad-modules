@@ -5,28 +5,33 @@ import { buildApiUrl } from "./build-api-url";
 import { Logger } from "winston";
 import { ManifestService, ManifestServiceAction } from "../index";
 
-const httpStrategy = async (
-  service: ManifestService,
-  foundAction: ManifestServiceAction,
-  payload: any,
-  logger: Logger,
-) => {
-  const response = await fetch(
+const httpStrategy = async (service: ManifestService, foundAction: ManifestServiceAction, payload: any) => {
+  return fetch(
     buildApiUrl(service.url, foundAction.http.uri, payload ? payload.queryParameters : undefined),
     buildRequestInit(
       foundAction.http.method,
       payload ? payload.body : undefined,
       payload ? payload.headers : undefined,
     ),
-  );
+  ).then(async (response) => {
+    const responseText = await response.text();
 
-  try {
-    logger.info("response json:", await response.json());
-  } catch (e) {
-    logger.error("Failed to read json from response");
-  }
+    const responseJson = {
+      success: response.ok,
+      status: response.status,
+      statusText: response.statusText ?? "",
+      url: response.url,
+      headers: response.headers,
+      redirected: response.redirected,
+      response: responseText,
+    };
 
-  return response;
+    if (!responseJson.success) {
+      throw new Error(JSON.stringify(responseJson));
+    }
+
+    return JSON.stringify(responseJson);
+  });
 };
 
 type ProxyCallProps = {
@@ -59,7 +64,7 @@ export const proxyCall = (dependencies: ProxyCallProps) => async (
   }
 
   if (strategy === TransportProtocol.HTTP) {
-    return httpStrategy(foundService, foundAction, payload, dependencies.logger);
+    return httpStrategy(foundService, foundAction, payload);
   }
 
   throw new Error(`${strategy} is not a supported strategy.`);

@@ -2,7 +2,7 @@ import { deepStrictEqual, strictEqual } from "assert";
 import * as request from "supertest";
 import { GlobalData } from "../bootstrap";
 import { JobsRepository } from "../../repositories/jobs.repository";
-import { CREATED } from "http-status-codes";
+import { CONFLICT, CREATED } from "http-status-codes";
 import { JobStatus } from "../../app/features/scheduling/models/job.model";
 
 describe("Scheduler tests: schedule job", () => {
@@ -21,7 +21,7 @@ describe("Scheduler tests: schedule job", () => {
         const job = await jobRepository.findById(id);
         deepStrictEqual(job!.service, service);
         deepStrictEqual(job!.action, action);
-        strictEqual(job!.status, JobStatus.Active);
+        strictEqual(job!.status, JobStatus.New);
         strictEqual(job!.jobOptions, null);
       });
   });
@@ -40,8 +40,25 @@ describe("Scheduler tests: schedule job", () => {
         const job = await jobRepository.findById(id);
         deepStrictEqual(job!.service, service);
         deepStrictEqual(job!.action, action);
-        strictEqual(job!.status, JobStatus.Active);
+        strictEqual(job!.status, JobStatus.New);
         strictEqual(job!.jobOptions!.cron, cron);
       });
+  });
+
+  it("Should not schedule repeatable job and throw conflict error", async () => {
+    const service = "service";
+    const action = "getUsers";
+    const cron = "* * * * *";
+    const name = "test-job";
+
+    await request(GLOBAL.container.resolve("app"))
+      .post("/api/scheduling/schedule-job")
+      .send({ name, service, action, jobOptions: { cron } })
+      .expect(CREATED);
+
+    await request(GLOBAL.container.resolve("app"))
+      .post("/api/scheduling/schedule-job")
+      .send({ name, service, action, jobOptions: { cron } })
+      .expect(CONFLICT);
   });
 });
