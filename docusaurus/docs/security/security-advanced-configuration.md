@@ -310,36 +310,89 @@ COPY init-data-volume /app/services/security/init-data-volume
 ## Notification about changes in policies and users
 
 Each time the policy is added or removed you can be informed about it. Also changes in users (adding/removing attributes, adding/removing users, changing activation state of the user) triggers notification.
-The payload of notification is object of type:
-
+The payload of notification is object implementing `Event` interface (defined in `shared/event-dispatcher/index.ts`).
+Curently the module can emit the following events:
+- PolicyAddedEvent:
 ```
-{
-  event: string;
-  payload: {}
+class PolicyAddedEvent {
+  name: string;
+  payload: PolicyEventPayload;
 }
 ```
-`event` is event name. The `payload` depends on event type and can be one of:
-- policy event payload:
+- PolicyRemovedEvent:
 ```
-{
-  policyId: string;
-  attributeName: string;
-  resourceName: string;
+class PolicyRemovedEvent {
+  name: string;
+  payload: PolicyEventPayload[];
 }
 ```
-- user event payload:
+- UserAddedEvent:
 ```
-{
+class UserAddedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserRemovedEvent:
+```
+class UserRemovedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserActivatedEvent:
+```
+class UserActivatedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserDeactivatedEvent:
+```
+class UserDeactivatedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserAttributeAddedEvent
+```
+class UserAttributeAddedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserAttributeRemovedEvent
+```
+class UserAttributeRemovedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+The types of payload are defines as:
+- PolicyEventPayload:
+```
+interface PolicyEventPayload {
+  id: string;
+  attribute: string;
+  resource: string;
+}
+```
+- UserEventPayload:
+```
+interface UserEventPayload {
   userId: string;
-  attributes: [
-    {
-      attributeId: string;
-      attributeName: string;
-    }
-];
+  attributes: UserEventAttributePayload[];
 }
 ```
-You can configure callback URLs of the notification by setting environment variable `EVENT_DISPATCHER_CALLBACK_URLS`. By default this variable is empty so no notifications are sent.
+- UserEventAttributePayload:
+```
+interface UserEventAttributePayload {
+  id: string;
+  name: string;
+}
+```
+
+You can configure callback URLs (one or more) of the notification by setting environment variable `EVENT_DISPATCHER_CALLBACK_URLS`. By default this variable is empty so no notifications are sent.
 
 ## Configuration setting that you can overwrite via environment variables
 
