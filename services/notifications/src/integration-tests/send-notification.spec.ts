@@ -1,10 +1,13 @@
+import * as assert from "assert";
 import * as io from "socket.io-client";
+import * as request from "supertest";
+import { sign } from "jsonwebtoken";
+import { BAD_REQUEST, CREATED, OK } from "http-status-codes";
 import { Application } from "../app/application.types";
 import { TokenConfig } from "../config/config";
-import { sign } from "jsonwebtoken";
 import { appConfig } from "../config/config";
-import * as request from "supertest";
-import { BAD_REQUEST, CREATED } from "http-status-codes";
+import { isUuid } from "../../../../shared/test-utils";
+import { NotificationModel } from "../app/features/notifications/models/notification.model";
 
 const notifyUrl = "http://localhost:30050";
 
@@ -30,10 +33,11 @@ const generateToken = async (userId: string, tokenConfig: TokenConfig): Promise<
   });
 };
 
-describe("Notifications tests", () => {
+describe("send.action", () => {
   let app: Application;
   const userId = "user1";
   let token = "";
+
   before(async () => {
     const { container } = global as any;
     app = container.resolve("app");
@@ -101,5 +105,67 @@ describe("Notifications tests", () => {
 
   it("Bad request", () => {
     return request(app).post("/api/notifications/send").send({}).expect(BAD_REQUEST);
+  });
+
+  it("Should return notificationsIds in in body response", async () => {
+    const { body } = await request(app).post("/api/notifications/send").send({ message: "123" }).expect(CREATED);
+
+    assert(Array.isArray(body?.notificationsIds));
+    assert(isUuid(body?.notificationsIds[0]));
+  });
+
+  it("Should save many notifications with same message and different channels in DB", async () => {
+    await request(app)
+      .post("/api/notifications/send")
+      .send({ channels: ["test1", "test2", "test3"], message: "123" })
+      .expect(CREATED);
+
+    const { body } = await request(app).get("/api/notifications/get-notifications").send({}).expect(OK);
+
+    const { notifications, total }: { notifications: NotificationModel[]; total: number } = body;
+
+    assert(notifications.length <= 25);
+    assert(total === 3);
+    assert(notifications.every(({ message }) => message === "123"));
+    assert(notifications.some(({ channel }) => channel === "test1"));
+    assert(notifications.some(({ channel }) => channel === "test2"));
+    assert(notifications.some(({ channel }) => channel === "test3"));
+  });
+
+  it("Endpoint get-notifications should returns notifications", async () => {
+    await request(app)
+      .post("/api/notifications/send")
+      .send({ channels: ["test1", "test2", "test3"], message: "123" })
+      .expect(CREATED);
+
+    const { body } = await request(app).get("/api/notifications/get-notifications").expect(OK);
+
+    const { notifications, total }: { notifications: NotificationModel[]; total: number } = body;
+
+    assert(notifications.length <= 25);
+    assert(total === 3);
+    assert(notifications.every(({ message }) => message === "123"));
+    assert(notifications.some(({ channel }) => channel === "test1"));
+    assert(notifications.some(({ channel }) => channel === "test2"));
+    assert(notifications.some(({ channel }) => channel === "test3"));
+  });
+
+  it("Endpoint get-notifications should returns filtered notifications by notification channel", async () => {
+    await request(app)
+      .post("/api/notifications/send")
+      .send({ channels: ["test1", "test2", "test3"], message: "123" })
+      .expect(CREATED);
+
+    const { body } = await request(app)
+      .get("/api/notifications/get-notifications?filter[channel][eq]=test1")
+      .expect(OK);
+
+    const { notifications, total }: { notifications: NotificationModel[]; total: number } = body;
+    const [firstNotification] = notifications;
+
+    assert.strictEqual(notifications.length, 1);
+    assert.strictEqual(total, 1);
+    assert.deepStrictEqual(firstNotification.channel, "test1");
+    assert.deepStrictEqual(firstNotification.message, "123");
   });
 });

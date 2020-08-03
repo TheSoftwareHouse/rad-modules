@@ -3,8 +3,12 @@ import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
 import { BadRequestResponses } from "../fixtures/response.fixture";
-import { deepEqualOmit } from "../test-utils";
+import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
+import { Event } from "../../shared/event-dispatcher";
+import * as awilix from "awilix";
+import { deepStrictEqual } from "assert";
+import { UserRemovedEvent } from "../../app/features/users/subscribers/events/user-removed.event";
 
 const [userWithAdminPanelAttr, normalUser] = usersFixture;
 
@@ -81,5 +85,29 @@ describe("delete-user.action", () => {
       .expect("Content-Type", /json/)
       .expect(CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.adminDelete));
+  });
+
+  it("Should trigger UserRemoved", async () => {
+    let triggeredEvent: Event = { name: "Event", payload: {} };
+    GLOBAL.bootstrap.container.register({
+      httpEventHandler: awilix.asFunction(() => (event: Event) => {
+        triggeredEvent = event;
+      }),
+    });
+    const { authClient, usersRepository, app } = GLOBAL.bootstrap;
+    const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
+    const addUserResponse = await request(app)
+      .post("/api/users/add-user")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ username: "userToDelete", password: "1234567qaz" })
+      .expect(CREATED);
+    const { newUserId } = addUserResponse.body;
+    const userToDelete = await usersRepository.findById(newUserId);
+    await request(app)
+      .delete(`/api/users/delete-user?userId=${newUserId}`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .expect(NO_CONTENT);
+
+    deepStrictEqual(triggeredEvent, new UserRemovedEvent({ userId: userToDelete!.id, attributes: [] }));
   });
 });

@@ -1,11 +1,15 @@
 import * as request from "supertest";
 import * as querystring from "querystring";
-import { CREATED, CONFLICT, NO_CONTENT } from "http-status-codes";
+import { CONFLICT, CREATED, NO_CONTENT } from "http-status-codes";
 import { appConfig } from "../../config/config";
 import { usersFixture } from "../fixtures/users.fixture";
-import { deepEqualOmit } from "../test-utils";
+import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { BadRequestResponses } from "../fixtures/response.fixture";
 import { GlobalData } from "../bootstrap";
+import { Event } from "../../shared/event-dispatcher";
+import * as awilix from "awilix";
+import { deepStrictEqual } from "assert";
+import { PolicyRemovedEvent } from "../../app/features/policy/subscribers/events/policy-removed.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -54,5 +58,31 @@ describe("Remove policy test", () => {
       .expect("Content-Type", /json/)
       .expect(CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.policyCannotDelete));
+  });
+
+  it("Should trigger PolicyRemoved", async () => {
+    let triggeredEvent: Event | undefined;
+    GLOBAL.bootstrap.container.register({
+      httpEventHandler: awilix.asFunction(() => (event: Event) => {
+        triggeredEvent = event;
+      }),
+    });
+    const { authClient, app } = GLOBAL.bootstrap;
+    const resource = "resource_to_remove";
+    const attribute = "attribute_to_remove";
+    const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
+    const { body } = await request(app)
+      .post("/api/policy/add-policy")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ resource, attribute })
+      .expect(CREATED);
+
+    await request(app)
+      .delete(`/api/policy/remove-policy?id=${body.id}`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .expect(NO_CONTENT);
+
+    // noinspection JSUnusedAssignment
+    deepStrictEqual(triggeredEvent, new PolicyRemovedEvent([{ id: body.id, attribute, resource }]));
   });
 });

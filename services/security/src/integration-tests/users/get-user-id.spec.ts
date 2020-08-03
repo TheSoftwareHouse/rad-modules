@@ -3,7 +3,7 @@ import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
 import { BadRequestResponses } from "../fixtures/response.fixture";
-import { deepEqualOmit, isNotEmptyString, isUuid } from "../test-utils";
+import { deepEqualOmit, isNotEmptyString, isUuid } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 
 const [userWithAdminPanelAttr, normalUser] = usersFixture;

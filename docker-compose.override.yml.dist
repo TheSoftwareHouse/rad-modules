@@ -70,7 +70,7 @@ services:
 
   keycloak:
     image: jboss/keycloak
-    command: ["-Djboss.socket.binding.port-offset=10"]
+    command: ["-Djboss.socket.binding.port-offset=10", "-Dkeycloak.import=/security-realm.json", "-Dkeycloak.profile.feature.upload_scripts=enabled"]
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: keycloak-postgres
@@ -84,6 +84,8 @@ services:
       - 8090:8090
     networks:
       - app
+    volumes:
+      - ./keycloak/config/security-realm.json:/security-realm.json
     depends_on:
       - keycloak-postgres
 
@@ -93,8 +95,5 @@ services:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
-    volumes:
-      - ./keycloak/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-      - ./keycloak/keycloak-postgres-data.sql:/keycloak-postgres-data.sql
     networks:
       - app

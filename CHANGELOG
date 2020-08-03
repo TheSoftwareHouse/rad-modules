@@ -5,21 +5,11 @@ title: Details
 
 All notable changes to this project will be documented in this file.
 
-## scheduler
-
-### 2020-07-23 v0.0.11
-Added
-- Update job status in db
-
-### 2020-07-23 v0.0.10
-Added
-- Endpoint that returns all services and actions that can be scheduled
-
-### 2020-07-17 v0.0.9
-Added
-- Endpoint that returns list of jobs
-
 ## security
+
+### 2020-07-30 v0.0.59
+Added
+- Notification callback after changes in policies / users / attributes
 
 ### 2020-07-07 v0.0.58
 Added
@@ -88,6 +78,18 @@ Changed
 
 ## scheduler
 
+### 2020-07-23 v0.0.11
+Added
+- Update job status in db
+
+### 2020-07-23 v0.0.10
+Added
+- Endpoint that returns all services and actions that can be scheduled
+
+### 2020-07-17 v0.0.9
+Added
+- Endpoint that returns list of jobs
+
 ### 2020-07-09 v0.0.8
 Changed
 - Change schedule job endpoint request body: add job options and required job namespace
@@ -108,6 +110,12 @@ Changed
 - Update npm dependencies
 
 ## notifications
+
+### 2020-07-29 v0.0.10
+Added
+- `get-notifications` endpoint to fetch notifications information
+Changed
+- Send notification endpoint returns `notificationsIds` in the response body
 
 ### 2020-05-12 v0.0.9
 Changed

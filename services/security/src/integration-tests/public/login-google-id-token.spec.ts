@@ -1,7 +1,7 @@
 import { BAD_REQUEST, FORBIDDEN, OK } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
-import { deepEqualOmit } from "../test-utils";
+import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { decode } from "jsonwebtoken";
 import { GlobalData } from "../bootstrap";
 import {

@@ -3,7 +3,7 @@ import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
 import { GlobalData } from "../bootstrap";
-import { isUuid, isNotEmptyString } from "../test-utils";
+import { isUuid, isNotEmptyString } from "../../../../../shared/test-utils";
 
 const [userWithAdminPanelAttr] = usersFixture;
 

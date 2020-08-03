@@ -1,7 +1,7 @@
 import { CREATED, UNAUTHORIZED } from "http-status-codes";
 import * as request from "supertest";
 import * as assert from "assert";
-import { deepEqualOmit, isUuid, isValidTokenType, isNotEmptyString } from "../test-utils";
+import { deepEqualOmit, isUuid, isValidTokenType, isNotEmptyString } from "../../../../../shared/test-utils";
 import { BadRequestResponses } from "../fixtures/response.fixture";
 import { GlobalData } from "../bootstrap";
 import { appConfig } from "../../config/config";
