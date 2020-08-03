@@ -6,6 +6,10 @@ import { usersFixture } from "../fixtures/users.fixture";
 import { BadRequestResponses } from "../fixtures/response.fixture";
 import { deepEqualOmit, isNotEmptyString, isUuid, isDate } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
+import { Event } from "../../shared/event-dispatcher";
+import * as awilix from "awilix";
+import { deepStrictEqual } from "assert";
+import { UserActivatedEvent } from "../../app/features/users/subscribers/events/user-activated.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -50,7 +54,7 @@ describe("activate-user.action", () => {
     container.register("userActivationConfig", asValue(userActivationConfigOriginal));
   });
 
-  it("Should user's deactivate date should be null after user reactivation ", async () => {
+  it("Should user's deactivate date be null after user reactivation ", async () => {
     const { authClient, container, usersRepository, app } = GLOBAL.bootstrap;
     const userActivationConfigOriginal = container.resolve("userActivationConfig");
     container.register("userActivationConfig", asValue({ isUserActivationNeeded: true, timeToActiveAccountInDays: 3 }));
@@ -111,6 +115,36 @@ describe("activate-user.action", () => {
     }
 
     await usersRepository.update({ username: userWithAdminPanelAttr.username }, { isActive: false });
+
+    container.register("userActivationConfig", asValue(userActivationConfigOriginal));
+  });
+
+  it("Should trigger UserActivated", async () => {
+    let triggeredEvent: Event = { name: "Event", payload: {} };
+    GLOBAL.bootstrap.container.register({
+      httpEventHandler: awilix.asFunction(() => (event: Event) => {
+        triggeredEvent = event;
+      }),
+    });
+    const { authClient, container, usersRepository, app } = GLOBAL.bootstrap;
+    const userActivationConfigOriginal = container.resolve("userActivationConfig");
+    container.register("userActivationConfig", asValue({ isUserActivationNeeded: true, timeToActiveAccountInDays: 3 }));
+    await usersRepository.update({ username: userWithAdminPanelAttr.username }, { isActive: true });
+    const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
+    const response = await request(app)
+      .post("/api/users/add-user")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ username: "NewInActiveUser", password: "randomPassword" })
+      .expect(CREATED);
+    const user = (await usersRepository.findById(response.body.newUserId))!;
+
+    const { body } = await request(app).post(`/api/users/activate-user/${user.activationToken}`).expect(OK);
+
+    assert(isNotEmptyString(body.userId) && isUuid(body.userId));
+    assert(typeof body?.isActive === "boolean");
+    assert(body?.isActive === true);
+
+    deepStrictEqual(triggeredEvent, new UserActivatedEvent({ userId: user!.id, attributes: [] }));
 
     container.register("userActivationConfig", asValue(userActivationConfigOriginal));
   });

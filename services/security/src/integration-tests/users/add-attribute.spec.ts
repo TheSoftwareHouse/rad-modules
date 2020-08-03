@@ -1,11 +1,14 @@
-import { CREATED, OK, BAD_REQUEST, NOT_FOUND, CONFLICT } from "http-status-codes";
+import { BAD_REQUEST, CONFLICT, CREATED, NOT_FOUND, OK } from "http-status-codes";
 import * as request from "supertest";
 import { v4 } from "uuid";
 import { usersFixture } from "../fixtures/users.fixture";
-import { UsersResponses, BadRequestResponses } from "../fixtures/response.fixture";
+import { BadRequestResponses, UsersResponses } from "../fixtures/response.fixture";
 import { GlobalData } from "../bootstrap";
 import { deepEqualOmit } from "../../../../../shared/test-utils";
+import * as awilix from "awilix";
 import { asValue } from "awilix";
+import { strictEqual } from "assert";
+import { UserAttributeAddedEvent } from "../../app/features/users/subscribers/events/user-attribute-added.event";
 
 const [userWithAdminPanelAttr] = usersFixture;
 
@@ -188,6 +191,37 @@ describe("add-attribute.action", () => {
       .send({ userId, attributes })
       .expect(CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.userHasAttributesConflictErrorFactory(attributes)));
+  });
+
+  it("Should trigger UserAttributeAdded", async () => {
+    let triggeredEvent: UserAttributeAddedEvent = { name: "Event", payload: { userId: "", attributes: [] } };
+    GLOBAL.bootstrap.container.register({
+      httpEventHandler: awilix.asFunction(() => (event: UserAttributeAddedEvent) => {
+        triggeredEvent = event;
+      }),
+    });
+    const { authClient, app } = GLOBAL.bootstrap;
+    const newUsername = v4();
+    const attributes = ["attr1", "attr2"];
+    const { accessToken } = await authClient.login(userWithAdminPanelAttr.username, userWithAdminPanelAttr.password);
+    const response = await request(app)
+      .post("/api/users/add-user")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ username: newUsername, password: "randomPassword" })
+      .expect(CREATED);
+
+    await request(app)
+      .post("/api/users/add-attribute")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ userId: response.body.newUserId, attributes })
+      .expect(CREATED);
+
+    // eslint-disable-next-line no-console
+    console.log(triggeredEvent);
+    strictEqual(triggeredEvent?.name, "UserAttributeAddedEvent");
+    strictEqual(triggeredEvent?.payload.userId, response.body.newUserId);
+    strictEqual(triggeredEvent?.payload.attributes[0].name, attributes[0]);
+    strictEqual(triggeredEvent?.payload.attributes[1].name, attributes[1]);
   });
 
   after(() => {

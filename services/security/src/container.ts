@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import { TransportProtocol } from "../../../shared/enums/transport-protocol";
 import { TokensRedisRepository } from "./repositories/tokens.redis.repository";
 import { RedisRepository } from "./repositories/redis.repository";
@@ -5,7 +6,7 @@ import { UsersTypeormRepository } from "./repositories/typeorm/users.typeorm.rep
 import { UsersService } from "./app/features/users/services/users-service";
 import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
-import { AwilixContainer, Lifetime } from "awilix";
+import { AwilixContainer, Lifetime, Resolver } from "awilix";
 import {
   AppConfig,
   appConfigSchema,
@@ -53,6 +54,10 @@ import { getAuthorizationClient } from "./ACL/authorization-client.factory";
 import { KeycloakManager } from "./utils/keycloak/keycloak-manager";
 import { UsersKeycloakRepository } from "./repositories/keycloak/users.keycloak.repository";
 import { PolicyKeycloakRepository } from "./repositories/keycloak/policy.keycloak.repository";
+import { EventDispatcher } from "./shared/event-dispatcher";
+import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subscriber";
+import UserEventSubscriber from "./app/features/users/subscribers/user.subscriber";
+import { httpEventHandler } from "./shared/event-dispatcher/http-event-hander";
 
 // MODELS_IMPORTS
 
@@ -60,8 +65,14 @@ import { PolicyKeycloakRepository } from "./repositories/keycloak/policy.keycloa
 
 const HANDLER_REGEX = /.+Handler$/;
 
+function asArray<T>(resolvers: Resolver<T>[]): Resolver<T[]> {
+  return {
+    resolve: (container: AwilixContainer) => resolvers.map((r: Resolver<T>) => container.build(r)),
+  };
+}
+
 function getRepositories(strategy: AuthenticationStrategy) {
-  switch(strategy) {
+  switch (strategy) {
     case AuthenticationStrategy.Builtin: {
       const usersRepository = awilix.asValue(getCustomRepository(UsersTypeormRepository));
       const policyRepository = awilix.asValue(getCustomRepository(PolicyTypeormRepository));
@@ -98,7 +109,9 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     throw inititalPoliciesValidationResult.error;
   }
 
-  const keycloakAuthenticationClientConfig: KeycloakAuthenticationClientConfig = await import(config.keycloakClientConfig.clientConfigJsonPath);
+  const keycloakAuthenticationClientConfig: KeycloakAuthenticationClientConfig = await import(
+    config.keycloakClientConfig.clientConfigJsonPath
+  );
   const { keycloakManagerConfig } = config.keycloakClientConfig;
 
   const container: AwilixContainer = awilix.createContainer({
@@ -135,9 +148,9 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
 
   const apiKeyGenerator = new RandExp(config.apiKeyRegex);
 
-  const activationTokenUtils = new ActivationTokenUtils({userActivationConfig: config.userActivationConfig});
+  const activationTokenUtils = new ActivationTokenUtils({ userActivationConfig: config.userActivationConfig });
 
-  const { usersRepository, policyRepository } =  getRepositories(config.authenticationStrategy);
+  const { usersRepository, policyRepository } = getRepositories(config.authenticationStrategy);
 
   const initialUsersProperties: InitialUsersProperties = {
     entityManager: new EntityManager(dbConnection),
@@ -155,10 +168,9 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   const initialApiKeys = new InitialApiKeys();
   await initialApiKeys.update(config.initialApiKeys);
 
-
   container.register({
     errorHandler: awilix.asValue(errorHandler),
-    notFoundHandler:awilix.asValue(notFoundHandler),
+    notFoundHandler: awilix.asValue(notFoundHandler),
     dbConnection: awilix.asValue(dbConnection),
     accessTokenConfig: awilix.asValue(config.accessTokenConfig),
     refreshTokenConfig: awilix.asValue(config.refreshTokenConfig),
@@ -170,7 +182,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     userActivationConfig: awilix.asValue(config.userActivationConfig),
     adminPanelPolicies: awilix.asValue(config.adminPanelPolicies),
     redisUrl: awilix.asValue(config.redisUrl),
-    redisPrefix: awilix.asValue(config.redisPrefix),    
+    redisPrefix: awilix.asValue(config.redisPrefix),
     usersRepository,
     attributesRepository: awilix.asValue(getCustomRepository(AttributesTypeormRepository)),
     policyRepository,
@@ -191,13 +203,18 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     apiKeyRegex: awilix.asValue(config.apiKeyRegex),
   });
 
+  container.register({
+    eventDispatcherCallbackUrls: awilix.asValue(config.eventDispatcherCallbackUrls),
+    eventSubscribers: asArray<any>([awilix.asClass(PolicyEventSubscriber), awilix.asClass(UserEventSubscriber)]),
+    eventDispatcher: awilix.asClass(EventDispatcher).classic().singleton(),
+    httpEventHandler: awilix.asFunction(httpEventHandler),
+    myFetch: awilix.asFunction(() => fetch),
+  });
+
   const handlersScope = container.createScope();
 
   container.register({
-    commandBus: awilix
-      .asClass(CommandBus)
-      .classic()
-      .singleton(),
+    commandBus: awilix.asClass(CommandBus).classic().singleton(),
   });
 
   handlersScope.loadModules(["src/**/*.handler.ts", "src/**/*.handler.js"], {
@@ -209,8 +226,8 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   });
 
   const handlers = Object.keys(handlersScope.registrations)
-    .filter(key => key.match(HANDLER_REGEX))
-    .map(key => handlersScope.resolve(key));
+    .filter((key) => key.match(HANDLER_REGEX))
+    .map((key) => handlersScope.resolve(key));
 
   container.register({
     handlers: awilix.asValue(handlers),
@@ -233,7 +250,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
 
   container.register({
     authenticationClient: awilix.asClass(AuthenticationClientClass),
-    requireAccess:  awilix.asFunction(requireAccess),
+    requireAccess: awilix.asFunction(requireAccess),
     authorizationClient: awilix.asClass(AuthorizationClientClass),
     accessTokenHandler: awilix.asValue(accessTokenHandler),
     xApiKeyHandler: awilix.asFunction(xApiKeyHandler),
@@ -259,7 +276,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     jwtUtils: awilix.asClass(JwtUtils).singleton(),
     xSecurityTokenUtils: awilix.asClass(XSecurityTokenUtils).singleton(),
     activationTokenUtils: awilix.asClass(ActivationTokenUtils).singleton(),
-  });  
+  });
 
   container.register({
     passwordGenerator: awilix.asValue(passwordGenerator),

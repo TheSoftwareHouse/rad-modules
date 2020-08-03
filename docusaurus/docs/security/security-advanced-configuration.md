@@ -307,6 +307,93 @@ COPY templates /app/services/security/src/utils/mailer/templates
 COPY init-data-volume /app/services/security/init-data-volume
 ```
 
+## Notification about changes in policies and users
+
+Each time the policy is added or removed you can be informed about it. Also changes in users (adding/removing attributes, adding/removing users, changing activation state of the user) triggers notification.
+The payload of notification is object implementing `Event` interface (defined in `shared/event-dispatcher/index.ts`).
+Curently the module can emit the following events:
+- PolicyAddedEvent:
+```
+class PolicyAddedEvent {
+  name: string;
+  payload: PolicyEventPayload;
+}
+```
+- PolicyRemovedEvent:
+```
+class PolicyRemovedEvent {
+  name: string;
+  payload: PolicyEventPayload[];
+}
+```
+- UserAddedEvent:
+```
+class UserAddedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserRemovedEvent:
+```
+class UserRemovedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserActivatedEvent:
+```
+class UserActivatedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserDeactivatedEvent:
+```
+class UserDeactivatedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserAttributeAddedEvent
+```
+class UserAttributeAddedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+- UserAttributeRemovedEvent
+```
+class UserAttributeRemovedEvent  {
+  name: string;
+  payload: UserEventPayload;
+}
+```
+The types of payload are defines as:
+- PolicyEventPayload:
+```
+interface PolicyEventPayload {
+  id: string;
+  attribute: string;
+  resource: string;
+}
+```
+- UserEventPayload:
+```
+interface UserEventPayload {
+  userId: string;
+  attributes: UserEventAttributePayload[];
+}
+```
+- UserEventAttributePayload:
+```
+interface UserEventAttributePayload {
+  id: string;
+  name: string;
+}
+```
+
+You can configure callback URLs (one or more) of the notification by setting environment variable `EVENT_DISPATCHER_CALLBACK_URLS`. By default this variable is empty so no notifications are sent.
+
 ## Configuration setting that you can overwrite via environment variables
 
 API_URL:
@@ -735,3 +822,8 @@ KEYCLOAK_SECURITY_CLIENT_ID
 
 - **_Description_**: Keycloak OpenID client ID
 - **_Default_**: `"6c3465b1-2674-4704-a940-c41194dbd95"`
+
+EVENT_DISPATCHER_CALLBACK_URLS
+
+- **_Description_**: Callback URLs of notifications that are sent after changes in policies and users, comma separated.
+- **_Default_**: `""`
