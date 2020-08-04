@@ -49,12 +49,8 @@ function getEntities(connection: Connection): entity[] {
 }
 
 async function cleanAll(connection: Connection, entities: entity[]) {
-  try {
-    const query = `TRUNCATE TABLE ${entities.map((entity: any) => `"${entity.tableName}"`).join(",")} CASCADE;`;
-    return connection.query(query);
-  } catch (error) {
-    throw new Error(`ERROR: Cleaning test db: ${error}`);
-  }
+  const query = `TRUNCATE TABLE ${entities.map((entity: any) => `"${entity.tableName}"`).join(",")} CASCADE;`;
+  return connection.query(query);
 }
 
 export const clearDb = async (connection: Connection) => {
