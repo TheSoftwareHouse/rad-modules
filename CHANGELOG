@@ -78,6 +78,10 @@ Changed
 
 ## scheduler
 
+### 2020-08-04 v0.0.12
+Added
+- Synchronize Postgres jobs with Redis jobs after Redis client connects
+
 ### 2020-07-23 v0.0.11
 Added
 - Update job status in db

@@ -4,20 +4,20 @@ import * as Bull from "bull";
 import { SchedulerConfig } from "../../config/config";
 import { jobOptions, JobStatus } from "../../app/features/scheduling/models/job.model";
 import { Job } from "bull";
+import { BullQueueDb } from "../bull-db";
 
 type BullSchedulerProps = {
   schedulerConfig: SchedulerConfig;
-  redisUrl: string;
+  dbBull: BullQueueDb;
 };
 
 export class BullScheduler implements Scheduler {
   private queue: Bull.Queue<any>;
 
   constructor(private dependencies: BullSchedulerProps) {
-    const { queueName } = this.dependencies.schedulerConfig;
-    const { redisUrl } = this.dependencies;
+    const { dbBull } = this.dependencies;
 
-    this.queue = new Bull(queueName, redisUrl);
+    this.queue = dbBull.getQueue();
   }
 
   private getCronOptions(options: jobOptions): Bull.CronRepeatOptions {
