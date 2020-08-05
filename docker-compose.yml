@@ -129,6 +129,7 @@ services:
     environment:
       OAUTH_ENABLED_PROVIDERS: "google,facebook"
       OAUTH_CREATE_USER_ACCOUNT: "true"
+      DB_LOGGING: "false"
     depends_on:
       - redis
       - postgres
@@ -141,6 +142,8 @@ services:
     image: mailer-service-prod:latest
     working_dir: /app/build/services/mailer    
     command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
+    environment:
+      DB_LOGGING: "false"
     depends_on:
       - redis
     networks:
@@ -150,6 +153,8 @@ services:
     image: notifications-service-prod:latest
     working_dir: /app/build/services/notifications
     command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
+    environment:
+      DB_LOGGING: "false"
     depends_on:
       - postgres
     networks:
@@ -162,6 +167,7 @@ services:
     hostname: gateway
     environment:
       API_URL: "http://security-prod:50050"
+      DB_LOGGING: "false"
     depends_on:
       - security-prod
     networks:
@@ -174,6 +180,7 @@ services:
     hostname: pdf
     environment:
       API_URL: "http://pdf:50050"
+      DB_LOGGING: "false"
     networks:
       app:
         aliases:
@@ -183,6 +190,8 @@ services:
     image: scheduler-service-prod:latest
     working_dir: /app/build/services/scheduler
     command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
+    environment:      
+      DB_LOGGING: "false"
     depends_on:
       - redis
       - postgres

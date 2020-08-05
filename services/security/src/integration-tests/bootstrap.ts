@@ -1,19 +1,21 @@
 import "mocha";
 import { AwilixContainer } from "awilix";
 import { createConnection, Connection } from "typeorm";
-import { AppConfig, appConfig, SuperAdminConfig } from "../config/config";
+import { appConfig, SuperAdminConfig } from "../config/config";
 import { createContainer } from "../container";
-import { InitialUsersProperties, InitialUsers, InitialUserData } from "../init/initial-users";
+import { InitialUsersProperties } from "../init/initial-users";
 import { EntityManager } from "typeorm";
 import * as RandExp from "randexp";
 import { UsersTypeormRepository } from "../repositories/typeorm/users.typeorm.repository";
 import { ActivationTokenUtils } from "../tokens/activation-token-utils";
 import { InitialPolicy, InitialPolicyData } from "../init/initial-policies";
-import { usersFixture } from "./fixtures/users.fixture";
+import { usersFixture, hashedPasswords, testPasswordsSalt } from "./fixtures/users.fixture";
 import { policiesFixture } from "./fixtures/policies.fixture";
 import { AuthenticationClient } from "../app/features/users/strategies/authentication/authentication-client.types";
 import { PolicyRepository } from "../repositories/policy.repository";
 import { Application } from "../app/application.types";
+import { createUserModel } from "../app/features/users/models/user.model";
+import { AttributeModel } from "../app/features/users/models/attribute.model";
 
 export interface BootstrapData {
   app: Application;
@@ -47,16 +49,8 @@ function getEntities(connection: Connection): entity[] {
 }
 
 async function cleanAll(connection: Connection, entities: entity[]) {
-  try {
-    const actionsToCleanRepositories = entities.map((entity) => {
-      const repository = connection.getRepository(entity.name);
-      return repository.query(`TRUNCATE TABLE "${entity.tableName}" CASCADE;`);
-    });
-
-    return Promise.all(actionsToCleanRepositories);
-  } catch (error) {
-    throw new Error(`ERROR: Cleaning test db: ${error}`);
-  }
+  const query = `TRUNCATE TABLE ${entities.map((entity: any) => `"${entity.tableName}"`).join(",")} CASCADE;`;
+  return connection.query(query);
 }
 
 export const clearDb = async (connection: Connection) => {
@@ -112,8 +106,8 @@ beforeEach("Clear DB and init users and policies", async function () {
   const { dbConnection } = global.getBootstrap();
   if (dbConnection) {
     await clearDb(dbConnection);
-    await InitiateTestUsers();
     await InitiateTestPolicies();
+    await InitiateTestUsers();
   }
 });
 
@@ -131,6 +125,23 @@ async function InitiateTestPolicies() {
 
 async function InitiateTestUsers() {
   const { initialUsersProperties } = global.getBootstrap();
-  const initialUsers = new InitialUsers(initialUsersProperties);
-  return initialUsers.update(usersFixture as InitialUserData[]);
+  const users = usersFixture.map((userData) => {
+    const attributes = userData.attributes.map((attribute) => AttributeModel.create({ name: attribute }));
+
+    return createUserModel({
+      username: userData.username,
+      password: hashedPasswords[userData.password] || "No password in hashedPasswords",
+      passwordSalt: testPasswordsSalt,
+      attributes,
+      isActive: true,
+      activationToken: null,
+      activationTokenExpireDate: null,
+    });
+  });
+
+  const resolvedUsers = await Promise.all(users);
+
+  return initialUsersProperties.entityManager.transaction(async (transactionalEntityManager) => {
+    await transactionalEntityManager.save(resolvedUsers);
+  });
 }
