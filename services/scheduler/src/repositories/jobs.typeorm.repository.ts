@@ -1,6 +1,6 @@
 import { JobModel, JobStatus } from "../app/features/scheduling/models/job.model";
 import { JobsRepository } from "./jobs.repository";
-import { EntityRepository, Repository } from "typeorm";
+import { EntityRepository, In, Repository } from "typeorm";
 import { createTypeORMFilter, QueryObject } from "./helpers/query-filter";
 import { ConflictError } from "../errors/conflict.error";
 
@@ -48,5 +48,9 @@ export class JobsTypeormRepository extends Repository<JobModel> implements JobsR
 
   public async getJob(job: Partial<JobModel>) {
     return this.findOne({ where: job });
+  }
+
+  public async getActiveJobs(): Promise<JobModel[]> {
+    return this.find({ where: { status: In([JobStatus.Active, JobStatus.New]) } });
   }
 }

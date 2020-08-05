@@ -20,6 +20,7 @@ import { requestLogger } from "./middleware/request-logger";
 import { createConnection, getCustomRepository } from "typeorm";
 import { JobsTypeormRepository } from "./repositories/jobs.typeorm.repository";
 import { ManifestService } from "./scheduler";
+import { BullQueueDb } from "./scheduler/bull-db";
 // ROUTING_IMPORTS
 
 const HANDLER_REGEX = /.+Handler$/;
@@ -66,6 +67,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     schedulerConfig: awilix.asValue(config.schedulerConfig),
     scheduler: awilix.asClass(BullScheduler).singleton(),
     schedulerConsumer: awilix.asClass(BullSchedulerConsumer).singleton(),
+    dbBull: awilix.asClass(BullQueueDb).singleton(),
   });
 
   container.register({

@@ -2,11 +2,11 @@ import { TransportProtocol } from "../../../../../shared/enums/transport-protoco
 import { ProxyCall } from "../proxy-call/proxy-call";
 import { SchedulerConsumer } from "./consumer.types";
 import { SchedulerConfig } from "../../config/config";
-import * as Bull from "bull";
 import { Job } from "bull";
 import { Logger } from "winston";
 import { JobsRepository } from "../../repositories/jobs.repository";
 import { JobModel, JobStatus } from "../../app/features/scheduling/models/job.model";
+import { BullQueueDb } from "../bull-db";
 
 type BullSchedulerConsumerProps = {
   schedulerConfig: SchedulerConfig;
@@ -14,6 +14,7 @@ type BullSchedulerConsumerProps = {
   proxyCall: ProxyCall;
   logger: Logger;
   jobsRepository: JobsRepository;
+  dbBull: BullQueueDb;
 };
 
 export class BullSchedulerConsumer implements SchedulerConsumer {
@@ -27,10 +28,9 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
   }
 
   public startListening() {
-    const { queueName } = this.dependencies.schedulerConfig;
-    const { redisUrl, proxyCall, logger, jobsRepository } = this.dependencies;
+    const { proxyCall, logger, jobsRepository, dbBull } = this.dependencies;
 
-    const queue = new Bull(queueName, redisUrl);
+    const queue = dbBull.getQueue();
 
     queue.process(async (message) => {
       if (this.isOtherServiceJob(message.data)) {
@@ -55,7 +55,8 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
 
         logger.info(`A job '${name}' successfully completed with a result: ${result}`);
         if (job.finishedOn) {
-          await this.updateJob(name, job?.opts?.repeat ? {} : { status: JobStatus.Completed });
+          const _job = job as any;
+          await this.updateJob(name, _job?.opts?.cron?.length ? {} : { status: JobStatus.Completed });
         }
       })
       .on("failed", async (job: Job, error: Error) => {
@@ -63,7 +64,8 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
 
         logger.error(`A job '${name}' failed with reason: ${error.message}`);
         if (job.finishedOn) {
-          await this.updateJob(name, job?.opts?.repeat ? {} : { status: JobStatus.Failed });
+          const _job = job as any;
+          await this.updateJob(name, _job?.opts?.cron?.length ? {} : { status: JobStatus.Failed });
         }
       })
       .on("removed", async (job: Job) => {
