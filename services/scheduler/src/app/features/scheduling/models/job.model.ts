@@ -1,4 +1,5 @@
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { JobType } from "../../../../scheduler";
 
 type jsonB = { [key: string]: any };
 
@@ -11,7 +12,7 @@ export enum JobStatus {
   Deleted = "deleted",
 }
 
-export interface jobOptions {
+export interface JobOptions {
   priority?: number;
   delay?: number;
   attempts?: number;
@@ -31,11 +32,10 @@ export interface jobOptions {
 interface JobModelProps {
   id: string;
   name: string;
-  service: string;
-  action: string;
+  type: JobType;
   cron?: string;
   status: JobStatus;
-  jobOptions?: jobOptions;
+  jobOptions?: JobOptions;
   payload?: jsonB;
 }
 
@@ -56,17 +56,14 @@ export class JobModel {
   @Column()
   name: string;
 
-  @Column()
-  service: string;
-
-  @Column()
-  action: string;
+  @Column({ enum: JobType, nullable: false })
+  type: JobType;
 
   @Column("enum", { enum: JobStatus, nullable: false, default: JobStatus.New })
   status: JobStatus;
 
   @Column({ type: "jsonb", nullable: true })
-  jobOptions?: jobOptions;
+  jobOptions?: JobOptions;
 
   @Column({ type: "jsonb", nullable: true })
   payload?: jsonB;

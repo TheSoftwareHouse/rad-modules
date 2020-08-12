@@ -3,14 +3,12 @@ import { BullScheduler } from "./scheduler/producer/bull.scheduler";
 import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
 import { AwilixContainer, Lifetime } from "awilix";
-import { AppConfig, manifestSchema } from "./config/config";
+import { AppConfig } from "./config/config";
 import { createRouter } from "./app/applications/http/router";
 import { CommandBus } from "../../../shared/command-bus";
 import { createApp } from "./app/application-factories/create-http-app";
 import { errorHandler } from "./middleware/error-handler";
 import { scheduleRouting } from "./app/features/scheduling/http/routing";
-import * as manifest from "./config/manifest.json";
-import * as fs from "fs";
 import { TransportProtocol } from "../../../shared/enums/transport-protocol";
 import { proxyCall } from "./scheduler/proxy-call/proxy-call";
 import { appConfigSchema } from "./config/config";
@@ -19,19 +17,10 @@ import { loggerConfiguration } from "./utils/logger-configuration";
 import { requestLogger } from "./middleware/request-logger";
 import { createConnection, getCustomRepository } from "typeorm";
 import { JobsTypeormRepository } from "./repositories/jobs.typeorm.repository";
-import { ManifestService } from "./scheduler";
 import { BullQueueDb } from "./scheduler/bull-db";
 // ROUTING_IMPORTS
 
 const HANDLER_REGEX = /.+Handler$/;
-
-const getMergedManifest = async (manifestPath: string, manifestServices: ManifestService[]) => {
-  if (fs.existsSync(manifestPath)) {
-    const externalManifest = await import(manifestPath);
-    return [...externalManifest, ...manifestServices];
-  }
-  return manifestServices;
-};
 
 export async function createContainer(config: AppConfig): Promise<AwilixContainer> {
   const { error } = appConfigSchema.validate(config);
@@ -73,13 +62,6 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   container.register({
     jobsRepository: awilix.asValue(getCustomRepository(JobsTypeormRepository)),
   });
-
-  const mergedManifest = await getMergedManifest(config.externalManifestPath, manifest as ManifestService[]);
-  const manifestValidationResult = manifestSchema.validate(mergedManifest);
-  if (manifestValidationResult.error) {
-    throw manifestValidationResult.error;
-  }
-  container.register({ manifest: awilix.asValue(mergedManifest) });
 
   container.register({
     commandBus: awilix.asClass(CommandBus).classic().singleton(),

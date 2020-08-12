@@ -59,8 +59,6 @@ services:
     image: tshio/scheduler:latest
     working_dir: /app/build/services/scheduler
     command: "api"
-    volumes:
-      - ./cron/manifest.json:/app/build/services/scheduler/src/config/external-manifest.json
     hostname: scheduler
     ports:
       - 50070:50050

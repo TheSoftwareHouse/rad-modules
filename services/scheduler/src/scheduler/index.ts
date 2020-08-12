@@ -1,13 +1,30 @@
-export type ManifestServiceAction = {
-  type: string;
-  http: {
-    uri: string;
-    method: string;
-  };
-};
+export type ObjectType = { [key: string]: string };
 
-export type ManifestService = {
+export enum JobType {
+  HTTP = "http",
+}
+
+export enum HttpMethod {
+  GET = "GET",
+  HEAD = "HEAD",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+  CONNECT = "CONNECT",
+  OPTIONS = "OPTIONS",
+  TRACE = "TRACE",
+  PATCH = "PATCH",
+}
+
+export type HttpPayload = {
+  method?: HttpMethod;
   url: string;
-  name: string;
-  actions: ManifestServiceAction[];
+  headers?: string[][] | ObjectType;
+  body?: string | ObjectType | ObjectType[];
+  options?: {
+    compress?: boolean;
+    follow?: number;
+    size?: number;
+    timeout?: number;
+  };
 };

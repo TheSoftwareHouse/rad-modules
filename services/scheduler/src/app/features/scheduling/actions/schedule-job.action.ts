@@ -3,6 +3,7 @@ import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "../../../../../../../shared/command-bus";
 import { ScheduleJobCommand } from "../commands/schedule-job.command";
 import { CREATED } from "http-status-codes";
+import { HttpMethod, JobType } from "../../../../scheduler";
 
 export interface ScheduleJobActionProps {
   commandBus: CommandBus;
@@ -16,13 +17,23 @@ export const scheduleJobActionValidation = celebrate(
   {
     body: Joi.object({
       name: Joi.string().required(),
-      action: Joi.string().required(),
-      service: Joi.string().required(),
+      type: Joi.string()
+        .valid(...Object.values(JobType))
+        .required(),
       payload: Joi.object({
+        method: Joi.string()
+          .valid(...Object.keys(HttpMethod))
+          .optional(),
+        url: Joi.string().required(),
         headers: Joi.object().pattern(/.*/, [Joi.string()]).optional(),
         body: Joi.object().unknown().optional(),
-        queryParameters: Joi.object().unknown().optional(),
-      }),
+        options: Joi.object({
+          compress: Joi.boolean().optional(),
+          follow: Joi.number().min(0).optional(),
+          size: Joi.number().min(0).optional(),
+          timeout: Joi.number().min(0).optional(),
+        }).optional(),
+      }).required(),
       jobOptions: Joi.object({
         priority: Joi.number().optional(),
         delay: Joi.number().optional(),
@@ -66,17 +77,59 @@ export const scheduleJobActionValidation = celebrate(
  *                type: string
  *                description: The job name.
  *                required: true
- *              service:
+ *              type:
  *                type: string
- *                description: The service name with scheduler will call.
- *                required: true
- *              action:
- *                type: string
- *                description: The endpoint action of service with scheduler will call.
+ *                enum: [http]
+ *                description: Job type
  *                required: true
  *              payload:
  *                type: object
- *                required: false
+ *                required: true
+ *                properties:
+ *                  method:
+ *                    type: string
+ *                    enum: [GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH]
+ *                    required: false
+ *                  url:
+ *                    type: string
+ *                    description: Request URL string
+ *                    example: "http://example.com?foo=bar"
+ *                    required: true
+ *                  headers:
+ *                    type:
+ *                      - array
+ *                      - object
+ *                    required: false
+ *                  body:
+ *                    type:
+ *                      - string
+ *                      - object
+ *                      - array
+ *                    required: false
+ *                  options:
+ *                    type: object
+ *                    required: false
+ *                    properties:
+ *                      compress:
+ *                        type: boolean
+ *                        default: true
+ *                        description: Support gzip/deflate content encoding. false to disable
+ *                        required: false
+ *                      follow:
+ *                        type: number
+ *                        default: 20
+ *                        description: Maximum redirect count. 0 to not follow redirect
+ *                        required: false
+ *                      size:
+ *                        type: number
+ *                        default: 0
+ *                        description: Maximum response body size in bytes. 0 to disable
+ *                        required: false
+ *                      timeout:
+ *                        type: number
+ *                        default: 0
+ *                        description: Request/response timeout in ms, it resets on redirect. 0 to disable (OS limit applies)
+ *                        required: false
  *              jobOptions:
  *                type: object
  *                example: { "cron":"0 22 * * 1"}
@@ -188,8 +241,7 @@ export const scheduleJobAction = ({ commandBus }: ScheduleJobActionProps) => (
     .execute(
       new ScheduleJobCommand({
         name: req.body.name,
-        action: req.body.action,
-        service: req.body.service,
+        type: req.body.type,
         payload: req.body.payload,
         jobOptions: req.body.jobOptions,
         startImmediately: req.body.startImmediately ?? true,

@@ -1,4 +1,3 @@
-import { TransportProtocol } from "../../../../../shared/enums/transport-protocol";
 import { ProxyCall } from "../proxy-call/proxy-call";
 import { SchedulerConsumer } from "./consumer.types";
 import { SchedulerConfig } from "../../config/config";
@@ -32,12 +31,8 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
 
     const queue = dbBull.getQueue();
 
-    queue.process(async (message) => {
-      if (this.isOtherServiceJob(message.data)) {
-        const { action, service, payload } = message.data;
-        return proxyCall(action, service, payload, TransportProtocol.HTTP);
-      }
-      logger.error("Failed to handle a job - action or service are missing.");
+    queue.process(async (job: Job) => {
+      await proxyCall(job.data).catch((error) => logger.error("Failed to handle a job: ", error.message));
       return Promise.resolve();
     });
     queue
@@ -50,7 +45,7 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
         logger.info(`A job '${name}' has started`);
         await this.updateJob(name, { status: JobStatus.Active });
       })
-      .on("completed", async (job, result: string) => {
+      .on("completed", async (job: Job, result: string) => {
         const name = job?.data?.name;
 
         logger.info(`A job '${name}' successfully completed with a result: ${result}`);
@@ -77,9 +72,5 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
           await this.updateJob(name, { status: JobStatus.Deleted });
         }
       });
-  }
-
-  private isOtherServiceJob(job: any) {
-    return job && job.action && job.service;
   }
 }
