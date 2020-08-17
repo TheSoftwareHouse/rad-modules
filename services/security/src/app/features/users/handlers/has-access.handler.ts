@@ -13,11 +13,8 @@ export default class HasAccessHandler implements Handler<HasAccessCommand> {
 
   async execute(command: HasAccessCommand) {
     const { authorizationClient } = this.dependencies;
-    const { accessToken, resource } = command.payload;
-    const hasAccess = await authorizationClient.hasAccess(accessToken.getToken(), resource);
+    const { accessToken, resources } = command.payload;
 
-    return {
-      hasAccess,
-    };
+    return authorizationClient.hasAccess(accessToken.getToken(), resources);
   }
 }

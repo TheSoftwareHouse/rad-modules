@@ -24,6 +24,15 @@ export class PolicyTypeormRepository extends Repository<PolicyModel> implements 
     return super.find({ where: params, order: { resource: "ASC", id: "DESC" } });
   }
 
+  public async findByResourcesAndAttributes(resources: string[], attributes: string[]) {
+    return super.find({
+      where: {
+        attribute: In([null, ...attributes]),
+        resource: In([null, ...resources]),
+      },
+    });
+  }
+
   public async delete(ids: string[]): Promise<any> {
     return super.delete(ids);
   }

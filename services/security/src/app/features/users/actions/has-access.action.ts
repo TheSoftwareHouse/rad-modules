@@ -11,8 +11,8 @@ export interface HasAccessActionProps {
 
 export const hasAccessActionValidation = celebrate(
   {
-    query: {
-      resource: Joi.string().required(),
+    body: {
+      resources: Joi.string().required(),
     },
   },
   { abortEarly: false },
@@ -36,8 +36,8 @@ export const hasAccessActionValidation = celebrate(
  *       - bearerAuth: []
  *     summary: Verifies whether user has access to a specific resource.
  *     parameters:
- *       - in: query
- *         name: resource
+ *       - in: body
+ *         name: resources
  *         schema:
  *            type: string
  *         required: true
@@ -53,6 +53,11 @@ export const hasAccessActionValidation = celebrate(
  *                 hasAccess:
  *                   type: boolean
  *                   example: false
+ *                 forbidden:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["resource1"]
  *       400:
  *         description: Bad Request
  *         content:
@@ -81,7 +86,7 @@ export const hasAccessAction = ({ commandBus }: HasAccessActionProps) => (
     .execute(
       new HasAccessCommand({
         accessToken: BearerToken.fromHeader(req.headers.authorization),
-        resource: req.query.resource as string,
+        resources: req.body.resources as string[],
       }),
     )
     .then((commandResult) => {

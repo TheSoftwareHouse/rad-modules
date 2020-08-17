@@ -38,7 +38,7 @@ export const requireAccess = ({
       throw new UnathorizedError("Unauthorized");
     }
 
-    const hasAccess = await authorizationClient.hasAccess(accessToken, accessAttribute);
+    const { hasAccess } = await authorizationClient.hasAccess(accessToken, [accessAttribute]);
 
     if (!hasAccess) {
       throw new UnathorizedError("User has no access");
