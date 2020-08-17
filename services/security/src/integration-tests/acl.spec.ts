@@ -77,6 +77,13 @@ describe("Acl tests", () => {
       .send({ resources: [TEST_RESOURCE_VALUE] })
       .expect("Content-Type", /json/)
       .expect(OK, AclResponses.hasAccess);
+
+    return request(app)
+      .get("/api/users/has-access")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ resources: ["user-operation/add-user", "user-operation/edit-user", "user-operation/reset-password"] })
+      .expect("Content-Type", /json/)
+      .expect(OK, AclResponses.hasAccess);
   });
 
   it("Should return 401 (UNAUTHORIZED) when invalid token is provided", async () => {
