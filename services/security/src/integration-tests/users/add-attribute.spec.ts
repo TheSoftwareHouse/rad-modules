@@ -53,7 +53,7 @@ describe("add-attribute.action", () => {
       .get(`/api/users/has-attribute?attributes=${attributes.join(",")}`)
       .set("Authorization", `Bearer ${newUserAccessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK, UsersResponses.hasAttributeResponseFactory(attributes));
+      .expect(OK, UsersResponses.hasAttributeResponseFactory());
   });
 
   it("Should return BAD_REQUEST if empty array of attributes.", async () => {

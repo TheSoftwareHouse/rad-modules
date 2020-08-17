@@ -55,6 +55,8 @@ export class UsersKeycloakRepository implements UsersRepository {
     return user ? this.mapKeycloakUser(user) : undefined;
   }
 
+  public findByIdWithoutAttributes = this.findById;
+
   public async findByActivationToken(activationToken: string) {
     const { keycloakManager } = this.dependencies;
     const user = await keycloakManager.findUserByActivationToken(activationToken);

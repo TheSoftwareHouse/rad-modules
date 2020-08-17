@@ -1,7 +1,7 @@
 import { AlreadyExistsError } from "../../../../errors/already-exists.error";
 import { hashValue, hashWithSha1, hashWithSha512 } from "../../../../../../../shared/crypto";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
-import { createUserModel, getAlreadyExistsAttributes, UserModelGeneric } from "../models/user.model";
+import { createUserModel, UserModel, UserModelGeneric } from "../models/user.model";
 import { AttributeModel, AttributeModelGeneric } from "../models/attribute.model";
 import { ActivationTokenUtils } from "../../../../tokens/activation-token-utils";
 import * as RandExp from "randexp";
@@ -10,9 +10,11 @@ import { SuperAdminConfig } from "../../../../config/config";
 import { ConflictError } from "../../../../errors/conflict.error";
 import { GetUsersCommandPayload } from "../commands/get-users.command";
 import { GetUsersByResourceCommandPayload } from "../commands/get-users-by-resource.command";
+import { AttributesTypeormRepository } from "../../../../repositories/typeorm/attributes.typeorm.repository";
 
 export interface UserServiceProps {
   usersRepository: UsersRepository;
+  attributesRepository: AttributesTypeormRepository;
   activationTokenUtils: ActivationTokenUtils;
   passwordGenerator: RandExp;
   superAdminUser: SuperAdminConfig;
@@ -98,18 +100,17 @@ export class UsersService {
   }
 
   public async addAttributes(user: UserModelGeneric, attributes: string[]) {
-    const { usersRepository } = this.dependencies;
-    const alreadyExistsAttributes = getAlreadyExistsAttributes(user, attributes);
+    const { usersRepository, attributesRepository } = this.dependencies;
+    const alreadyExistsAttributes = await attributesRepository.doesUserAlreadyHaveAttributes({ user, attributes });
     if (alreadyExistsAttributes && alreadyExistsAttributes.length) {
       throw new AlreadyExistsError(`User already has attributes: ${alreadyExistsAttributes.join(", ")}`);
     }
-    const userAttributeNames = user.attributes.map((attribute) => attribute.name);
-    const attributesToSave = attributes
-      .filter((attribute) => !userAttributeNames.includes(attribute))
-      .map((attribute) => AttributeModel.create({ name: attribute }));
-    user.attributes.push(...attributesToSave);
+    const attributesToSave = attributes.map((attribute) =>
+      AttributeModel.create({ name: attribute, user: user as UserModel }),
+    );
+    await attributesRepository.save(attributesToSave);
 
-    return usersRepository.save(user);
+    return usersRepository.findById(user.id!);
   }
 
   public generateResetPasswordToken(username: string) {

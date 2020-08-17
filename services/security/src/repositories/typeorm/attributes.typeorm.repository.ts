@@ -1,7 +1,8 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, In } from "typeorm";
 import { createTypeORMFilter, QueryObject } from "../helpers/query-filter";
 import { AttributeModel } from "../../app/features/users/models/attribute.model";
 import { AttributesRepository } from "../attributes.repostiory";
+import { UserModelGeneric } from "../../app/features/users/models/user.model";
 
 @EntityRepository(AttributeModel)
 export class AttributesTypeormRepository extends Repository<AttributeModel> implements AttributesRepository {
@@ -23,5 +24,15 @@ export class AttributesTypeormRepository extends Repository<AttributeModel> impl
 
   public delete(ids: string[]) {
     return super.delete(ids);
+  }
+
+  public async doesUserAlreadyHaveAttributes({ user, attributes }: { user: UserModelGeneric; attributes: string[] }) {
+    const attributesFound = await this.find({
+      where: {
+        user,
+        name: In(attributes),
+      },
+    });
+    return attributesFound.map(({ name }) => name);
   }
 }

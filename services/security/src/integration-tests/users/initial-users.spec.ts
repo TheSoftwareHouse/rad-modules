@@ -99,13 +99,9 @@ describe("Initial users tests", () => {
           .set("Authorization", `Bearer ${accessToken}`)
           .expect(OK)
           .then((hasAttributeResponse) => {
-            const { hasAllAttributes, ownedAttributes } = hasAttributeResponse.body;
+            const { hasAllAttributes } = hasAttributeResponse.body;
 
             assert.strictEqual(hasAllAttributes, true);
-            assert.deepStrictEqual(
-              ownedAttributes.sort(),
-              Array.from(new Set([...usersData1[0].attributes, ...usersData2[0].attributes])).sort(),
-            );
           });
       });
   });

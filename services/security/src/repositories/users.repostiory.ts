@@ -6,6 +6,7 @@ export interface UsersRepository {
   findByUsername: (username: string) => Promise<UserModelGeneric | undefined>;
   findByActivationToken: (activationToken: string) => Promise<UserModelGeneric | undefined>;
   findById: (id: string) => Promise<UserModelGeneric | undefined>;
+  findByIdWithoutAttributes: (id: string) => Promise<UserModelGeneric | undefined>;
   getAllUsersDisplayModel: () => Promise<UserModelGeneric[] | undefined[]>;
   getUsers: (
     queryObject: QueryObject,

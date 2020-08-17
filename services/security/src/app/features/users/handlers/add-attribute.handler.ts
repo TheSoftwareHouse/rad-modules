@@ -21,13 +21,18 @@ export default class AddAttributeHandler implements Handler<AddAttributeCommand>
     const { usersRepository, usersService } = this.dependencies;
     const { attributes, userId } = command.payload;
 
-    const user = await usersRepository.findById(userId);
+    const user = await usersRepository.findByIdWithoutAttributes(userId);
 
     if (!user) {
       throw new NotFoundError(`User with id ${userId} doesn't exist.`);
     }
 
     const savedUser = await usersService.addAttributes(user, attributes);
+
+    if (!savedUser) {
+      throw new NotFoundError(`User with id ${userId} doesn't exist.`);
+    }
+
     await this.dependencies.eventDispatcher.dispatch(
       new UserAttributeAddedEvent({
         userId: savedUser.id!,
