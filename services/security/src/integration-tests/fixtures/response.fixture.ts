@@ -4,8 +4,8 @@ const AclResponses = Object.freeze({
 });
 
 const UsersResponses = Object.freeze({
-  hasAttributeResponseFactory: (attributes: string[]) => ({ hasAllAttributes: true, ownedAttributes: attributes }),
-  hasNotAnyAttribute: { hasAllAttributes: false, ownedAttributes: [] },
+  hasAttributeResponseFactory: () => ({ hasAllAttributes: true }),
+  hasNotAnyAttribute: { hasAllAttributes: false },
   passwordChanged: { passwordChanged: true },
   hasAccess: { hasAccess: true },
   isAuthenticated: {

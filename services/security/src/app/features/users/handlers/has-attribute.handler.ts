@@ -8,9 +8,11 @@ import { JwtUtils } from "../../../../tokens/jwt-utils";
 import { TokenType } from "../../../../tokens/jwt-payload";
 import { AuthorizationClient } from "../../../../ACL/authorization-client.types";
 import { UserModelGeneric } from "../models/user.model";
+import { AttributesTypeormRepository } from "../../../../repositories/typeorm/attributes.typeorm.repository";
 
 export interface AddAttributeHandlerProps {
   usersRepository: UsersRepository;
+  attributesRepository: AttributesTypeormRepository;
   accessTokenConfig: TokenConfig;
   jwtUtils: JwtUtils;
   authorizationClient: AuthorizationClient;
@@ -49,7 +51,6 @@ export default class HasAttributeHandler implements Handler<HasAttributeCommand>
       throw new NotFoundError(`User with id ${userId} doesn't exist.`);
     }
 
-    const attributesIntersection = user?.getAlreadyExists ? user.getAlreadyExists(attributes) : [];
     const hasAllAttributes = await this.dependencies.authorizationClient.hasAttributes(
       accessToken.getToken(),
       attributes,
@@ -57,7 +58,6 @@ export default class HasAttributeHandler implements Handler<HasAttributeCommand>
 
     return {
       hasAllAttributes,
-      ownedAttributes: attributesIntersection,
     };
   }
 }
