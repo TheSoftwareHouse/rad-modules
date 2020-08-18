@@ -64,8 +64,9 @@ describe("Custom tokens tests", () => {
               .expect(OK)
               .then((response) =>
                 request(app)
-                  .get("/api/users/has-attribute?attributes=ADMIN_PANEL,attr2")
+                  .post("/api/users/has-attributes")
                   .set("Authorization", `Bearer ${response.body.accessToken}`)
+                  .send({ attributes: ["ADMIN_PANEL", "attr2"] })
                   .expect(OK)
                   .then((result) =>
                     assert.deepStrictEqual(result.body, { hasAllAttributes: false, ownedAttributes: ["ADMIN_PANEL"] }),

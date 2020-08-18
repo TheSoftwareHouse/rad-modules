@@ -91,12 +91,9 @@ describe("Initial users tests", () => {
       .then((loginResponse) => {
         const { accessToken } = loginResponse.body;
         return request(app)
-          .get(
-            `/api/users/has-attribute?attributes=${Array.from(
-              new Set([...usersData1[0].attributes, ...usersData2[0].attributes]),
-            ).join(",")}`,
-          )
+          .post("/api/users/has-attributes")
           .set("Authorization", `Bearer ${accessToken}`)
+          .send({ attributes: [...usersData1[0].attributes, ...usersData2[0].attributes] })
           .expect(OK)
           .then((hasAttributeResponse) => {
             const { hasAllAttributes } = hasAttributeResponse.body;

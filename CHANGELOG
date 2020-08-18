@@ -7,6 +7,15 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2020-08-18 v0.0.61
+Refactor
+- has-attribute endpoint: the name of `has-attribute` endpoint changed to `has-attributes` and the request method to POST. Parameters moved from query to body.
+- has-access endpoint: request method has changed to POST, parameters moved from query to body.
+
+### 2020-08-17 v0.0.60
+Added
+- Attributes operations moved to DB for speed improvement
+
 ### 2020-07-30 v0.0.59
 Added
 - Notification callback after changes in policies / users / attributes

@@ -20,8 +20,9 @@ describe("has-attribute.action", () => {
     const attributeName = adminPanelAttributeName;
 
     return request(app)
-      .get(`/api/users/has-attribute?attributes=${attributeName}`)
+      .post("/api/users/has-attributes")
       .set("Authorization", `Bearer ${accessToken}`)
+      .send({ attributes: [attributeName] })
       .expect("Content-Type", /json/)
       .expect(OK, {
         hasAllAttributes: true,
@@ -42,8 +43,9 @@ describe("has-attribute.action", () => {
     const { apiKey } = body;
 
     return request(app)
-      .get(`/api/users/has-attribute?attributes=${attributeName}`)
+      .post("/api/users/has-attributes")
       .set(appConfig.apiKeyHeaderName, apiKey)
+      .send({ attributes: [attributeName] })
       .expect("Content-Type", /json/)
       .expect(OK, { hasAllAttributes: true, ownedAttributes: [attributeName] });
   });

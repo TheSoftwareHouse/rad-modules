@@ -62,7 +62,7 @@ export const usersRouting = ({
   );
   router.get("/is-authenticated", [accessTokenHandler, xApiKeyHandler], isAuthenticatedAction({ commandBus }));
   router.post("/refresh-token", [refreshTokenActionValidation], refreshTokenAction({ commandBus }));
-  router.get("/has-attribute", [hasAttributeActionValidation, xApiKeyHandler], hasAttributeAction({ commandBus }));
+  router.post("/has-attributes", [hasAttributeActionValidation, xApiKeyHandler], hasAttributeAction({ commandBus }));
   router.post(
     "/add-attribute",
     [accessTokenHandler, requireAccess(adminPanelPolicies.addAttributeToUser.resource), addAttributeActionValidation],
