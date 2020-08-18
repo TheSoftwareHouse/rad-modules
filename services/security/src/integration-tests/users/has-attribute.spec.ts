@@ -25,7 +25,6 @@ describe("has-attribute.action", () => {
       .expect("Content-Type", /json/)
       .expect(OK, {
         hasAllAttributes: true,
-        ownedAttributes: [attributeName],
       });
   });
 

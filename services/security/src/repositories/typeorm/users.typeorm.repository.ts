@@ -17,6 +17,10 @@ export class UsersTypeormRepository extends Repository<UserModel> implements Use
     return this.findOne({ where: { id }, relations: ["attributes"] });
   }
 
+  public async findByIdWithoutAttributes(id: string) {
+    return this.findOne({ where: { id } });
+  }
+
   public findByActivationToken(activationToken: string) {
     return this.findOne({ where: { activationToken }, relations: ["attributes"] });
   }

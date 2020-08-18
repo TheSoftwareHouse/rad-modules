@@ -16,7 +16,6 @@ export interface UserModelProps {
 export interface UserModelGeneric extends UserModelProps {
   id?: string;
   create?(data: Partial<UserModelProps>): UserModelGeneric;
-  getAlreadyExists?(attributes: string[]): string[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -25,12 +24,6 @@ export interface UserModelGeneric extends UserModelProps {
   name: "User",
 })
 export class UserModel {
-  public getAlreadyExists(attributes: string[]) {
-    return this.attributes
-      .filter((attribute) => attributes.includes(attribute.name))
-      .map((attribute) => attribute.name);
-  }
-
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -78,6 +71,3 @@ export const createUserModel = (data: Partial<UserModelProps>) => {
   Object.assign(entity, data);
   return entity;
 };
-
-export const getAlreadyExistsAttributes = (user: UserModelGeneric, attributes: string[]) =>
-  user.attributes.filter((attribute) => attributes.includes(attribute.name)).map((attribute) => attribute.name);

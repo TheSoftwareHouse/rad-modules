@@ -50,11 +50,6 @@ export const hasAttributeActionValidation = celebrate(
  *                 hasAllAttributes:
  *                   type: boolean
  *                   example: true
- *                 ownedAttributes:
- *                   type: array
- *                   items:
- *                     type: string
- *                   example: ["attr1"]
  *       400:
  *         description: Bad Request
  *         content:
