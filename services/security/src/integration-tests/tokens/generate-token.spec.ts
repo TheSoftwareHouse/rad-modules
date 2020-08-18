@@ -36,7 +36,7 @@ describe("Custom tokens tests", () => {
           .expect(OK)
           .then((response) =>
             request(app)
-              .get("/api/users/has-access")
+              .post("/api/users/has-access")
               .set("Authorization", `Bearer ${response.body.accessToken}`)
               .send({ resources: ["attr1"] })
               .expect(OK),
@@ -49,7 +49,7 @@ describe("Custom tokens tests", () => {
               .expect(OK)
               .then((response) =>
                 request(app)
-                  .get("/api/users/has-access?resource=attr2")
+                  .post("/api/users/has-access")
                   .set("Authorization", `Bearer ${response.body.accessToken}`)
                   .send({ resources: ["attr2"] })
                   .expect(OK)

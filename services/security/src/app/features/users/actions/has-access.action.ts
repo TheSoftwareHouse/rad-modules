@@ -11,9 +11,9 @@ export interface HasAccessActionProps {
 
 export const hasAccessActionValidation = celebrate(
   {
-    body: {
-      resources: Joi.string().required(),
-    },
+    body: Joi.object({
+      resources: Joi.array().items(Joi.string().required()).required(),
+    }).required(),
   },
   { abortEarly: false },
 );
@@ -29,19 +29,25 @@ export const hasAccessActionValidation = celebrate(
  *      bearerFormat: JWT
  *
  * /api/users/has-access:
- *   get:
+ *   post:
  *     tags:
  *       - Users
  *     security:
  *       - bearerAuth: []
- *     summary: Verifies whether user has access to a specific resource.
- *     parameters:
- *       - in: body
- *         name: resources
- *         schema:
- *            type: string
- *         required: true
- *         example: resource1
+ *     summary: Verifies whether user has access to a specific resources.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              resources:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                required: true
+ *                example: ["user-operation/add-user", "user-operation/get-user-id"]
  *     responses:
  *       200:
  *         description: User has access
@@ -89,8 +95,6 @@ export const hasAccessAction = ({ commandBus }: HasAccessActionProps) => (
         resources: req.body.resources as string[],
       }),
     )
-    .then((commandResult) => {
-      res.status(OK).json(commandResult);
-    })
+    .then((commandResult) => res.status(OK).json(commandResult))
     .catch(next);
 };
