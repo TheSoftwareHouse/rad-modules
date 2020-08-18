@@ -36,8 +36,9 @@ describe("Custom tokens tests", () => {
           .expect(OK)
           .then((response) =>
             request(app)
-              .get("/api/users/has-access?resource=attr1")
+              .post("/api/users/has-access")
               .set("Authorization", `Bearer ${response.body.accessToken}`)
+              .send({ resources: ["attr1"] })
               .expect(OK),
           )
           .then(() =>
@@ -48,8 +49,9 @@ describe("Custom tokens tests", () => {
               .expect(OK)
               .then((response) =>
                 request(app)
-                  .get("/api/users/has-access?resource=attr2")
+                  .post("/api/users/has-access")
                   .set("Authorization", `Bearer ${response.body.accessToken}`)
+                  .send({ resources: ["attr2"] })
                   .expect(OK)
                   .then((result) => assert.equal(result.body.hasAccess, false)),
               ),

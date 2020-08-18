@@ -27,8 +27,9 @@ describe("has-access.action", () => {
     const { apiKey } = body;
 
     return request(app)
-      .get("/api/users/has-access?resource=resource1")
+      .post("/api/users/has-access")
       .set(appConfig.apiKeyHeaderName, apiKey)
+      .send({ resources: ["resource1"] })
       .expect("Content-Type", /json/)
       .expect(OK, UsersResponses.hasAccess);
   });

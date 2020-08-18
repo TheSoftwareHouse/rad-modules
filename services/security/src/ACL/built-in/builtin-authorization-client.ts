@@ -1,7 +1,7 @@
 import { NotFoundError } from "../../errors/not-found.error";
 import { TokenType } from "../../tokens/jwt-payload";
 import { UnathorizedError } from "../../errors/unathorized.error";
-import { AuthorizationClient, AuthorizationClientProps } from "../authorization-client.types";
+import { AuthorizationClient, AuthorizationClientProps, HasAccessResponse } from "../authorization-client.types";
 import { UserModelGeneric } from "../../app/features/users/models/user.model";
 
 export class BuiltinAuthorizationClient implements AuthorizationClient {
@@ -12,55 +12,58 @@ export class BuiltinAuthorizationClient implements AuthorizationClient {
     return this.hasAttributes(accessToken, [superAdminRoleName]);
   }
 
-  public async hasAccess(accessToken: string, resource: string): Promise<boolean> {
+  public async hasAccess(accessToken: string, resources: string[]): Promise<HasAccessResponse> {
     const { jwtUtils, usersRepository } = this.dependencies;
 
     const { userId, type, attributes } = jwtUtils.tryToGetPayloadFromTokenOrThrow(accessToken);
     switch (type) {
       case TokenType.USER: {
         const user = await usersRepository.findById(userId);
-
-        return user ? this.hasAccessUser(resource, user) : false;
+        if (!user) {
+          return {
+            hasAccess: false,
+          };
+        }
+        return this.hasAccessUser(resources, user);
       }
 
       case TokenType.CUSTOM:
-        return this.hasAccessCustom(attributes || [], resource);
+        return this.hasAccessCustom(attributes || [], resources);
 
       default:
         throw new UnathorizedError("Invalid token type");
     }
   }
 
-  private async hasAccessCustom(attributes: string[], resource: string): Promise<boolean> {
+  private async hasAccessCustom(attributes: string[], resources: string[]): Promise<HasAccessResponse> {
     const { policyRepository } = this.dependencies;
 
-    const resourcePolicy = await policyRepository.findBy({ resource });
-    const resourceAttributes = resourcePolicy.map((policy) => policy.attribute);
+    const policies = await policyRepository.findByResourcesAndAttributes(resources, attributes);
 
-    return attributes.some((attribute) => resourceAttributes.includes(attribute));
+    return {
+      hasAccess: policies.length === attributes.length,
+    };
   }
 
-  private async hasAccessUser(resource: string, user: UserModelGeneric): Promise<boolean> {
+  private async hasAccessUser(resources: string[], user: UserModelGeneric): Promise<HasAccessResponse> {
     const { policyRepository, superAdminRoleName } = this.dependencies;
 
     const isSuperAdmin = user.attributes.some(({ name }) => name === superAdminRoleName);
 
     if (isSuperAdmin) {
-      return true;
+      return {
+        hasAccess: true,
+      };
     }
 
-    const resourcePolicies = await policyRepository.findBy({ resource });
+    const policies = await policyRepository.findByResourcesAndAttributes(
+      resources,
+      user.attributes.map((attribute) => attribute.name),
+    );
 
-    if (resourcePolicies.length === 0) {
-      return false;
-    }
-
-    const neededAttributes = resourcePolicies.map((policy) => policy.attribute);
-    const userAttributeNames = user.attributes.map((attribute) => attribute.name);
-    const hasAllNeededAttributes =
-      neededAttributes.filter((attribute) => !userAttributeNames.includes(attribute)).length < neededAttributes.length;
-
-    return hasAllNeededAttributes;
+    return {
+      hasAccess: policies.length === resources.length && policies.length !== 0,
+    };
   }
 
   public async hasAttributes(accessToken: string, attributes: string[]): Promise<boolean> {

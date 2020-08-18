@@ -43,8 +43,9 @@ describe("Acl tests", () => {
     const { accessToken: userToCheckAccessToken } = await authClient.login(usernameToCheck1, password1);
 
     await request(app)
-      .get(`/api/users/has-access?resource=${newResource}`)
+      .post("/api/users/has-access")
       .set("Authorization", `Bearer ${userToCheckAccessToken}`)
+      .send({ resources: [newResource] })
       .expect("Content-Type", /json/)
       .expect(OK, AclResponses.hasNotAccess);
   });
@@ -71,8 +72,16 @@ describe("Acl tests", () => {
     const { accessToken: userToCheckAccessToken } = await authClient.login(usernameToCheck2, password2);
 
     await request(app)
-      .get(`/api/users/has-access?resource=${TEST_RESOURCE_VALUE}`)
+      .post("/api/users/has-access")
       .set("Authorization", `Bearer ${userToCheckAccessToken}`)
+      .send({ resources: [TEST_RESOURCE_VALUE] })
+      .expect("Content-Type", /json/)
+      .expect(OK, AclResponses.hasAccess);
+
+    return request(app)
+      .post("/api/users/has-access")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ resources: ["user-operation/add-user", "user-operation/edit-user", "user-operation/reset-password"] })
       .expect("Content-Type", /json/)
       .expect(OK, AclResponses.hasAccess);
   });
@@ -81,8 +90,9 @@ describe("Acl tests", () => {
     const { app } = GLOBAL.bootstrap;
 
     return request(app)
-      .get(`/api/users/has-access?resource=${TEST_RESOURCE_VALUE}`)
+      .post("/api/users/has-access")
       .set("Authorization", "Bearer invalid_token")
+      .send({ resources: [TEST_RESOURCE_VALUE] })
       .expect("Content-Type", /json/)
       .expect(UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.tokenFailedToVerify));
@@ -92,7 +102,8 @@ describe("Acl tests", () => {
     const { app } = GLOBAL.bootstrap;
 
     return request(app)
-      .get(`/api/users/has-access?resource=${TEST_RESOURCE_VALUE}`)
+      .post("/api/users/has-access?resource")
+      .send({ resources: [TEST_RESOURCE_VALUE] })
       .expect("Content-Type", /json/)
       .expect(UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.tokenMissingOrInvalid));

@@ -6,11 +6,12 @@ import { HttpError } from "../errors/http.error";
 
 function hasAccess(hasAccessEndpointUrl: string, headers: any, resource: string | undefined): Promise<boolean> {
   return fetch(`${hasAccessEndpointUrl}?resource=${resource}`, {
-    method: "GET",
+    method: "POST",
     headers: {
       "content-type": "application/json",
       authorization: headers.authorization,
     },
+    body: JSON.stringify({ resources: [resource] }),
   }).then(async (response) => {
     const data = await response.json();
     if (response.status >= 400) {

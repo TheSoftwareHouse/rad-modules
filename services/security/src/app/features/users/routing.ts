@@ -68,7 +68,7 @@ export const usersRouting = ({
     [accessTokenHandler, requireAccess(adminPanelPolicies.addAttributeToUser.resource), addAttributeActionValidation],
     addAttributeAction({ commandBus }),
   );
-  router.get("/has-access", [hasAccessActionValidation, xApiKeyHandler], hasAccessAction({ commandBus }));
+  router.post("/has-access", [hasAccessActionValidation, xApiKeyHandler], hasAccessAction({ commandBus }));
   router.get(
     "/",
     [accessTokenHandler, requireAccess(adminPanelPolicies.getUsers.resource), getUsersActionValidation],

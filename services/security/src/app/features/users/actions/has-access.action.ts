@@ -11,9 +11,9 @@ export interface HasAccessActionProps {
 
 export const hasAccessActionValidation = celebrate(
   {
-    query: {
-      resource: Joi.string().required(),
-    },
+    body: Joi.object({
+      resources: Joi.array().items(Joi.string().required()).required(),
+    }).required(),
   },
   { abortEarly: false },
 );
@@ -29,19 +29,25 @@ export const hasAccessActionValidation = celebrate(
  *      bearerFormat: JWT
  *
  * /api/users/has-access:
- *   get:
+ *   post:
  *     tags:
  *       - Users
  *     security:
  *       - bearerAuth: []
- *     summary: Verifies whether user has access to a specific resource.
- *     parameters:
- *       - in: query
- *         name: resource
- *         schema:
- *            type: string
- *         required: true
- *         example: resource1
+ *     summary: Verifies whether user has access to a specific resources.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              resources:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                required: true
+ *                example: ["user-operation/add-user", "user-operation/get-user-id"]
  *     responses:
  *       200:
  *         description: User has access
@@ -53,6 +59,11 @@ export const hasAccessActionValidation = celebrate(
  *                 hasAccess:
  *                   type: boolean
  *                   example: false
+ *                 forbidden:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["resource1"]
  *       400:
  *         description: Bad Request
  *         content:
@@ -81,11 +92,9 @@ export const hasAccessAction = ({ commandBus }: HasAccessActionProps) => (
     .execute(
       new HasAccessCommand({
         accessToken: BearerToken.fromHeader(req.headers.authorization),
-        resource: req.query.resource as string,
+        resources: req.body.resources as string[],
       }),
     )
-    .then((commandResult) => {
-      res.status(OK).json(commandResult);
-    })
+    .then((commandResult) => res.status(OK).json(commandResult))
     .catch(next);
 };

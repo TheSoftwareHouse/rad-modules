@@ -48,6 +48,10 @@ export class PolicyKeycloakRepository implements PolicyRepository {
     return Promise.resolve();
   }
 
+  public findByResourcesAndAttributes(_resources: string[], _attributes: string[]): Promise<PolicyModelGeneric[]> {
+    throw new Error("Not implemented");
+  }
+
   public async getNamesByAttributes(attributes: string[] = []): Promise<string[]> {
     const { keycloakManager } = this.dependencies;
     const policies = await keycloakManager.getPolicies();

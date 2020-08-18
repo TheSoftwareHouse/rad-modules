@@ -1,4 +1,4 @@
-import { AuthorizationClient, AuthorizationClientProps } from "../authorization-client.types";
+import { AuthorizationClient, AuthorizationClientProps, HasAccessResponse } from "../authorization-client.types";
 import { NotFoundError } from "../../errors/not-found.error";
 
 export class KeycloakAuthorizationClient implements AuthorizationClient {
@@ -9,9 +9,14 @@ export class KeycloakAuthorizationClient implements AuthorizationClient {
     return this.hasAttributes(accessToken, [superAdminRoleName]);
   }
 
-  public async hasAccess(accessToken: string, resource: string): Promise<boolean> {
+  public async hasAccess(accessToken: string, resources: string[]): Promise<HasAccessResponse> {
     const { keycloakManager } = this.dependencies;
-    return keycloakManager.checkPermission(accessToken, resource);
+
+    const forbidden = resources.filter(async (resource) => !keycloakManager.checkPermission(accessToken, resource));
+
+    return {
+      hasAccess: forbidden.length === 0,
+    };
   }
 
   public async hasAttributes(accessToken: string, attributes: string[]): Promise<boolean> {

@@ -5,7 +5,7 @@ export const HAS_ACCESS_COMMAND_TYPE = "users/HASACCESS";
 
 export interface HasAccessCommandPayload {
   accessToken: BearerToken;
-  resource: string;
+  resources: string[];
 }
 
 export class HasAccessCommand implements Command<HasAccessCommandPayload> {
