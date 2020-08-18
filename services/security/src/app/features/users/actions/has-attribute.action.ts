@@ -10,9 +10,9 @@ export interface HasAttributeActionProps {
 
 export const hasAttributeActionValidation = celebrate(
   {
-    query: {
-      attributes: Joi.string().required(),
-    },
+    body: Joi.object({
+      attributes: Joi.array().items(Joi.string().required()).required(),
+    }).required(),
   },
   { abortEarly: false },
 );
@@ -25,20 +25,26 @@ export const hasAttributeActionValidation = celebrate(
  *     scheme: bearer
  *     bearerFormat: JWT
  *
- * /api/users/has-attribute:
- *   get:
+ * /api/users/has-attributes:
+ *   post:
  *     tags:
  *       - Users
  *     security:
  *       - bearerAuth: []
  *     summary: Verifies whether user has attributes.
- *     parameters:
- *       - in: query
- *         name: attributes
- *         schema:
- *            type: string
- *         required: true
- *         example: attr1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              attributes:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                required: true
+ *                example: ["ADMIN_PANEL"]
  *     responses:
  *       200:
  *         description: Returns an object determining whether user has all attributes and a list of owned attributes.
@@ -78,7 +84,7 @@ export const hasAttributeAction = ({ commandBus }: HasAttributeActionProps) => (
     .execute(
       new HasAttributeCommand({
         accessToken: BearerToken.fromHeader(req.headers.authorization),
-        attributes: ((req.query.attributes as string) || "").split(",").map((attribute) => attribute.trim()),
+        attributes: req.body.attributes,
       }),
     )
     .then((commandResult) => {

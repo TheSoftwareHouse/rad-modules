@@ -50,8 +50,9 @@ describe("add-attribute.action", () => {
     const { accessToken: newUserAccessToken } = await authClient.login(newUsername, "randomPassword");
 
     return request(app)
-      .get(`/api/users/has-attribute?attributes=${attributes.join(",")}`)
+      .post("/api/users/has-attributes")
       .set("Authorization", `Bearer ${newUserAccessToken}`)
+      .send({ attributes: [...attributes] })
       .expect("Content-Type", /json/)
       .expect(OK, UsersResponses.hasAttributeResponseFactory());
   });

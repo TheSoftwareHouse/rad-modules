@@ -10,12 +10,11 @@ interface xApiKeyHandlerProps {
 
 export const xApiKeyResponseFactory = (req: Request) => {
   const actionNameFromPath = req.path.split("/").pop();
-
   switch (actionNameFromPath) {
-    case "has-attribute":
+    case "has-attributes":
       return {
         hasAllAttributes: true,
-        ownedAttributes: ((req.query.attributes as string) || "").split(",").map((attribute) => attribute.trim()),
+        ownedAttributes: req?.body?.attributes,
       };
     case "is-authenticated":
       return {
