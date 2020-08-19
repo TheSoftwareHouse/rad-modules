@@ -26,7 +26,7 @@ export const scheduleJobActionValidation = celebrate(
           .optional(),
         url: Joi.string().required(),
         headers: Joi.object().pattern(/.*/, [Joi.string()]).optional(),
-        body: Joi.object().unknown().optional(),
+        body: Joi.alternatives().try(Joi.string().allow(""), Joi.object().unknown(), Joi.array()).optional(),
         options: Joi.object({
           compress: Joi.boolean().optional(),
           follow: Joi.number().min(0).optional(),
@@ -55,6 +55,21 @@ export const scheduleJobActionValidation = celebrate(
   },
   { abortEarly: false },
 );
+
+/**
+ * @swagger
+ *
+ * components:
+ *   schemas:
+ *     StringBody:
+ *       type: string
+ *     ObjectBody:
+ *       type: object
+ *     ArrayBody:
+ *       type: array
+ *       items:
+ *         type: string
+ */
 
 /**
  * @swagger
@@ -90,21 +105,21 @@ export const scheduleJobActionValidation = celebrate(
  *                    type: string
  *                    enum: [GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH]
  *                    required: false
+ *                    default: GET
  *                  url:
  *                    type: string
  *                    description: Request URL string
  *                    example: "http://example.com?foo=bar"
  *                    required: true
  *                  headers:
- *                    type:
- *                      - array
- *                      - object
- *                    required: false
+ *                    type: object
+ *                    example: { "Content-Type": "application/json" }
  *                  body:
- *                    type:
- *                      - string
- *                      - object
- *                      - array
+ *                    oneOf:
+ *                      - $ref: '#/components/schemas/StringBody'
+ *                      - $ref: '#/components/schemas/ObjectBody'
+ *                      - $ref: '#/components/schemas/ArrayBody'
+ *                    example: test
  *                    required: false
  *                  options:
  *                    type: object
