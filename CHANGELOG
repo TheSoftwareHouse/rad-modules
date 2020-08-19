@@ -78,6 +78,10 @@ Changed
 
 ## scheduler
 
+### 2020-08-19 v0.0.13
+Added
+- Change schedule-job request, remove manifest
+
 ### 2020-08-04 v0.0.12
 Added
 - Synchronize Postgres jobs with Redis jobs after Redis client connects
