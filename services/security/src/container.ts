@@ -48,7 +48,6 @@ import { tokensRouting } from "./app/features/tokens/routing";
 import { attributesRouting } from "./app/features/attributes/routing";
 import { publicRouting } from "./app/features/public/routing";
 import { MicrosoftClient } from "./app/features/users/oauth/microsoft/microsoft-client";
-import { KeycloakAuthenticationClientConfig } from "./app/features/users/strategies/authentication/keycloak/keycloak-authentication-client";
 import { xApiKeyHandler } from "./middleware/x-api-key-handler";
 import { getAuthorizationClient } from "./ACL/authorization-client.factory";
 import { KeycloakManager } from "./utils/keycloak/keycloak-manager";
@@ -58,6 +57,7 @@ import { EventDispatcher } from "./shared/event-dispatcher";
 import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subscriber";
 import UserEventSubscriber from "./app/features/users/subscribers/user.subscriber";
 import { httpEventHandler } from "./shared/event-dispatcher/http-event-hander";
+import { KeycloakAuthenticationClientConfig } from "./config/keycloak.config";
 
 // MODELS_IMPORTS
 
@@ -109,9 +109,10 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     throw inititalPoliciesValidationResult.error;
   }
 
-  const keycloakAuthenticationClientConfig: KeycloakAuthenticationClientConfig = await import(
+  const keycloakAuthenticationClientConfig: KeycloakAuthenticationClientConfig | null = await import(
     config.keycloakClientConfig.clientConfigJsonPath
-  );
+  ).catch(() => null);
+
   const { keycloakManagerConfig } = config.keycloakClientConfig;
 
   const container: AwilixContainer = awilix.createContainer({
@@ -197,7 +198,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     accessKeyService: awilix.asClass(AccessKeyService),
     superAdminRoleName: awilix.asValue(config.superAdminRoleName),
     superAdminUser: awilix.asValue(config.superAdminUser),
-    keycloakAuthenticationClientConfig: awilix.asValue(keycloakAuthenticationClientConfig),
+    keycloakAuthenticationClientConfig: awilix.asValue(keycloakAuthenticationClientConfig ?? config.keycloakClientConfig.keycloakAuthClientConfig),
     keycloakManagerConfig: awilix.asValue(keycloakManagerConfig),
     apiKeyHeaderName: awilix.asValue(config.apiKeyHeaderName),
     apiKeyRegex: awilix.asValue(config.apiKeyRegex),

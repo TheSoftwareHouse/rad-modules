@@ -9,19 +9,7 @@ import { UsersRepository } from "../../../../../../repositories/users.repostiory
 import { PolicyRepository } from "../../../../../../repositories/policy.repository";
 import { HttpError } from "../../../../../../errors/http.error";
 import { INTERNAL_SERVER_ERROR } from "http-status-codes";
-
-export interface KeycloakAuthenticationClientConfig {
-  realm: string;
-  "auth-server-url": string;
-  "ssl-required": string;
-  resource: string;
-  "verify-token-audience": boolean;
-  credentials: {
-    secret: string;
-  };
-  port: number;
-  "policy-enforcer": string;
-}
+import { KeycloakAuthenticationClientConfig } from "../../../../../../config/keycloak.config";
 
 export interface KeycloakClientProperties {
   keycloakAuthenticationClientConfig: KeycloakAuthenticationClientConfig;
