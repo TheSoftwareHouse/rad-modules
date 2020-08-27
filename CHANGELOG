@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2020-08-27 v0.0.62
+Bugfix
+- Set default config when keycloak.json doesn't exist.
+
 ### 2020-08-18 v0.0.61
 Refactor
 - has-attribute endpoint: the name of `has-attribute` endpoint changed to `has-attributes` and the request method to POST. Parameters moved from query to body.
