@@ -1,4 +1,4 @@
-import { deepStrictEqual, strictEqual } from "assert";
+import { strictEqual } from "assert";
 import * as request from "supertest";
 import { GlobalData } from "../bootstrap";
 import { JobsRepository } from "../../repositories/jobs.repository";
@@ -9,56 +9,63 @@ describe("Scheduler tests: schedule job", () => {
   const GLOBAL = global as GlobalData;
 
   it("Should schedule one time job", async () => {
-    const service = "service";
-    const action = "getUsers";
     const jobRepository = GLOBAL.container.resolve<JobsRepository>("jobsRepository");
+    const job = {
+      name: "job",
+      type: "http",
+      payload: {
+        url: "example.com",
+      },
+    };
     return request(GLOBAL.container.resolve("app"))
       .post("/api/scheduling/schedule-job")
-      .send({ name: "job", service, action })
+      .send(job)
       .expect(CREATED)
       .then(async (res) => {
         const { id } = res.body;
-        const job = await jobRepository.findById(id);
-        deepStrictEqual(job!.service, service);
-        deepStrictEqual(job!.action, action);
-        strictEqual(job!.status, JobStatus.New);
-        strictEqual(job!.jobOptions, null);
+        const dbJob = await jobRepository.findById(id);
+        strictEqual(dbJob!.status, JobStatus.New);
+        strictEqual(dbJob!.jobOptions, null);
       });
   });
 
   it("Should schedule repeatable job", async () => {
-    const service = "service";
-    const action = "getUsers";
     const cron = "* * * * *";
     const jobRepository = GLOBAL.container.resolve<JobsRepository>("jobsRepository");
+    const job = {
+      name: "job",
+      type: "http",
+      payload: {
+        url: "example.com",
+      },
+      jobOptions: { cron },
+    };
+
     return request(GLOBAL.container.resolve("app"))
       .post("/api/scheduling/schedule-job")
-      .send({ name: "job", service, action, jobOptions: { cron } })
+      .send(job)
       .expect(CREATED)
       .then(async (res) => {
         const { id } = res.body;
-        const job = await jobRepository.findById(id);
-        deepStrictEqual(job!.service, service);
-        deepStrictEqual(job!.action, action);
-        strictEqual(job!.status, JobStatus.New);
-        strictEqual(job!.jobOptions!.cron, cron);
+        const dbJob = await jobRepository.findById(id);
+        strictEqual(dbJob!.status, JobStatus.New);
+        strictEqual(dbJob!.jobOptions!.cron, cron);
       });
   });
 
   it("Should not schedule repeatable job and throw conflict error", async () => {
-    const service = "service";
-    const action = "getUsers";
     const cron = "* * * * *";
-    const name = "test-job";
+    const job = {
+      name: "test-job",
+      type: "http",
+      payload: {
+        url: "example.com",
+      },
+      jobOptions: { cron },
+    };
 
-    await request(GLOBAL.container.resolve("app"))
-      .post("/api/scheduling/schedule-job")
-      .send({ name, service, action, jobOptions: { cron } })
-      .expect(CREATED);
+    await request(GLOBAL.container.resolve("app")).post("/api/scheduling/schedule-job").send(job).expect(CREATED);
 
-    await request(GLOBAL.container.resolve("app"))
-      .post("/api/scheduling/schedule-job")
-      .send({ name, service, action, jobOptions: { cron } })
-      .expect(CONFLICT);
+    await request(GLOBAL.container.resolve("app")).post("/api/scheduling/schedule-job").send(job).expect(CONFLICT);
   });
 });

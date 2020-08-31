@@ -12,21 +12,26 @@ describe("Scheduler tests: cancel job", () => {
   const name = v4();
 
   it("Should add and cancel job", async () => {
-    const service = "service";
-    const action = "getUsers";
     const jobOptions = {
       cron: "* * * * *",
+    };
+    const jobToCancel = {
+      name,
+      type: "http",
+      payload: {
+        url: "example.com",
+      },
+      jobOptions,
     };
     const jobsRepository = GLOBAL.container.resolve<JobsRepository>("jobsRepository");
     await request(GLOBAL.container.resolve("app"))
       .post("/api/scheduling/schedule-job")
-      .send({ name, service, action, jobOptions })
+      .send(jobToCancel)
       .expect(CREATED)
       .then(async (res) => {
         const { id } = res.body;
         const job = await jobsRepository.findById(id);
-        deepStrictEqual(job!.service, service);
-        deepStrictEqual(job!.action, action);
+        deepStrictEqual(job!.payload, jobToCancel.payload);
         strictEqual(job!.status, JobStatus.New);
         deepStrictEqual(job!.jobOptions, { cron: "* * * * *" });
       });

@@ -1,8 +1,7 @@
-import { Scheduler } from "./scheduler.types";
+import { Scheduler, SchedulerJob } from "./scheduler.types";
 import { v4 } from "uuid";
 import * as Bull from "bull";
 import { SchedulerConfig } from "../../config/config";
-import { jobOptions, JobStatus } from "../../app/features/scheduling/models/job.model";
 import { Job } from "bull";
 import { BullQueueDb } from "../bull-db";
 
@@ -20,47 +19,17 @@ export class BullScheduler implements Scheduler {
     this.queue = dbBull.getQueue();
   }
 
-  private getCronOptions(options: jobOptions): Bull.CronRepeatOptions {
-    const { cron = "", cronStartDate, cronEndDate, cronLimit, cronTimeZone } = options;
-    return {
-      cron,
-      startDate: cronStartDate,
-      endDate: cronEndDate,
-      limit: cronLimit,
-      tz: cronTimeZone,
-    };
-  }
-
-  public async scheduleJob(
-    name: string,
-    action: string,
-    service: string,
-    dbStatus: JobStatus,
-    options: jobOptions = {},
-    payload?: any,
-  ) {
+  public async scheduleJob(job: SchedulerJob) {
     const { attempts: defaultAttempts, timeBetweenAttemptsInMs } = this.dependencies.schedulerConfig;
-    const customJobId = v4();
-    const { attempts, backoff, cron, ...restOptions } = options;
-
-    await this.queue.add(
-      {
-        name,
-        action,
-        service,
-        payload,
-        dbStatus,
-      },
-      {
-        jobId: customJobId,
-        repeat: cron ? this.getCronOptions(options) : undefined,
-        attempts: attempts || defaultAttempts,
-        backoff: backoff || timeBetweenAttemptsInMs,
-        ...restOptions,
-      },
-    );
-
-    return { id: customJobId };
+    const { jobOptions = {} } = job;
+    const jobId = v4();
+    await this.queue.add(job.payload, {
+      jobId,
+      ...jobOptions,
+      attempts: jobOptions?.attempts || defaultAttempts,
+      backoff: jobOptions?.backoff || timeBetweenAttemptsInMs,
+    });
+    return { id: jobId };
   }
 
   public async cancelJob(jobName: string) {

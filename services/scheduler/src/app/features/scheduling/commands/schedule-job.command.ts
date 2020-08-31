@@ -1,20 +1,14 @@
 import { Command } from "../../../../../../../shared/command-bus";
-import { jobOptions } from "../models/job.model";
+import { JobOptions } from "../models/job.model";
+import { HttpPayload, JobType } from "../../../../scheduler";
 
 export const SCHEDULE_JOB_COMMAND_TYPE = "scheduling/SCHEDULEJOB";
 
 export interface ScheduleJobCommandPayload {
   name: string;
-  service: string;
-  action: string;
-  payload?: {
-    headers: {
-      [key: string]: string;
-    };
-    queryParameters: any;
-    body: any;
-  };
-  jobOptions?: jobOptions;
+  type: JobType;
+  payload: HttpPayload;
+  jobOptions: JobOptions;
   startImmediately: boolean;
 }
 

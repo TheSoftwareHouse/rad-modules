@@ -1,16 +1,17 @@
 import { GlobalData } from "./bootstrap";
 import { JobsRepository } from "../repositories/jobs.repository";
 import { JobModel } from "../app/features/scheduling/models/job.model";
+import { JobType } from "../scheduler";
 
 export const createJobs = async () => {
   const GLOBAL = global as GlobalData;
   await GLOBAL.container.resolve<JobsRepository>("jobsRepository").addJobs(
     [
-      { name: "A super test1", action: "addUser", service: "security" },
-      { name: "B test2", action: "addUser", service: "security" },
-      { name: "C super test3", action: "addUser", service: "security" },
-      { name: "D super test4", action: "addUser", service: "security" },
-      { name: "E test5", action: "addUser", service: "security" },
+      { name: "A super test1", type: JobType.HTTP, payload: { url: "example.com" } },
+      { name: "B test2", type: JobType.HTTP, payload: { url: "example.com" } },
+      { name: "C super test3", type: JobType.HTTP, payload: { url: "example.com" } },
+      { name: "D super test4", type: JobType.HTTP, payload: { url: "example.com" } },
+      { name: "E test5", type: JobType.HTTP, payload: { url: "example.com" } },
     ].map((job) => {
       return JobModel.create(job);
     }),

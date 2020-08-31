@@ -49,8 +49,7 @@ export class BullQueueDb {
           {
             jobId: v4(),
             name: job.name,
-            action: job.action,
-            service: job.service,
+            job: job.type,
             payload: job.payload,
             dbStatus: job.status,
           },

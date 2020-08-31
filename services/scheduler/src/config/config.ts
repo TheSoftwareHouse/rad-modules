@@ -6,7 +6,6 @@ export const appConfigSchema = Joi.object({
   port: Joi.number().port().required(),
   applicationType: Joi.string().valid("http").required(),
   apiKeyHeaderName: Joi.string().required(),
-  externalManifestPath: Joi.string().required(),
   redisUrl: Joi.string().required(),
   schedulerConfig: Joi.object({
     attempts: Joi.number().min(0).required(),
@@ -22,26 +21,6 @@ export const appConfigSchema = Joi.object({
   }).required(),
   dbConfig: DbConfigSchema.required(),
 }).required();
-
-export const manifestSchema = Joi.array()
-  .items(
-    Joi.object().keys({
-      url: Joi.string().required(),
-      name: Joi.string().required(),
-      actions: Joi.array()
-        .items(
-          Joi.object().keys({
-            type: Joi.string().required(),
-            http: Joi.object().keys({
-              uri: Joi.string().required(),
-              method: Joi.string().valid("GET", "POST", "PUT", "PATCH", "DELETE").required(),
-            }),
-          }),
-        )
-        .required(),
-    }),
-  )
-  .required();
 
 export enum MorganFormatTypes {
   Combined = "combined",
@@ -64,7 +43,6 @@ export type AppConfig = {
   apiKeyHeaderName: string;
   redisUrl: string;
   schedulerConfig: SchedulerConfig;
-  externalManifestPath: string;
   logger: {
     logLevel: string;
   };
@@ -79,7 +57,6 @@ export const appConfig: AppConfig = {
   port: 50050,
   applicationType: TransportProtocol.HTTP,
   apiKeyHeaderName: "x-api-key",
-  externalManifestPath: "/app/build/services/scheduler/src/config/external-manifest.json",
   redisUrl: process.env.REDIS_URL || "redis://redis:6379",
   schedulerConfig: {
     attempts: +(process.env.JOB_ATTEMPTS_NUMBER || 3), // number of attempts to try the job until it completes
