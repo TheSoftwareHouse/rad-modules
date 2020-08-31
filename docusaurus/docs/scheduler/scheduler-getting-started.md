@@ -189,61 +189,26 @@ RUN npm install --silent
 CMD ["npm", "run", "watch"]
 ```
 
-8. Go to workspace root and create `cron` catalog and `manifest.json` file in it.
-```text
- mkdir cron && cd cron
-```
-
-```text
- touch manifest.json
-```
-
-9. In the manifest file, we will put information about actions that the scheduler can call: 
-* `name` prop describe the name of service with should be called by the scheduler service, 
-* `url` describes where the service with should be called is host,
-* `actions` describe with actions can be called in the service.
-* `type` the action that name.
-
-So sample manifest.json file should look like e.g.
-```javascript
- [
-  {
-    "url": "http://api:30003",
-    "name": "api",
-    "actions": [
-      {
-        "type": "test-scheduler",
-        "http": {
-          "uri": "api/test-scheduler",
-          "method": "POST"
-        }
-      }
-    ]
-  }
-]
-```
-
-10. Project structure should look like bellow:
-![project-structure](assets/scheduler/project-structure.png)
-
-11. Run docker-compose:
+8. Run docker-compose:
 
 ```text
  docker-compose up
 ```
 
-12. Now, if everything is running, we can schedule a job. In our app, I created an endpoint with will display TEST-SCHEDULER in the console. So if we want the scheduler will call that endpoint every minute we need to create job by requesting scheduler API (we can use swagger endpoint or use our endpoint in the app I will use our endpoint). Request the endpoint with tool you like.
+9. Now, if everything is running, we can schedule a job. In our app, I created an endpoint with will display TEST-SCHEDULER in the console. So if we want the scheduler will call that endpoint every minute we need to create job by requesting scheduler API (we can use swagger endpoint or use our endpoint in the app I will use our endpoint). Request the endpoint with tool you like.
 
 ```text
  POST: http://localhost:30003/api/schedule-job
  Body:
  {
-    "name": "test-job-name",
-    "action": "test-scheduler",
-    "service": "api",
-    "jobOptions":{
-      "cron": "*/1 * * * *"
-    }
+     "name": "test-job-name",
+     "type": "http",
+     "payload": {
+        "url":"http://example.com",
+     },
+     "jobOptions":{
+         "cron": "*/1 * * * *"
+     }
  }
 ```
 After that you should see TEST-SCHEDULER every minute in your console.
@@ -288,13 +253,15 @@ If you want to create repeatable job which will start in the future, you need to
  POST: http://scheduler/api/scheduling/schedule-job
  Body:
  {
-    "name": "test-job-name",
-    "action": "test-scheduler",
-    "service": "api",
-    "jobOptions":{
-      "cron": "*/1 * * * *",
-      "cronStartDate": "2020-07-10 13:17:00"
-    }
+     "name": "test-job-name",
+     "type": "http",
+     "payload": {
+        "url":"http://example.com",
+     },
+     "jobOptions":{
+         "cron": "*/1 * * * *",
+         "cronStartDate": "2020-07-10 13:17:00"
+     }
  }
 ```
 >Note: Ensure scheduler host time is the same as Redis server time. 
@@ -306,14 +273,16 @@ If you want to create repeatable job which will start in the future and will fin
  POST: http://scheduler/api/scheduling/schedule-job
  Body:
  {
-    "name": "test-job-name",
-    "action": "test-scheduler",
-    "service": "api",
-    "jobOptions":{
-      "cron": "*/1 * * * *",
-      "cronStartDate": "2020-07-10 13:17:00",
-      "cronEndDate": "2020-08-01 10:10:00"
-    }
+     "name": "test-job-name",
+     "type": "http",
+     "payload": {
+         "url":"http://example.com",
+     },
+     "jobOptions":{
+         "cron": "*/1 * * * *",
+         "cronStartDate": "2020-07-10 13:17:00",
+         "cronEndDate": "2020-08-01 10:10:00"
+     }
  }
 ```
 >Note: Ensure scheduler host time is the same as Redis server time. 
@@ -325,13 +294,15 @@ If you want to create a repeatable job which will, for example, repeat 5 times, 
  POST: http://scheduler/api/scheduling/schedule-job
  Body:
  {
-    "name": "test-job-name",
-    "action": "test-scheduler",
-    "service": "api",
-    "jobOptions":{
-      "cron": "*/1 * * * *",
-      "cronLimit": 5      
-    }
+     "name": "test-job-name",
+     "type": "http",
+     "payload": {
+         "url":"http://example.com",
+     },
+     "jobOptions":{
+         "cron": "*/1 * * * *",
+         "cronLimit": 5      
+     }
  }
 ```
 
@@ -342,11 +313,13 @@ If you want to create a disposable job which will start in 2 hours (120000 - Mil
  POST: http://scheduler/api/scheduling/schedule-job
  Body:
  {
-    "name": "test-job-name",
-    "action": "test-scheduler",
-    "service": "api",
-    "jobOptions":{      
-      "delay": 120000
-    }
+     "name": "test-job-name",
+     "type": "http",
+     "payload": {
+         "url":"http://example.com",
+     },
+     "jobOptions":{      
+         "delay": 120000
+     }
  }
 ```
