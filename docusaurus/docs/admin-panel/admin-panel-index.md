@@ -53,6 +53,7 @@ services:
     image: tshio/rad-admin:latest
     environment:
       REACT_APP_SECURITY_API_URL: "http://localhost:50050"
+      REACT_APP_MODULES: security
     ports:
       - 9000:80
     networks:
@@ -61,6 +62,12 @@ services:
 networks:
   app:
 ```
+
+`REACT_APP_MODULES` variable defines which services will be enabled to manage with the admin panel. If you want to add multiple services, separate them with commas:
+`REACT_APP_MODULES: security,scheduler`
+List of supported modules:
+- security
+- scheduler
 
 When you run command `docker-compose up` you can open the rad admin panel in your browser: http://localhost:9000
 
