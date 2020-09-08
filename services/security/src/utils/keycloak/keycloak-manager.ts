@@ -44,10 +44,9 @@ export class KeycloakManager {
     const body = queryString.stringify({
       username,
       password,
-      client_secret: this.dependencies.keycloakAdminConfig.clientSecret,
-      grant_type: this.dependencies.keycloakAdminConfig.grantType,
-      client_id: this.dependencies.keycloakAdminConfig.clientId,
-      scope: this.dependencies.keycloakAdminConfig.scope,
+      client_secret: this.dependencies.keycloakManagerConfig.clientSecret,
+      grant_type: this.dependencies.keycloakManagerConfig.grantType,
+      client_id: this.dependencies.keycloakManagerConfig.clientId,
     });
 
     return fetch(url, {
@@ -74,9 +73,9 @@ export class KeycloakManager {
     const url = `${this.dependencies.keycloakManagerConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakManagerConfig.realmName}/protocol/openid-connect/token`;
 
     const body = queryString.stringify({
-      client_secret: this.dependencies.keycloakAdminConfig.clientSecret,
+      client_secret: this.dependencies.keycloakManagerConfig.clientSecret,
       grant_type: "refresh_token",
-      client_id: this.dependencies.keycloakAdminConfig.clientId,
+      client_id: this.dependencies.keycloakManagerConfig.clientId,
       refresh_token: refreshToken,
     });
 
