@@ -12,10 +12,12 @@ export class KeycloakAuthorizationClient implements AuthorizationClient {
   public async hasAccess(accessToken: string, resources: string[]): Promise<HasAccessResponse> {
     const { keycloakManager } = this.dependencies;
 
-    const forbidden = resources.filter(async (resource) => !keycloakManager.checkPermission(accessToken, resource));
+    const checkPermissionsPromise = resources.map((resource) => keycloakManager.checkPermission(accessToken, resource));
+
+    const permissions = await Promise.all(checkPermissionsPromise);
 
     return {
-      hasAccess: forbidden.length === 0,
+      hasAccess: !permissions.some((permission) => permission === false),
     };
   }
 
