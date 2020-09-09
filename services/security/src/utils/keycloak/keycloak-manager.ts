@@ -6,6 +6,8 @@ import { PolicyModelGeneric } from "../../app/features/policy/models/policy.mode
 import { UserModelGeneric } from "../../app/features/users/models/user.model";
 import { NotFoundError } from "../../errors/not-found.error";
 import { BadRequestError } from "../../errors/bad-request.error";
+import * as jwt from "jsonwebtoken";
+import { UnathorizedError } from "../../errors/unathorized.error";
 
 export class KeycloakManager {
   constructor(private dependencies: any) {}
@@ -47,6 +49,7 @@ export class KeycloakManager {
       client_secret: this.dependencies.keycloakManagerConfig.clientSecret,
       grant_type: this.dependencies.keycloakManagerConfig.grantType,
       client_id: this.dependencies.keycloakManagerConfig.clientId,
+      scope: "openid",
     });
 
     return fetch(url, {
@@ -59,10 +62,12 @@ export class KeycloakManager {
         throw new HttpError(textData, response.status);
       }
 
-      const jsonData = JSON.parse(textData);
+      const jsonData = JSON.parse(textData) as any;
+
+      const idToken = jwt.decode(jsonData.id_token) as any;
 
       return {
-        userId: jsonData.userId,
+        userId: idToken?.user_id,
         accessToken: jsonData.access_token,
         refreshToken: jsonData.refresh_token,
       };
@@ -89,8 +94,10 @@ export class KeycloakManager {
         throw new HttpError(jsonData.error, response.status);
       }
 
+      const idToken = jwt.decode(jsonData.id_token) as any;
+
       return {
-        userId: jsonData.userId,
+        userId: idToken.user_id,
         accessToken: jsonData.access_token,
         refreshToken: jsonData.refresh_token,
       };
@@ -519,6 +526,17 @@ export class KeycloakManager {
   }
 
   public async checkPermission(accessToken: string, permission: string) {
+    const { jwtUtils, accessTokenConfig } = this.dependencies;
+
+    const tokenPayload = jwt.decode(accessToken) as any;
+    if (tokenPayload?.type === "user") {
+      const validToken = jwtUtils.verifyToken(accessToken, accessTokenConfig);
+      if (!validToken) {
+        throw new UnathorizedError("Invalid token");
+      }
+      return (tokenPayload.policy || []).some((resource: string) => resource === permission);
+    }
+
     const url = `${this.dependencies.keycloakManagerConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakManagerConfig.realmName}/protocol/openid-connect/token`;
     const body = queryString.stringify({
       grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket",
@@ -528,7 +546,7 @@ export class KeycloakManager {
 
     return fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded", Authorization: `bearer ${accessToken}` },
+      headers: { "Content-Type": "application/x-www-form-urlencoded", Authorization: `Bearer ${accessToken}` },
       body,
     })
       .then(async (response) => {

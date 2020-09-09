@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
-### 2020-08-27 v0.0.63
+### 2020-09-09 v0.0.63
 Bugfix
 - Fix keycloak-manager (wrong configuration names)
 
