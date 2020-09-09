@@ -563,6 +563,17 @@ export class KeycloakManager {
   public async checkToken(accessToken: string) {
     const url = `${this.dependencies.keycloakManagerConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakManagerConfig.realmName}/protocol/openid-connect/userinfo`;
 
+    const { jwtUtils, accessTokenConfig } = this.dependencies;
+
+    const tokenPayload = jwt.decode(accessToken) as any;
+    if (tokenPayload?.type === "user") {
+      const validToken = jwtUtils.verifyToken(accessToken, accessTokenConfig);
+      if (!validToken) {
+        throw new UnathorizedError("Invalid token");
+      }
+      return tokenPayload;
+    }
+
     return fetch(url, {
       method: "GET",
       headers: { Authorization: `bearer ${accessToken}` },
