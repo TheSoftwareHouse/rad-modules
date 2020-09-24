@@ -112,11 +112,11 @@ export const createPdfAction = ({ commandBus, config }: CreatePdfActionProps) =>
    *                     default: Letter
    *                   width:
    *                     type: number
-   *                     description: Paper width.
+   *                     description: Paper width. Set 0 for auto width.
    *                     required: false
    *                   height:
    *                     type: number
-   *                     description: Paper height.
+   *                     description: Paper height. Set 0 for auto height.
    *                     required: false
    *                   margin:
    *                     type: object
