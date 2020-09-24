@@ -29,3 +29,23 @@ Our modules are fully configurable so you can change things you want or things y
 If you want to read more about our RAD modules please check the description of each module.
 
 In case of issues feel free to add a new issue on our github.
+
+
+## Related Projects
+
+[RAD Modules Tools](https://github.com/TheSoftwareHouse/rad-modules-tools)
+
+A TypeScript mono-repo that provides a set of libraries for developing Rad Modules clients and services more simple.
+
+Ready to use Node.js clients:
+
+
+* [RAD Security Client](https://www.npmjs.com/package/@tshio/security-client)
+
+* [RAD Scheduler Client](https://www.npmjs.com/package/@tshio/scheduler-client)
+
+* [RAD PDF Client](https://www.npmjs.com/package/@tshio/pdf-client)
+
+* [RAD Notifications Client](https://www.npmjs.com/package/@tshio/notifications-client)
+  
+* [RAD Mailer Client](https://www.npmjs.com/package/@tshio/mailer-client)
