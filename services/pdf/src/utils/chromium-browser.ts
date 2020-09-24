@@ -92,8 +92,17 @@ export class ChromiumBrowser {
       await this.setPageContent(page, from);
     }
 
-    // print pdf
-    await page.pdf({ ...pdfOptions, path: `/tmp/pdf/${expiryAt}.${fileId}` }).catch(async (error) => {
+    const contentSize = await page.evaluate(() => ({
+      width: document.documentElement.offsetWidth,
+      height: document.documentElement.offsetHeight,
+    }));
+
+    const pageSize = {
+      width: pdfOptions.width === 0 ? contentSize.width : pdfOptions.width,
+      height: pdfOptions.height === 0 ? contentSize.height : pdfOptions.height,
+    };
+
+    await page.pdf({ ...pdfOptions, ...pageSize, path: `/tmp/pdf/${expiryAt}.${fileId}` }).catch(async (error) => {
       logger.error(error.message);
       try {
         logger.info("trying to close chromium page");

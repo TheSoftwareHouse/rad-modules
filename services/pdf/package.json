@@ -1,6 +1,6 @@
 {
   "name": "pdf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Flexible Web API for generating PDF documents.",
   "main": "index.js",
   "scripts": {
