@@ -27,6 +27,7 @@ export class BullScheduler implements Scheduler {
     await this.queue.add(job, {
       jobId,
       ...jobOptions,
+      // eslint-disable-next-line
       repeat: jobOptions?.cron
         ? {
             cron: jobOptions.cron,
