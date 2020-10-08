@@ -23,9 +23,18 @@ export class BullScheduler implements Scheduler {
     const { attempts: defaultAttempts, timeBetweenAttemptsInMs } = this.dependencies.schedulerConfig;
     const { jobOptions = {} } = job;
     const jobId = v4();
-    await this.queue.add(job.payload, {
+
+    await this.queue.add(job, {
       jobId,
       ...jobOptions,
+      repeat: jobOptions?.cron
+        ? {
+            cron: jobOptions.cron,
+            tz: jobOptions.cronTimeZone,
+            startDate: jobOptions?.cronStartDate ? new Date(jobOptions.cronStartDate) : undefined,
+            endDate: jobOptions?.cronEndDate ? new Date(jobOptions.cronEndDate) : undefined,
+          }
+        : undefined,
       attempts: jobOptions?.attempts || defaultAttempts,
       backoff: jobOptions?.backoff || timeBetweenAttemptsInMs,
     });

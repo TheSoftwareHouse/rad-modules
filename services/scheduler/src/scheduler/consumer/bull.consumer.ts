@@ -32,8 +32,10 @@ export class BullSchedulerConsumer implements SchedulerConsumer {
     const queue = dbBull.getQueue();
 
     queue.process(async (job: Job) => {
-      await proxyCall(job.data).catch((error) => logger.error("Failed to handle a job: ", error.message));
-      return Promise.resolve();
+      const data = await proxyCall(job.data).catch((error) => {
+        logger.error(`Failed to handle a job: ${error.message}`);
+      });
+      return Promise.resolve(data);
     });
     queue
       .on("error", (error: Error) => {

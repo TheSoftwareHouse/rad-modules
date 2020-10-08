@@ -50,6 +50,11 @@ REDIS_URL:
 - **_Description_**: The variable specifies URL to Redis.
 - **_Default_**: `"redis://redis:6379"`
 
+CONNECTION_STRING:
+
+- **_Description_**: The variable specifies URL to PostgreSQL.
+- **_Default_**: `"postgres://postgres:password@postgres:5432/scheduler"`
+
 QUEUE_NAME:
 - **_Description_**: The variable specifies Redis queue name.
 - **_Default_**: `"scheduler-queue"`
