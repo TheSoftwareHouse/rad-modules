@@ -11,7 +11,7 @@ To start playing with the scheduler service you need:
 2. Installed docker and docker-compose (optional but it will save you a lot of time)
 
 After that please follow steps:
-1. Create a catalog where we will be playing with the mailer service:
+1. Create a catalog where we will be playing with the scheduler service:
 
 ```text
 mkdir scheduler-service-playground

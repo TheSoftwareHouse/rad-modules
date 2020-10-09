@@ -4,6 +4,7 @@ import * as Bull from "bull";
 import { SchedulerConfig } from "../../config/config";
 import { Job } from "bull";
 import { BullQueueDb } from "../bull-db";
+import { JobOptions } from "../../app/features/scheduling/models/job.model";
 
 type BullSchedulerProps = {
   schedulerConfig: SchedulerConfig;
@@ -23,9 +24,18 @@ export class BullScheduler implements Scheduler {
     const { attempts: defaultAttempts, timeBetweenAttemptsInMs } = this.dependencies.schedulerConfig;
     const { jobOptions = {} } = job;
     const jobId = v4();
-    await this.queue.add(job.payload, {
+
+    const createRepeatOptions = (options: JobOptions) => ({
+      cron: options.cron!,
+      tz: options.cronTimeZone,
+      startDate: options.cronStartDate ? new Date(options.cronStartDate) : undefined,
+      endDate: options.cronEndDate ? new Date(options.cronEndDate) : undefined,
+    });
+
+    await this.queue.add(job, {
       jobId,
       ...jobOptions,
+      repeat: jobOptions?.cron ? createRepeatOptions(jobOptions) : undefined,
       attempts: jobOptions?.attempts || defaultAttempts,
       backoff: jobOptions?.backoff || timeBetweenAttemptsInMs,
     });
