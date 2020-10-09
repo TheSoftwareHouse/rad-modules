@@ -95,6 +95,10 @@ Changed
 
 ## scheduler
 
+### 2020-10-09 v0.0.14
+Added
+- Fixed scheduled jobs and proxy call
+
 ### 2020-08-19 v0.0.13
 Added
 - Change schedule-job request, remove manifest
