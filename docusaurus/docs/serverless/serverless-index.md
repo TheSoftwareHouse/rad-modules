@@ -11,7 +11,7 @@ Serverless functions were created to do repeated functions such as:
 2. Return single file data
 3. Return data for all files
 4. Delete files
-5. RAD user is authenticated
+5. RAD Security integration
 6. Resize images
 7. Watermark
 

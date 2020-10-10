@@ -1,6 +1,6 @@
 ---
-id: serverless-rad-is-authenticated
-title: RAD is authenticated
+id: serverless-rad-security-integration
+title: RAD Security integration
 ---
 
 ## Check  (rad-is-authenticated function)

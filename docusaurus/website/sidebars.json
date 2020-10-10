@@ -4,17 +4,39 @@
     "Security": [
       "security/security-index",
       "security/security-getting-started",
+      "security/security-client",
       "security/security-api-documentation",
       "security/security-keycloak-integration",
       "security/security-advanced-configuration",
       "security/security-abac"
     ],
-    "Mailer": ["mailer/mailer-index", "mailer/mailer-getting-started", "mailer/mailer-api-documentation", "mailer/mailer-advanced-configuration"],
+    "Mailer": [
+      "mailer/mailer-index",
+      "mailer/mailer-getting-started",
+      "mailer/mailer-client",
+      "mailer/mailer-api-documentation",
+      "mailer/mailer-advanced-configuration"
+    ],
     "Notifications": [
       "notifications/notifications-index",
       "notifications/notifications-getting-started",
+      "notifications/notifications-client",
       "notifications/notifications-api-documentation",
       "notifications/notifications-advanced-configuration"
+    ],
+    "Scheduler": [
+      "scheduler/scheduler-index",
+      "scheduler/scheduler-getting-started",
+      "scheduler/scheduler-client",
+      "scheduler/scheduler-api-documentation",
+      "scheduler/scheduler-advanced-configuration"
+    ],
+    "PDF": [
+      "pdf-generator/pdf-index",
+      "pdf-generator/pdf-getting-started",
+      "pdf-generator/pdf-client",
+      "pdf-generator/pdf-api-documentation",
+      "pdf-generator/pdf-advanced-configuration"
     ],
     "Serverless functions": [
       "serverless/serverless-index",
@@ -23,11 +45,9 @@
       "serverless/serverless-delete",
       "serverless/serverless-resize",
       "serverless/serverless-watermark",
-      "serverless/serverless-rad-is-authenticated",
+      "serverless/serverless-rad-security-integration",
       "serverless/serverless-pipeline"
     ],
-    "Scheduler": ["scheduler/scheduler-index", "scheduler/scheduler-getting-started", "scheduler/scheduler-api-documentation", "scheduler/scheduler-advanced-configuration"],
-    "Pdf generator": ["pdf-generator/pdf-index","pdf-generator/pdf-getting-started", "pdf-generator/pdf-api-documentation", "pdf-generator/pdf-advanced-configuration"],
     "Admin panel": ["admin-panel/admin-panel-index"],
     "Services communication": ["communication-between-services"],
     "Changelog": ["changelog"]
