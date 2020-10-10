@@ -128,8 +128,8 @@ body: {
 3. Insert attribute and resource e.g. ( GET_USERS and api/users/get-user)
 4. Click "OK" button
 5. Go to Users view
-6. Choice the user that should have the new policy by clicking the user edit icon (last column in the table). You will be moved to the user details view
+6. Choose the user that should have the new policy by clicking the user edit icon (last column in the table). You will be redirected to the user details view
 7. Click "Add new attribute" button
-8. Search the attribute you want to add for the user in our case: GET_USERS
+8. Search the attribute you want to add to the user, in our case: GET_USERS
 9. Select the attribute from the drop-down list
 10. Click "OK" button

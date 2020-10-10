@@ -3,12 +3,7 @@ id: notifications-advanced-configuration
 title: Advanced configuration
 ---
 
-## Configuration setting that you can overwrite via environment variables
-
-ACCESS_TOKEN_EXPIRATION
-
-- **_Description_**: The variable specifies how long the access token will be available in seconds
-- **_Default_**: `600`
+## Supported environment variables
 
 ACCESS_TOKEN_SECRET
 

@@ -11,13 +11,13 @@ To start playing with the notifications service you need:
 2. Installed docker and docker-compose (optional but it will save you a lot of time)
 
 After that please follow steps:
-1. Create a catalog where we will be playing with the mailer service:
+1. Create a directory where we will be playing with the notifications service:
 
 ```text
 mkdir notifications-service-playground
 ```
 
-2. Go to the catalog:
+2. Go to the directory:
 
 ```text
 cd notifications-service-playground
@@ -69,8 +69,8 @@ networks:
   app:
 ```
 
-6. Let's add simple web app to our workspace so we will be able to connect to our notifications service
-  * Create API catalog
+6. Let's add simple web app to our workspace so we will be able to connect to notifications service
+  * Create API directory
 ```text
  mkdir api && cd api
 ```
@@ -150,7 +150,7 @@ notifyClient.on("disconnect", () => {
 app.listen(port, () => console.log(`App listening on ${port}`));
 ```
 
-7. In `api` catalog add `Dockerfile`
+7. In `api` directory add `Dockerfile`
 ```dockerfile
 FROM node:12.2.0-alpine
 

@@ -15,7 +15,7 @@ title: Introduction
 
 Security service provides authentication, attribute-based access control (ABAC) authorization, and user management for any app: deploy anywhere, integrate with anything, in minutes.
 
-With the power of service features you can:
+With this service you are able to:
 
 1. Add users
 2. Remove a user
@@ -28,8 +28,6 @@ With the power of service features you can:
 9. Remove policy
 10. Check if the user has access to resources under some policy
 11. Check if a user is authenticated
-
-# 
 
 Security service provides easy integration with [Keycloak](https://www.keycloak.org/). The goal of Keycloak is to make security simple so that it is easy for application developers to secure the apps and services they have deployed in their organization.
 
