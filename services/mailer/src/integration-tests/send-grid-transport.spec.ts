@@ -33,7 +33,7 @@ describe("SendGrid transport tests", () => {
             to: ["marcin.mentoring@gmail.com"],
           },
           template: {
-            id: "d-082e77fff1144c008779a3dffe11d202",
+            id: "test",
             parameters: {
               firstName: "Antonio",
               lastName: "Hernández",
