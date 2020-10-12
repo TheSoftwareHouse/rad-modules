@@ -145,6 +145,9 @@ services:
     environment:
       DB_LOGGING: "false"
       NODE_ENV: debug
+      TRANSPORT_SMTP_HOST: mailhog
+      TRANSPORT_SMTP_PORT: 1025
+      TRANSPORT_SMTP_SECURE: "false"
     depends_on:
       - redis
       - mailhog
