@@ -27,9 +27,8 @@ jobs:
         - npm run mailer-integration
       env:
         - TRANSPORT_SMTP_HOST=mailhog
-        - TRANSPORT_SMTP_HOST: mailhog
-        - TRANSPORT_SMTP_PORT: 1025
-        - TRANSPORT_SMTP_SECURE: "false"
+        - TRANSPORT_SMTP_PORT=1025
+        - TRANSPORT_SMTP_SECURE="false"
       name: "Mailer integration tests"
       if: branch = master
     - # notifications
