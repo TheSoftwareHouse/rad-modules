@@ -144,6 +144,7 @@ services:
     command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
     environment:
       DB_LOGGING: "false"
+      NODE_ENV: debug
     depends_on:
       - redis
       - mailhog
