@@ -3,7 +3,7 @@ id: mailer-advanced-configuration
 title: Advanced configuration
 ---
 
-As you saw in getting started section, I added some environment variables to the docker-compose file. The variables allow you to overwrite the default setting of the Mailer service. I just overwrite two of them but you can overwrite all of them (if you need to) a full list of available configuration is bellow.
+Mailer service is fully configurable by environment variables. A full list of available configuration is below.
 
 ## Production usage
 
@@ -15,11 +15,11 @@ FROM tshio/mailer:latest as mailer
 COPY templates /app/services/mailer/mail-templates
 ```
 
-## Configuration setting that you can overwrite via environment variables
+## Supported environment variables
 
 HTTP_PORT:
 
-- **_Description_**: The variable specifies the protocol on with the service will be available.
+- **_Description_**: The variable specifies port on which the service will be available.
 - **_Default_**:`"50050"`
 
 PROTOCOL_PROTOCOL
@@ -29,37 +29,37 @@ PROTOCOL_PROTOCOL
 
 TRANSPORT_TYPE
 
-- **_Description_**: The variable specifies the protocol of sending mails notifications.
+- **_Description_**: The variable specifies the transport type.
 - **_Default_**:`"smtp"`
 
 TRANSPORT_SMTP_POOL
 
-- **_Description_**: The variable specifies the if pool in SMTP configuration will be available.
+- **_Description_**: The variable enables SMTP pool.
 - **_Default_**:`false`
 
 TRANSPORT_SMTP_HOST
 
-- **_Description_**: The variable specifies host name of our SMTP Server.
+- **_Description_**: The variable specifies host name of SMTP Server.
 - **_Default_**:`""`
 
 TRANSPORT_SMTP_PORT
 
-- **_Description_**: The variable specifies port of our SMTP Server.
+- **_Description_**: The variable specifies port of SMTP Server.
 - **_Default_**: `465`
 
 TRANSPORT_SMTP_SECURE
 
-- **_Description_**: The variable specifies the connection with our SMTP is secure.
+- **_Description_**: The variable enables secure SMTP connection.
 - **_Default_**: `false`
 
 TRANSPORT_SMTP_AUTH_USER
 
-- **_Description_**: The variable specifies the username for our SMTP server.
+- **_Description_**: The variable specifies the username for SMTP server.
 - **_Default_**:`""`
 
 TRANSPORT_SMTP_AUTH_PASSWORD
 
-- **_Description_**: The variable specifies the password for our SMTP server.
+- **_Description_**: The variable specifies the password for SMTP server.
 - **_Default_**:`""`
 
 TRANSPORT_SMTP_DEBUG
@@ -69,7 +69,7 @@ TRANSPORT_SMTP_DEBUG
 
 TRANSPORT_SMTP_TEMPLATES_ROOT
 
-- **_Description_**: The variable specifies the path to mail templates.
+- **_Description_**: The variable specifies the path to mail templates inside docker image.
 - **_Default_**:`"/app/services/mailer/mail-templates/"`
 
 TRANSPORT_SENDGRID_AUTH_KEY
@@ -89,7 +89,7 @@ BATCH_PERIOD
 
 LOG_LEVEL
 
-- **_Description_**: The variable specifies the level of logging logs by the logger available options: `"error"`, `"warn"`, `"help"`, `"info"`, `"debug"`, `"verbose"`, `"silly"`
+- **_Description_**: The variable specifies the level of logging by the logger available options: `"error"`, `"warn"`, `"help"`, `"info"`, `"debug"`, `"verbose"`, `"silly"`
 - **_Default_**:`"debug"`
 
 REQUEST_LOGGER_FORMAT:

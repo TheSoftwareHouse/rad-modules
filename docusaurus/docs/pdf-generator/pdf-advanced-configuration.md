@@ -3,7 +3,7 @@ id: pdf-advanced-configuration
 title: Advanced configuration
 ---
 
-## Configuration setting that you can overwrite via environment variables
+## Supported environment variables
 
 API_URL:
 

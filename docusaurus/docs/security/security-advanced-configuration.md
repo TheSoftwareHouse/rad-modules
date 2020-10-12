@@ -31,11 +31,11 @@ We keep the image on our public [DockerHub](https://hub.docker.com/r/tshio/secur
       - redis
 ```
 
-As you can see, I added some environment variables to the docker-compose file. The variables allow you to overwrite the default setting of the Security service. I just overwrite three of them but you can overwrite all of them (if you need to) a full list of available configuration is bellow.
+You can configure security service by environment variable. The variables allow you to overwrite the default setting of the Security service. You can find a full variables list below.
 
-Security service depends on two other containers to work correctly: DB (Postgres in this situation) and cache (Redis). Therefore we need to use depends_on property.
+Security service depends on two other containers to work properly: DB (Postgres in this situation) and cache (Redis). Therefore we need to use depends_on property.
 
-If you would like to initialize the database with users and policy that you already have you can do it by creating a new catalog e.g. init-data-volume with two files in it: `users.json` and `policy.json` after that you need to add volumes to security container in yours docker-compose (I created the catalog on the same level where the docker-compose file is)
+If you would like to initialize the database with users and policy that you already have, you can do it by creating a new directory e.g. init-data-volume with two files in it: `users.json` and `policy.json`. After that you need to add volumes to security container in your docker-compose.
 
 ```
     volumes:
@@ -394,7 +394,7 @@ interface UserEventAttributePayload {
 
 You can configure callback URLs (one or more) of the notification by setting environment variable `EVENT_DISPATCHER_CALLBACK_URLS`. By default this variable is empty so no notifications are sent.
 
-## Configuration setting that you can overwrite via environment variables
+## Supported environment variables
 
 API_URL:
 
@@ -403,7 +403,7 @@ API_URL:
 
 PASSWORD_REGEX:
 
-- **_Description_**: Regexp that shows rules how the password suppose to look like
+- **_Description_**: Regexp used for password validation
 - **_Default_**: `".{8,}"`
 
 PASSWORD_VALIDATION_ERROR
@@ -413,12 +413,12 @@ PASSWORD_VALIDATION_ERROR
 
 PASSWORD_RANDOM:
 
-- **_Description_**: The variable specifies if users that will be inited from the file should have a password generated randomly or a password should be provided in the user's file.
+- **_Description_**: The variable specifies if users that will be created from the file should have a random password generated or a password should be provided in the user's file.
 - **_Default_**: `false`
 
 PASSWORD_RANDOM_MAX_LENGTH:
 
-- **_Description_**: The variable specifies the length of the randomly generated password.
+- **_Description_**: The variable specifies the length of the random generated password.
 - **_Default_**: `8`
 
 API_KEY_REGEX:
@@ -433,27 +433,27 @@ REDIS_URL:
 
 REDIS_PREFIX:
 
-- **_Description_**: The variable specifies Redis prefix which allows check which data belong to security service.
+- **_Description_**: The variable specifies Redis prefix.
 - **_Default_**: `"rad-modules:security:"`
 
 ACCESS_TOKEN_EXPIRATION:
 
-- **_Description_**: The variable specifies how long the access token will be available in seconds
+- **_Description_**: The variable specifies how long the access token will be valid in seconds
 - **_Default_**: `600`
 
 ACCESS_TOKEN_SECRET:
 
-- **_Description_**: The variable specifies secret that will be used for generating the access token
+- **_Description_**: The variable specifies secret that will be used for access token
 - **_Default_**: `"secret1"`
 
 REFRESH_TOKEN_EXPIRATION:
 
-- **_Description_**: The variable specifies how long the refresh token will be available in seconds **IMPORTANT!:** `REFRESH_TOKEN_EXPIRATION` should be greater than `ACCESS_TOKEN_EXPIRATION`
+- **_Description_**: The variable specifies how long the refresh token will be valid in seconds **IMPORTANT!:** `REFRESH_TOKEN_EXPIRATION` should be greater than `ACCESS_TOKEN_EXPIRATION`
 - **_Default_**: `1200`
 
 REFRESH_TOKEN_SECRET:
 
-- **_Description_**: The variable specifies secret that will be used for generating the refresh token
+- **_Description_**: The variable specifies secret that will be used for refresh token
 - **_Default_**: `"secret2"`
 
 CONNECTION_STRING:
@@ -468,17 +468,17 @@ DB_LOGGING:
 
 OAUTH_ENABLED_PROVIDERS"
 
-- **_Description_**: The variable specifies which OAuth provider are enabled. It doesn't mean that you are forced to
+- **_Description_**: The variable specifies which OAuth providers are enabled.
 - **_Default_**: `""`
 - **_Available_**: `"google, facebook, microsoft, other"`
 
-OAUTH_CLIENT_ID:
-
+OAUTH_CLIENT_ID: 
+**Deprecated**
 - **_Description_**: The variable specifies the id of external OAuth provider
 - **_Default_**: `""`
 
 OAUTH_SECRET:
-
+**Deprecated**
 - **_Description_**: The variable specifies the secret for external OAuth provider
 - **_Default_**: `""`
 
@@ -488,7 +488,7 @@ OAUTH_DEFAULT_ATTRIBUTES:
 - **_Default_**: `[]`
 
 OAUTH_ALLOWED_DOMAINS:
-
+**Deprecated**
 - **_Description_**: A comma separated list of domains that are allowed to login using oauth
 - **_Default_**: `[]`
 
@@ -534,12 +534,12 @@ OAUTH_FACEBOOK_CLIENT_SECRET:
 
 OAUTH_CREATE_USER_ACCOUNT
 
-- **_Description_**: The variable specifies if a user which is login via OAuth provider should have created an account in the DB after the login flow
+- **_Description_**: The variable specifies if a user logged via OAuth provider should have an account created in the DB after the login flow
 - **_Default_**: `false`
 
 CREATE_USER_ACCOUNT_ON_OAUTH
-
-- **_Description_**: The variable specifies if a user which is login via OAuth provider should have created an account in the DB after the login flow
+**Deprecated**
+- **_Description_**: The variable specifies if a user logged via OAuth provider should have an account created in the DB after the login flow
 - **_Default_**: `false`
 
 INITIAL_USERS_DATA_JSON_PATH:
@@ -569,12 +569,12 @@ REQUEST_BODY_KEYS_TO_HIDE:
 
 IS_USER_ACTIVATION_NEEDED:
 
-- **_Description_**: The variable specifies if user after register needs to activate the account with an activation link
+- **_Description_**: The variable specifies if activation link is sent to user after registration
 - **_Default_**: `false`
 
 TIME_TO_ACTIVE_ACCOUNT_IN_DAYS:
 
-- **_Description_**: The variable specifies how long can activate the registered account (in days)
+- **_Description_**: The variable specifies how long activation link is valid (in days)
 - **_Default_**: `3`
 
 SUPER_ADMIN_USERNAME:
@@ -664,117 +664,117 @@ SUPER_ADMIN_ROLE:
 
 SUPER_ADMIN_ATTRIBUTES:
 
-- **_Description_**: The variable specifies an array of super admin attributes the admin has access every vere, but on the other hand, perhaps you would like to add some custom attributes for the super admin so here is the place
+- **_Description_**: The variable specifies an array of super admin attributes
 - **_Default_**:`["ROLE_SUPERADMIN"]`
 
 ADMIN_PANEL_ADD_USER:
 
-- **_Description_**: The variable specifies which police have access to add a new users
+- **_Description_**: The variable specifies what attribute is required to add a new users
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_EDIT_USER:
 
-- **_Description_**: The variable specifies which police have access to edit a users
+- **_Description_**: The variable specifies what attribute is required to edit a users
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_DEACTIVATE_USER:
 
-- **_Description_**: The variable specifies which police have access to deactivate a users
+- **_Description_**: The variable specifies what attribute is required to deactivate a users
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_DELETE_USER:
 
-- **_Description_**: The variable specifies which police have access to delete a users
+- **_Description_**: The variable specifies what attribute is required to delete a users
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_RESET_PASSWORD:
 
-- **_Description_**: The variable specifies which police have access to reset the password for a users
+- **_Description_**: The variable specifies what attribute is required to reset the password for a users
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_ADD_POLICIES:
 
-- **_Description_**: The variable specifies which police have access to add new policies
+- **_Description_**: The variable specifies what attribute is required to add new policies
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_POLICIES:
 
-- **_Description_**: The variable specifies which police have access to read policies
+- **_Description_**: The variable specifies what attribute is required to read policies
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_REMOVE_POLICIES:
 
-- **_Description_**: The variable specifies which police have access to remove policies
+- **_Description_**: The variable specifies what attribute is required to remove policies
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_ADD_ATTRIBUTE_TO_USER:
 
-- **_Description_**: The variable specifies which police have access to add police attributes for a user
+- **_Description_**: The variable specifies what attribute is required to add police attributes for a user
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_REMOVE_ATTRIBUTE_TO_USER:
 
-- **_Description_**: The variable specifies which police have access to remove police attributes from a user
+- **_Description_**: The variable specifies what attribute is required to remove police attributes from a user
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_USER_ID:
 
-- **_Description_**: The variable specifies which police have access to an endpoint which allow to get user's id by username
+- **_Description_**: The variable specifies what attribute is required to an endpoint which allow to get user's id by username
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_USER
 
-- **_Description_**: The variable specifies which police have access to an endpoint which allow to get user
+- **_Description_**: The variable specifies what attribute is required to an endpoint which allow to get user
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_USERS
 
-- **_Description_**: The variable specifies which police have access to an endpoint which allow to get all users
+- **_Description_**: The variable specifies what attribute is required to an endpoint which allow to get all users
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_USERS_BY_RESOURCE_NAME
 
-- **_Description_**: The variable specifies which police have access to an endpoint which allow to get all users by policy resource
+- **_Description_**: The variable specifies what attribute is required to an endpoint which allow to get all users by policy resource
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_ATTRIBUTES
 
-- **_Description_**: The variable specifies which police have access to an endpoint which allow to get policy attributes
+- **_Description_**: The variable specifies what attribute is required to an endpoint which allow to get policy attributes
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_CREATE_ACCESS_KEY:
 
-- **_Description_**: The variable specifies which police have access to create api key
+- **_Description_**: The variable specifies what attribute is required to create api key
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_REMOVE_ACCESS_KEY:
 
-- **_Description_**: The variable specifies which police have access to remove api key
+- **_Description_**: The variable specifies what attribute is required to remove api key
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_ACCESS_KEYS:
 
-- **_Description_**: The variable specifies which police have access to read api keys
+- **_Description_**: The variable specifies what attribute is required to read api keys
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_USER:
 
-- **_Description_**: The variable specifies which police have access to get user by user id
+- **_Description_**: The variable specifies what attribute is required to get user by user id
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_USERS:
 
-- **_Description_**: The variable specifies which police have access to read users
+- **_Description_**: The variable specifies what attribute is required to read users
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_USERS_BY_RESOURCE_NAME:
 
-- **_Description_**: The variable specifies which police have access to read users by resource name
+- **_Description_**: The variable specifies what attribute is required to read users by resource name
 - **_Default_**: `"ADMIN_PANEL"`
 
 ADMIN_PANEL_GET_ATTRIBUTES:
 
-- **_Description_**: The variable specifies which police have access to read attributes
+- **_Description_**: The variable specifies what attribute is required to read attributes
 - **_Default_**: `"ADMIN_PANEL"`
 
 INITIAL_API_KEYS

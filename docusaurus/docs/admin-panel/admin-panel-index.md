@@ -63,7 +63,7 @@ networks:
   app:
 ```
 
-`REACT_APP_MODULES` variable defines which services will be enabled to manage with the admin panel. If you want to add multiple services, separate them with commas:
+`REACT_APP_MODULES` variable defines which services will be enabled to manage with the admin panel. If you want to add multiple services, separate them with comma:
 `REACT_APP_MODULES: security,scheduler`
 List of supported modules:
 - security

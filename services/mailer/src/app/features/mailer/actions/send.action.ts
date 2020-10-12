@@ -3,6 +3,7 @@ import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "../../../../../../../shared/command-bus";
 import { SendCommand } from "../commands/send.command";
 import { CREATED } from "http-status-codes";
+import { EmailQueuePriority } from "../../../../utils/worker/email-queue";
 
 export interface SendActionProps {
   commandBus: CommandBus;
@@ -139,7 +140,7 @@ export const sendActionValidation = celebrate(
  *               $ref:  "#/definitions/InternalServerError"
  */
 export const sendAction = ({ commandBus }: SendActionProps) => (req: Request, res: Response, next: NextFunction) => {
-  const { emails, priority = 0 } = req.body;
+  const { emails, priority = EmailQueuePriority.URGENT } = req.body;
 
   commandBus
     .execute(new SendCommand({ emails, priority }))

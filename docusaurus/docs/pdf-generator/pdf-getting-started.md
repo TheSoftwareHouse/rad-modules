@@ -11,13 +11,13 @@ To start playing with the pdf generator service you need:
 2. Installed docker and docker-compose (optional but it will save you a lot of time)
 
 After that please follow steps:
-1. Create a catalog where we will be playing with the mailer service:
+1. Create a directory where we will be playing with the pdf service:
 
 ```text
 mkdir pdf-service-playground
 ```
 
-2. Go to the catalog:
+2. Go to the directory:
 
 ```text
 cd pdf-service-playground

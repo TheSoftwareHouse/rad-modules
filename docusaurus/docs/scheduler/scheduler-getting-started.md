@@ -11,13 +11,13 @@ To start playing with the scheduler service you need:
 2. Installed docker and docker-compose (optional but it will save you a lot of time)
 
 After that please follow steps:
-1. Create a catalog where we will be playing with the scheduler service:
+1. Create a directory where we will be playing with the scheduler service:
 
 ```text
 mkdir scheduler-service-playground
 ```
 
-2. Go to the catalog:
+2. Go to the directory:
 
 ```text
 cd scheduler-service-playground
@@ -88,7 +88,7 @@ networks:
 ```
 
 6. Let's add simple web API to our workspace so we will be able to call some API methods from the scheduler
-  * Create API catalog
+  * Create API directory
 ```text
  mkdir api && cd api
 ```
@@ -175,7 +175,7 @@ app.post("/api/test-scheduler", async (req, res) => {
 app.listen(port, () => console.log(`App listening on ${port}`));
 ```
 
-7. In `api` catalog add `Dockerfile`
+7. In `api` directory add `Dockerfile`
 ```dockerfile
 FROM node:12.2.0-alpine
 
@@ -195,7 +195,7 @@ CMD ["npm", "run", "watch"]
  docker-compose up
 ```
 
-9. Now, if everything is running, we can schedule a job. In our app, I created an endpoint with will display TEST-SCHEDULER in the console. So if we want the scheduler will call that endpoint every minute we need to create job by requesting scheduler API (we can use swagger endpoint or use our endpoint in the app I will use our endpoint). Request the endpoint with tool you like.
+9. Now, if everything is running, we can schedule a job. In app, we created an endpoint that will display TEST-SCHEDULER in the console. So if we want to call that endpoint every minute, we need to create job by requesting scheduler API (we can use swagger endpoint or use endpoint in the app).
 
 ```text
  POST: http://localhost:30003/api/schedule-job
@@ -235,6 +235,21 @@ After that you should see TEST-SCHEDULER every minute in your console.
 ```
 >Important! Ensure time on the Redis server and, the scheduler host is the same. If the Redis current DateTime is 2020-07-10 11:00:00 and the current time in the scheduler is 2020-07-10 13:00:00 and, you will schedule the  "cron" job to start at 2020-07-10 14:30:00. You could think the job will start in 1,5 hour time but it will start in 3,5 hour time because Redis server time is set back by two hours.
 
+## How to set up Scheduler service in your docker-compose file:
+
+```
+  scheduler:
+    image: tshio/scheduler:latest
+    command: api
+    hostname: scheduler
+    depends_on:
+      - redis
+    networks:
+      - app
+```
+
+Scheduler service depends on other container to work correctly: Cache (Redis). Therefore we need to use depends_on property.
+
 ## How to cancel scheduled job?
 
 If you create a repeatable job, you can cancel it by sending a DELETE request to  the URL with jobId query parameter:
@@ -265,6 +280,7 @@ If you want to create repeatable job which will start in the future, you need to
  }
 ```
 >Note: Ensure scheduler host time is the same as Redis server time. 
+>Note: Ensure `cronStartDate` is a valid JS format
 
 ## How to create a repeatable job which will start in the future and will finish in some time?
 
@@ -286,6 +302,7 @@ If you want to create repeatable job which will start in the future and will fin
  }
 ```
 >Note: Ensure scheduler host time is the same as Redis server time. 
+>Note: Ensure `cronStartDate` and `cronEndDate` are a valid JS format
 
 ## How to create a repeatable job which will repeat `X` times?
 

@@ -12,13 +12,13 @@ To start playing with the security service you need:
 
 After that please follow steps:
 
-1. Create a catalog where we will be playing with the security service:
+1. Create a directory where we will be playing with the security service:
 
 ```text
 mkdir security-service-playground
 ```
 
-2. Go to the catalog:
+2. Go to the directory:
 
 ```text
 cd security-service-playground
@@ -45,9 +45,9 @@ touch docker-compose.yml
 
 Now you can go to http://localhost:50050/api-docs/#/ and play with security.
 
-Mostly all of the endpoints are secured and you need to provide JWT token to use them. So firstly you need to use login endpoint to receive JWT token. After that insert token to padlock icon (only token without Bearer part) and click login.
+Most of the endpoints are secured, so you need to provide JWT token. To get JWT token you need to authenticate by using login endpoint. After that insert token to padlock icon (only token without, Bearer part) and click login.
 
-Or you can open the admin panel that is a separate service (go to http://localhost:9000/) and log in with default credentials: superadmin, superadmin (remember to change this defaults when you will be using the security service on production)
+You can also open the admin panel (separate service, check RAD Admin). The panel should be available on http://localhost:9000/. By default you should be able to log in with default credentials: superadmin, superadmin (remember to change this defaults for production environment)
 
 ## Working example docker-compose.yaml
 

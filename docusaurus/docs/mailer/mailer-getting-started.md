@@ -11,38 +11,38 @@ To start playing with the mailer service you need:
 2. Installed docker and docker-compose (optional but it will save you a lot of time)
 
 After that please follow steps:
-1. Create a catalog where we will be playing with the mailer service:
+1. Create a directory where we will be playing with the mailer service:
 
 ```text
 mkdir mailer-service-playground
 ```
 
-2. Go to the catalog:
+2. Go to the directory:
 
 ```text
 cd mailer-service-playground
 ```
 
-3. Create the catalog for email templates. 
+3. Create the directory for email templates. 
 ```text
 mkdir mail-templates
 ```
 
-4. Go to the mail-templates catalog:
+4. Go to the mail-templates directory:
 
 ```text
 cd mail-templates
 ```
 
-5. Create the catalog for your first sample email template. Let's call it hello-word
+5. Create the directory for your first simple email template. Let's call it hello-world
 ```text
-mkdir hello-word
+mkdir hello-world
 ```
 
-6. Go to the hello-word catalog:
+6. Go to the hello-world directory:
 
 ```text
-cd hello-word
+cd hello-world
 ```
 
 7. Create two (.pug) files one for email subject second for email content
@@ -50,7 +50,7 @@ cd hello-word
 touch subject.pug
 touch content.pug
 ```
-Note: Every template is stored in `/app/services/mailer/mail-templates` directory.
+Note: Every template is stored in `mail-templates` directory.
 
 The structure of that directory should be as follow:
 
@@ -82,7 +82,7 @@ h1 Hello #{username}
 p How are you?
 ```
 
-12. Back to mailer-service-playground catalog
+12. Back to mailer-service-playground directory
 
 ```text
 cd ../..
@@ -146,7 +146,7 @@ We can send our first email from mailer service:
 
 1. Click green bar, then "Try it out" button
 
-2. Past sample request body with required data
+2. Copy a sample request body with required data
 ```javascript
 {
   "emails": [
@@ -184,11 +184,11 @@ We can send our first email from mailer service:
 
 ![alt text](assets/mailhog-email.png)
 
->Note: In this example, we mock the SMPT server with MailHog, so we don't need to have any SMPT server. When we want to use the mailer service on production, we need to provide valid TRANSPORT_SMTP_HOST,
+>Note: In this example, we mock the SMPT server with MailHog, so we don't need to have any SMPT server. For production usage we need to provide valid TRANSPORT_SMTP_HOST,
 TRANSPORT_SMTP_PORT, TRANSPORT_SMTP_AUTH_USER, TRANSPORT_SMTP_AUTH_PASSWORD (you can find more in Advanced configuration section)
 
 
-## How to send one email?
+## How to send single email?
 
 ```javascript
 const body = {
@@ -256,7 +256,7 @@ fetch("http://mailer:50050/api/mailer/send", {
 });
 ```
 
-## How to send meany differ emails at once?
+## How to send multiple different emails at once?
 ```javascript
 const body = {
   emails: [
@@ -395,7 +395,7 @@ const delayedEmails = {
       }
     }
   ],
-  priority: 1
+  priority: "high"
 }
 
 fetch("http://mailer:50050/api/mailer/send", {
@@ -416,7 +416,7 @@ fetch("http://mailer:50050/api/mailer/send", {
 ## How to create custom email template?
 
 We use [PUG](https://pugjs.org/api/getting-started.html) syntax in our templates.
-All email templates are in the mail-templates catalog. The catalog structure should look like:
+All email templates are in the mail-templates directory. The directory structure should look like:
 
 ```text
 mail-templates:
@@ -431,7 +431,7 @@ volumes:
       - ./mail-templates:/app/services/mailer/mail-templates
 ```
 
-To create a new template, you need to add a new catalog into `mail-templates` with two files: `subject.pug`, `content.pug`. So if we want do add new `hello-world` template it should look like:
+To create a new template, you need to add a new directory into `mail-templates` with two files: `subject.pug`, `content.pug`. So if we want do add new `hello-world` template it should look like:
 
 ```text
 mail-templates:
