@@ -25,7 +25,7 @@ jobs:
       script:
         - npm run docker-build-mailer-prod
         - npm run mailer-integration
-      env: TRANSPORT_SMTP_HOST=smtp
+      env: TRANSPORT_SMTP_HOST=mailhog
       name: "Mailer integration tests"
       if: branch = master
     - # notifications
