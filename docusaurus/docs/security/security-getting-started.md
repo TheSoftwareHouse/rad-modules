@@ -87,9 +87,10 @@ services:
       - app
 
   security-panel:
-    image: tshio/rad-admin:0.0.3
+    image: tshio/rad-admin:0.0.12
     environment:
       REACT_APP_SECURITY_API_URL: "http://localhost:50050"
+      REACT_APP_MODULES: security
     ports:
       - 9000:80
     networks:
