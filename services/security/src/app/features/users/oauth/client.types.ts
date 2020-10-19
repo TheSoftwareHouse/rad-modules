@@ -1,6 +1,4 @@
-export type OAuthUser = {
-  email: string;
-};
+export type OAuthUser = any;
 
 export type OAuthDefaultLogin = {
   code: string;

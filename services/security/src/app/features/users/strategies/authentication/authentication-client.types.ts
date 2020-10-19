@@ -4,7 +4,7 @@ type Tokens = {
 };
 
 export interface AuthenticationClient {
-  login: (username: string, password: string) => Promise<Tokens>;
+  login: (username?: string, password?: string, code?: string) => Promise<Tokens>;
   loginWithoutPassword: (username: string) => Promise<Tokens>;
   resetPassword: (userName: string, newPassword: string) => Promise<void>;
   setNewPassword: (userName: string, oldPassword: string, newPassword: string) => Promise<void>;

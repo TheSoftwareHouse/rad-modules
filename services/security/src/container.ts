@@ -202,6 +202,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     keycloakManagerConfig: awilix.asValue(keycloakManagerConfig),
     apiKeyHeaderName: awilix.asValue(config.apiKeyHeaderName),
     apiKeyRegex: awilix.asValue(config.apiKeyRegex),
+    authenticationStrategy: awilix.asValue(config.authenticationStrategy),
   });
 
   container.register({

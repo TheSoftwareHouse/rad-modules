@@ -10,8 +10,9 @@ export interface LoginActionProps {
 export const loginActionValidation = celebrate(
   {
     body: Joi.object({
-      username: Joi.string().required(),
-      password: Joi.string().required(),
+      username: Joi.string().optional(),
+      password: Joi.string().optional(),
+      code: Joi.string().optional(),
     }).required(),
   },
   { abortEarly: false },
@@ -90,6 +91,7 @@ export const loginAction = ({ commandBus }: LoginActionProps) => (req: Request, 
       new LoginCommand({
         username: req.body.username,
         password: req.body.password,
+        code: req.body.code,
       }),
     )
     .then((commandResult) => {

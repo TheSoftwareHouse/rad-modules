@@ -54,9 +54,7 @@ export class MicrosoftClient implements OAuthClient {
           );
         }
 
-        return {
-          email: tokenDecoded.email,
-        };
+        return tokenDecoded;
       });
   }
 
