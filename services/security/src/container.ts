@@ -58,6 +58,7 @@ import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subs
 import UserEventSubscriber from "./app/features/users/subscribers/user.subscriber";
 import { httpEventHandler } from "./shared/event-dispatcher/http-event-hander";
 import { KeycloakAuthenticationClientConfig } from "./config/keycloak.config";
+import { KeycloakClient } from "./app/features/users/oauth/keycloak/keycloak-client";
 
 // MODELS_IMPORTS
 
@@ -193,6 +194,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     googleClient: awilix.asClass(GoogleClient),
     facebookClient: awilix.asClass(FacebookClient),
     microsoftClient: awilix.asClass(MicrosoftClient),
+    keycloakClient: awilix.asClass(KeycloakClient),
     usersService: awilix.asClass(UsersService),
     policyService: awilix.asClass(PolicyService),
     accessKeyService: awilix.asClass(AccessKeyService),

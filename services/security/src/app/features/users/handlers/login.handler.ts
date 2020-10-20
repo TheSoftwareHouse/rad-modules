@@ -12,8 +12,8 @@ export default class LoginHandler implements Handler<LoginCommand> {
   constructor(private dependencies: LoginHandlerProps) {}
 
   async execute(command: LoginCommand) {
-    const { username, password, code } = command.payload;
-    const { accessToken, refreshToken } = await this.dependencies.authenticationClient.login(username, password, code);
+    const { username, password } = command.payload;
+    const { accessToken, refreshToken } = await this.dependencies.authenticationClient.login(username, password);
 
     return {
       accessToken,

@@ -11,8 +11,6 @@ import { ForbiddenError } from "../../../../../../errors/forbidden.error";
 import { PolicyRepository } from "../../../../../../repositories/policy.repository";
 import { JwtUtils } from "../../../../../../tokens/jwt-utils";
 import { BadRequestError } from "../../../../../../errors/bad-request.error";
-import { HttpError } from "../../../../../../errors/http.error";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
 
 type CustomAuthenticationClientProps = {
   accessTokenConfig: TokenConfig;
@@ -28,12 +26,8 @@ type CustomAuthenticationClientProps = {
 export class BuiltInAuthenticationClient implements AuthenticationClient {
   constructor(private dependencies: CustomAuthenticationClientProps) {}
 
-  public async login(username?: string, password?: string, code?: string) {
+  public async login(username: string, password: string) {
     const { usersRepository, userActivationConfig, policyRepository, jwtUtils, tokenPayloadConfig } = this.dependencies;
-
-    if (!username || !password) {
-      throw new HttpError("TODO: improve joi", INTERNAL_SERVER_ERROR);
-    }
     const user = await usersRepository.findByUsername(username);
 
     if (!user || user.password !== hashWithSha512(password, user.passwordSalt)) {

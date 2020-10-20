@@ -3,9 +3,8 @@ import { Command } from "../../../../../../../shared/command-bus";
 export const LOGIN_COMMAND_TYPE = "users/LOGIN";
 
 export interface LoginCommandPayload {
-  username?: string;
-  password?: string;
-  code?: string;
+  username: string;
+  password: string;
 }
 
 export class LoginCommand implements Command<LoginCommandPayload> {

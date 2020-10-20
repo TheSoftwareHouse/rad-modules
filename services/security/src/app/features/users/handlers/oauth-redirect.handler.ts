@@ -8,13 +8,13 @@ import { GoogleClient } from "../oauth/google/google-client";
 import { FacebookClient } from "../oauth/facebook/facebook-client";
 import { OAuthClient } from "../oauth/client.types";
 import { MicrosoftClient } from "../oauth/microsoft/microsoft-client";
-import { HttpError } from "../../../../errors/http.error";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { KeycloakClient } from "../oauth/keycloak/keycloak-client";
 
 interface OauthRedirectHandlerProps {
   googleClient: GoogleClient;
   facebookClient: FacebookClient;
   microsoftClient: MicrosoftClient;
+  keycloakClient: KeycloakClient;
   oauthFirstLogin: OauthFirstLogin;
   authenticationClient: AuthenticationClient;
   logger: Logger;
@@ -35,6 +35,7 @@ export default class OauthRedirectHandler implements Handler<OauthRedirectComman
       googleClient,
       facebookClient,
       microsoftClient,
+      keycloakClient,
       authenticationStrategy,
     } = this.dependencies;
     const { code, redirectUrl, provider } = command.payload as any;
@@ -43,29 +44,36 @@ export default class OauthRedirectHandler implements Handler<OauthRedirectComman
       google: googleClient,
       facebook: facebookClient,
       microsoft: microsoftClient,
+      keycloak: keycloakClient,
     };
+
+    if (provider === "keycloak" && authenticationStrategy === AuthenticationStrategy.Keycloak) {
+      const tokens = await keycloakClient.login({ code, redirectUrl });
+
+      return {
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        username: tokens.email,
+      };
+    }
 
     const oauthProvider = providers[provider ?? OauthProvider.GOOGLE] as OAuthClient;
 
     const oauthUser = await oauthProvider.login({ code, redirectUrl });
 
-    if (authenticationStrategy === AuthenticationStrategy.Keycloak) {
-      throw new HttpError("", INTERNAL_SERVER_ERROR);
-    } else {
-      const userNameExists = await usersService.userNameExists(oauthUser.email);
+    const userNameExists = await usersService.userNameExists(oauthUser.email);
 
-      if (!userNameExists && oauthFirstLogin.createUserAccount) {
-        const user = await usersService.createOauthUser(oauthUser.email);
-        await usersService.addAttributes(user, oauthFirstLogin.defaultAttributes);
-      }
-
-      const { accessToken, refreshToken } = await authenticationClient.loginWithoutPassword(oauthUser.email);
-
-      return {
-        accessToken,
-        refreshToken,
-        username: oauthUser.email,
-      };
+    if (!userNameExists && oauthFirstLogin.createUserAccount) {
+      const user = await usersService.createOauthUser(oauthUser.email);
+      await usersService.addAttributes(user, oauthFirstLogin.defaultAttributes);
     }
+
+    const { accessToken, refreshToken } = await authenticationClient.loginWithoutPassword(oauthUser.email);
+
+    return {
+      accessToken,
+      refreshToken,
+      username: oauthUser.email,
+    };
   }
 }

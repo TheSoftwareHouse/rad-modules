@@ -57,31 +57,26 @@ export class KeycloakManager {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
-    })
-      .then(async (response) => {
-        const textData = await response.text();
-        if (response.status >= 400) {
-          throw new HttpError(textData, response.status);
-        }
+    }).then(async (response) => {
+      const textData = await response.text();
+      if (response.status >= 400) {
+        throw new HttpError(textData, response.status);
+      }
 
-        const jsonData = JSON.parse(textData) as any;
+      const jsonData = JSON.parse(textData) as any;
 
-        const idToken = jwt.decode(jsonData.id_token) as any;
+      const idToken = jwt.decode(jsonData.id_token) as any;
 
-        if (!idToken.user_id) {
-          throw new HttpError("No user_id property in idToken. Wrong keycloak configuration.", INTERNAL_SERVER_ERROR);
-        }
+      if (!idToken.user_id) {
+        throw new HttpError("No user_id property in idToken. Wrong keycloak configuration.", INTERNAL_SERVER_ERROR);
+      }
 
-        return {
-          userId: idToken.user_id,
-          accessToken: jsonData.access_token,
-          refreshToken: jsonData.refresh_token,
-        };
-      })
-      .catch((e) => {
-        console.log("login error", e.message);
-        throw e;
-      });
+      return {
+        userId: idToken.user_id,
+        accessToken: jsonData.access_token,
+        refreshToken: jsonData.refresh_token,
+      };
+    });
   }
 
   public async refreshToken(refreshToken: string) {

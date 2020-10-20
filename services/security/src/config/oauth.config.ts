@@ -4,6 +4,7 @@ export enum OauthProvider {
   GOOGLE = "google",
   FACEBOOK = "facebook",
   MICROSOFT = "microsoft",
+  KEYCLOAK = "keycloak",
 }
 
 export enum AuthenticationStrategy {

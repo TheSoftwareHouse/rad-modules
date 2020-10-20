@@ -25,16 +25,8 @@ export interface KeycloakClientProperties {
 export class KeycloakAuthenticationClient implements AuthenticationClient {
   constructor(private dependencies: KeycloakClientProperties) {}
 
-  public async login(username?: string, password?: string, code?: string) {
+  public async login(username: string, password: string) {
     const { keycloakManager, jwtUtils } = this.dependencies;
-
-    if (code) {
-      console.log("login with code");
-    }
-
-    if (!username || !password) {
-      throw new HttpError("TODO: improve joi", INTERNAL_SERVER_ERROR);
-    }
 
     const data = await keycloakManager.login(username, password);
 
