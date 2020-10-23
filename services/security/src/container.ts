@@ -57,7 +57,6 @@ import { EventDispatcher } from "./shared/event-dispatcher";
 import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subscriber";
 import UserEventSubscriber from "./app/features/users/subscribers/user.subscriber";
 import { httpEventHandler } from "./shared/event-dispatcher/http-event-hander";
-import { KeycloakAuthenticationClientConfig } from "./config/keycloak.config";
 import { KeycloakClient } from "./app/features/users/oauth/keycloak/keycloak-client";
 
 // MODELS_IMPORTS
@@ -110,17 +109,9 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     throw inititalPoliciesValidationResult.error;
   }
 
-  const keycloakAuthenticationClientConfig: KeycloakAuthenticationClientConfig | null = await import(
-    config.keycloakClientConfig.clientConfigJsonPath
-  ).catch(() => null);
-
-  const { keycloakManagerConfig } = config.keycloakClientConfig;
-
   const container: AwilixContainer = awilix.createContainer({
     injectionMode: awilix.InjectionMode.PROXY,
   });
-
-  // const { usersRepository, policyRepository } =  getRepositories(config.authenticationStrategy);
 
   const logger = createLogger(loggerConfiguration(config.logger.logLevel));
   const { requestLoggerFormat } = config.requestLogger;
@@ -200,8 +191,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     accessKeyService: awilix.asClass(AccessKeyService),
     superAdminRoleName: awilix.asValue(config.superAdminRoleName),
     superAdminUser: awilix.asValue(config.superAdminUser),
-    keycloakAuthenticationClientConfig: awilix.asValue(keycloakAuthenticationClientConfig ?? config.keycloakClientConfig.keycloakAuthClientConfig),
-    keycloakManagerConfig: awilix.asValue(keycloakManagerConfig),
+    keycloakClientConfig: awilix.asValue(config.keycloakClientConfig),
     apiKeyHeaderName: awilix.asValue(config.apiKeyHeaderName),
     apiKeyRegex: awilix.asValue(config.apiKeyRegex),
     authenticationStrategy: awilix.asValue(config.authenticationStrategy),

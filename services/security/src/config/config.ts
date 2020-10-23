@@ -236,7 +236,7 @@ export {
   OauthFirstLogin,
   MicrosoftClientConfig,
 } from "./oauth.config";
-export { KeycloakClientConfig, KeycloakClientConfigSchema, KeycloakManagerConfig } from "./keycloak.config";
+export { KeycloakClientConfig, KeycloakClientConfigSchema } from "./keycloak.config";
 export { LoggerConfig, LoggerSchema, MorganFormatTypes, RequestLoggerConfig } from "./logger.config";
 export { MailerSchema, SmtpConfiguration } from "./mailer.config";
 export { AdminPanelPoliciesConfig } from "./admin-panel-policies.config";

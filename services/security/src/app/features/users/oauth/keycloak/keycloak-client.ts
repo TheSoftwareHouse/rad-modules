@@ -2,18 +2,18 @@ import { OAuthClient, OAuthDefaultLogin, OAuthLogin, OAuthLoginIdToken, OAuthUse
 import fetch from "node-fetch";
 import { HttpError } from "../../../../../errors/http.error";
 import { FORBIDDEN, INTERNAL_SERVER_ERROR } from "http-status-codes";
-import { KeycloakManagerConfig } from "../../../../../config/config";
+import { KeycloakClientConfig } from "../../../../../config/config";
 import * as jwt from "jsonwebtoken";
 
 interface KeycloakClientProps {
-  keycloakManagerConfig: KeycloakManagerConfig;
+  keycloakClientConfig: KeycloakClientConfig;
 }
 
 export class KeycloakClient implements OAuthClient {
   constructor(private dependencies: KeycloakClientProps) {}
 
   async login(oauthLogin: OAuthLogin): Promise<OAuthUser> {
-    const { clientId, clientSecret, keycloakUrl } = this.dependencies.keycloakManagerConfig;
+    const { clientId, clientSecret, keycloakUrl } = this.dependencies.keycloakClientConfig;
     const { code, redirectUrl } = oauthLogin as OAuthDefaultLogin;
 
     const params = new URLSearchParams();

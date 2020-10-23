@@ -1,6 +1,6 @@
 import { AuthenticationClient } from "../authentication-client.types";
 import { ForbiddenError } from "../../../../../../errors/forbidden.error";
-import { KeycloakManagerConfig, TokenConfig, UserActivationConfig } from "../../../../../../config/config";
+import { TokenConfig, UserActivationConfig } from "../../../../../../config/config";
 import { JwtUtils } from "../../../../../../tokens/jwt-utils";
 import { KeycloakManager } from "../../../../../../utils/keycloak/keycloak-manager";
 import { NotFoundError } from "../../../../../../errors/not-found.error";
@@ -9,11 +9,8 @@ import { UsersRepository } from "../../../../../../repositories/users.repostiory
 import { PolicyRepository } from "../../../../../../repositories/policy.repository";
 import { HttpError } from "../../../../../../errors/http.error";
 import { INTERNAL_SERVER_ERROR } from "http-status-codes";
-import { KeycloakAuthenticationClientConfig } from "../../../../../../config/keycloak.config";
 
 export interface KeycloakClientProperties {
-  keycloakAuthenticationClientConfig: KeycloakAuthenticationClientConfig;
-  keycloakManagerConfig: KeycloakManagerConfig;
   jwtUtils: JwtUtils;
   accessTokenConfig: TokenConfig;
   keycloakManager: KeycloakManager;
@@ -39,7 +36,7 @@ export class KeycloakAuthenticationClient implements AuthenticationClient {
     };
   }
 
-  public async refreshToken(refreshToken: string) {
+  public async refreshToken(accessToken: string, refreshToken: string) {
     const { keycloakManager, jwtUtils } = this.dependencies;
 
     const data = await keycloakManager.refreshToken(refreshToken);
