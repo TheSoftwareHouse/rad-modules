@@ -47,7 +47,7 @@ export default class OauthRedirectHandler implements Handler<OauthRedirectComman
       keycloak: keycloakClient,
     };
 
-    if (provider === "keycloak" && authenticationStrategy === AuthenticationStrategy.Keycloak) {
+    if (provider === OauthProvider.KEYCLOAK && authenticationStrategy === AuthenticationStrategy.Keycloak) {
       const tokens = await keycloakClient.login({ code, redirectUrl });
 
       return {
