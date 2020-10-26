@@ -24,7 +24,7 @@ export const apiKeyRegex = new RegExp(
 );
 
 export const passwordRegex = new RegExp(
-  process.env.API_KEY_REGEX || ".{8,}", // by default minimum 8 any chars
+  process.env.PASSWORD_REGEX || ".{8,}", // by default minimum 8 any chars
 );
 
 const passwordSchema = Joi.object({
