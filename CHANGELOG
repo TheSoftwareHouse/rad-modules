@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2020-10-26 v0.0.64
+Added
+- Keycloak/OpenID auth provider
+
 ### 2020-09-09 v0.0.63
 Bugfix
 - Fix keycloak-manager (wrong configuration names)
