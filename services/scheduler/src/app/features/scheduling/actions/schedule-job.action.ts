@@ -122,7 +122,6 @@ export const scheduleJobActionValidation = celebrate(
  *                    required: false
  *                  options:
  *                    type: object
- *                    required: false
  *                    properties:
  *                      compress:
  *                        type: boolean
