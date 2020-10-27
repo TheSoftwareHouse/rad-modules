@@ -99,7 +99,6 @@ export const scheduleJobActionValidation = celebrate(
  *                required: true
  *              payload:
  *                type: object
- *                required: true
  *                properties:
  *                  method:
  *                    type: string

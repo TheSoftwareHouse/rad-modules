@@ -34,11 +34,7 @@ export class FacebookClient implements OAuthClient {
       method: "GET",
     });
 
-    const { email } = await userInfoResponse.json();
-
-    return {
-      email,
-    };
+    return userInfoResponse.json();
   }
 
   async loginWithToken(_oauthLoginIdToken: OAuthLoginIdToken): Promise<OAuthUser> {

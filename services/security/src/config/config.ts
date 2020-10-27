@@ -24,7 +24,7 @@ export const apiKeyRegex = new RegExp(
 );
 
 export const passwordRegex = new RegExp(
-  process.env.API_KEY_REGEX || ".{8,}", // by default minimum 8 any chars
+  process.env.PASSWORD_REGEX || ".{8,}", // by default minimum 8 any chars
 );
 
 const passwordSchema = Joi.object({
@@ -236,7 +236,7 @@ export {
   OauthFirstLogin,
   MicrosoftClientConfig,
 } from "./oauth.config";
-export { KeycloakClientConfig, KeycloakClientConfigSchema, KeycloakManagerConfig } from "./keycloak.config";
+export { KeycloakClientConfig, KeycloakClientConfigSchema } from "./keycloak.config";
 export { LoggerConfig, LoggerSchema, MorganFormatTypes, RequestLoggerConfig } from "./logger.config";
 export { MailerSchema, SmtpConfiguration } from "./mailer.config";
 export { AdminPanelPoliciesConfig } from "./admin-panel-policies.config";

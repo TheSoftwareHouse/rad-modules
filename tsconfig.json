@@ -4,6 +4,7 @@
     "types": ["node"],
     "module": "commonjs",
     "declaration": false,
+    "esModuleInterop": false,
     "strict": true,
     "allowSyntheticDefaultImports": false,
     "emitDecoratorMetadata": true,

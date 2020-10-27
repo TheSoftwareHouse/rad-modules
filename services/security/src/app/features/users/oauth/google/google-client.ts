@@ -54,7 +54,7 @@ export class GoogleClient implements OAuthClient {
 
     const { data } = await oAuth2Client.request({ url: getUserInfoUrl }).catch(gaxiosErrorToHttpError);
 
-    return this.getEmail(data as UserInfo);
+    return data;
   }
 
   async loginWithToken(oauthLoginIdToken: OAuthLoginIdToken): Promise<OAuthUser> {

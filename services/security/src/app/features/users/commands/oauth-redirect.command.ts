@@ -1,9 +1,10 @@
 import { Command } from "../../../../../../../shared/command-bus";
+import { OauthProvider } from "../../../../config/oauth.config";
 
 export const OAUTH_REDIRECT_COMMAND_TYPE = "users/OAUTHREDIRECT";
 
 export interface OauthRedirectCommandPayload {
-  provider: string;
+  provider: OauthProvider;
   code: string;
   redirectUrl: string;
 }
