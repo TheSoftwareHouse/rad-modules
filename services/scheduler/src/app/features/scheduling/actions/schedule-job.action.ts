@@ -1,57 +1,17 @@
 import { Request, Response, NextFunction } from "express";
-import { celebrate, Joi } from "celebrate";
+import { celebrate } from "celebrate";
 import { CommandBus } from "../../../../../../../shared/command-bus";
 import { ScheduleJobCommand } from "../commands/schedule-job.command";
 import { CREATED } from "http-status-codes";
-import { HttpMethod, JobType } from "../../../../scheduler";
+import { ScheduleJobSchema } from "../../../../config/config";
 
 export interface ScheduleJobActionProps {
   commandBus: CommandBus;
 }
 
-const cronRegex = new RegExp(
-  /^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/,
-);
-
 export const scheduleJobActionValidation = celebrate(
   {
-    body: Joi.object({
-      name: Joi.string().required(),
-      type: Joi.string()
-        .valid(...Object.values(JobType))
-        .required(),
-      payload: Joi.object({
-        method: Joi.string()
-          .valid(...Object.keys(HttpMethod))
-          .optional(),
-        url: Joi.string().required(),
-        headers: Joi.object().pattern(/.*/, [Joi.string()]).optional(),
-        body: Joi.alternatives().try(Joi.string().allow(""), Joi.object().unknown(), Joi.array()).optional(),
-        options: Joi.object({
-          compress: Joi.boolean().optional(),
-          follow: Joi.number().min(0).optional(),
-          size: Joi.number().min(0).optional(),
-          timeout: Joi.number().min(0).optional(),
-        }).optional(),
-      }).required(),
-      jobOptions: Joi.object({
-        priority: Joi.number().optional(),
-        delay: Joi.number().optional(),
-        attempts: Joi.number().optional(),
-        cron: Joi.string().regex(cronRegex).optional(),
-        cronStartDate: Joi.date().optional(),
-        cronEndDate: Joi.date().optional(),
-        cronTimeZone: Joi.string().optional(),
-        cronLimit: Joi.number().optional(),
-        backoff: Joi.number().optional(),
-        lifo: Joi.boolean().optional(),
-        timeout: Joi.number().optional(),
-        removeOnComplete: Joi.boolean().optional(),
-        removeOnFail: Joi.boolean().optional(),
-        stackTraceLimit: Joi.number().optional(),
-      }).optional(),
-      startImmediately: Joi.boolean().optional(),
-    }).required(),
+    body: ScheduleJobSchema.required(),
   },
   { abortEarly: false },
 );

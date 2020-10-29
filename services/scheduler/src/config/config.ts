@@ -1,6 +1,7 @@
 import { TransportProtocol } from "../../../../shared/enums/transport-protocol";
 import { Joi } from "celebrate";
 import { DbConfigSchema, DbConfig, getDbConfig } from "./db.config";
+import { HttpMethod, JobType } from "../scheduler";
 
 export const appConfigSchema = Joi.object({
   port: Joi.number().port().required(),
@@ -20,7 +21,52 @@ export const appConfigSchema = Joi.object({
     keysToHide: Joi.array().items(Joi.string()).required(),
   }).required(),
   dbConfig: DbConfigSchema.required(),
+  initialJobsJsonPath: Joi.string().required(),
 }).required();
+
+export const JobCronRegex = new RegExp(
+  /^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/,
+);
+
+export const ScheduleJobSchema = Joi.object({
+  name: Joi.string().required(),
+  type: Joi.string()
+    .valid(...Object.values(JobType))
+    .required(),
+  payload: Joi.object({
+    method: Joi.string()
+      .valid(...Object.keys(HttpMethod))
+      .optional(),
+    url: Joi.string().required(),
+    headers: Joi.object().pattern(/.*/, [Joi.string()]).optional(),
+    body: Joi.alternatives().try(Joi.string().allow(""), Joi.object().unknown(), Joi.array()).optional(),
+    options: Joi.object({
+      compress: Joi.boolean().optional(),
+      follow: Joi.number().min(0).optional(),
+      size: Joi.number().min(0).optional(),
+      timeout: Joi.number().min(0).optional(),
+    }).optional(),
+  }).required(),
+  jobOptions: Joi.object({
+    priority: Joi.number().optional(),
+    delay: Joi.number().optional(),
+    attempts: Joi.number().optional(),
+    cron: Joi.string().regex(JobCronRegex).optional(),
+    cronStartDate: Joi.date().optional(),
+    cronEndDate: Joi.date().optional(),
+    cronTimeZone: Joi.string().optional(),
+    cronLimit: Joi.number().optional(),
+    backoff: Joi.number().optional(),
+    lifo: Joi.boolean().optional(),
+    timeout: Joi.number().optional(),
+    removeOnComplete: Joi.boolean().optional(),
+    removeOnFail: Joi.boolean().optional(),
+    stackTraceLimit: Joi.number().optional(),
+  }).optional(),
+  startImmediately: Joi.boolean().optional(),
+});
+
+export const InitialJobsSchema = Joi.array().items(ScheduleJobSchema).required();
 
 export enum MorganFormatTypes {
   Combined = "combined",
@@ -51,6 +97,7 @@ export type AppConfig = {
     keysToHide: string[];
   };
   dbConfig: DbConfig;
+  initialJobsJsonPath: string;
 };
 
 export const appConfig: AppConfig = {
@@ -73,4 +120,5 @@ export const appConfig: AppConfig = {
       : ["password", "token", "accessToken", "accessKey", "authorization"],
   },
   dbConfig: getDbConfig(),
+  initialJobsJsonPath: process.env.INITIAL_JOBS_JSON_PATH || "/app/services/scheduler/init-data-volume/jobs.json",
 };

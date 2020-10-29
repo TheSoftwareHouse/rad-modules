@@ -3,7 +3,7 @@ import { BullScheduler } from "./scheduler/producer/bull.scheduler";
 import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
 import { AwilixContainer, Lifetime } from "awilix";
-import { AppConfig } from "./config/config";
+import { AppConfig, InitialJobsSchema } from "./config/config";
 import { createRouter } from "./app/applications/http/router";
 import { CommandBus } from "../../../shared/command-bus";
 import { createApp } from "./app/application-factories/create-http-app";
@@ -18,6 +18,8 @@ import { requestLogger } from "./middleware/request-logger";
 import { createConnection, getCustomRepository } from "typeorm";
 import { JobsTypeormRepository } from "./repositories/jobs.typeorm.repository";
 import { BullQueueDb } from "./scheduler/bull-db";
+import { InitScheduler } from "./utils/init-scheduler";
+import { JobDescription } from "./scheduler";
 // ROUTING_IMPORTS
 
 const HANDLER_REGEX = /.+Handler$/;
@@ -27,6 +29,12 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
 
   if (error) {
     throw error;
+  }
+
+  const initialJobs: JobDescription[] = await import(config.initialJobsJsonPath);
+  const inititalJobsValidationResult = InitialJobsSchema.validate(initialJobs);
+  if (inititalJobsValidationResult.error) {
+    throw inititalJobsValidationResult.error;
   }
 
   const container: AwilixContainer = awilix.createContainer({
@@ -57,6 +65,8 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     scheduler: awilix.asClass(BullScheduler).singleton(),
     schedulerConsumer: awilix.asClass(BullSchedulerConsumer).singleton(),
     dbBull: awilix.asClass(BullQueueDb).singleton(),
+    initialJobs: awilix.asValue(initialJobs),
+    initScheduler: awilix.asClass(InitScheduler).singleton(),
   });
 
   container.register({

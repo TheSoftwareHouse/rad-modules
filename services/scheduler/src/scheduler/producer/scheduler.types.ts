@@ -1,5 +1,5 @@
 import { JobOptions, JobStatus } from "../../app/features/scheduling/models/job.model";
-import { JobType } from "../index";
+import { JobDescription, JobType } from "../index";
 
 export interface SchedulerJob {
   name: string;
@@ -12,4 +12,5 @@ export interface SchedulerJob {
 export interface Scheduler {
   scheduleJob: (job: SchedulerJob) => Promise<{ id: string }>;
   cancelJob: (jobName: string) => Promise<void>;
+  createJob: (jobDescription: JobDescription) => Promise<{ id: string }>;
 }
