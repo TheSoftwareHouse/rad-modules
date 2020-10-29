@@ -12,10 +12,10 @@ export class InitScheduler {
 
   public async addJobSilent(job: JobDescription) {
     const { scheduler, logger } = this.dependencies;
-    const result = scheduler
+    const result = await scheduler
       .createJob(job)
       .then(() => `Initial job added: ${job}`)
-      .catch((error) => `InitialJobs error: ${error.message} while adding initial job: ${job}`);
+      .catch((error) => `InitialJobs error: "${error.message}" while adding initial job: ${job}`);
     logger.info(result);
   }
 

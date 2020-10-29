@@ -60,6 +60,8 @@ services:
     working_dir: /app/build/services/scheduler
     command: "api"
     hostname: scheduler
+    volumes:
+      - ./init-data-volume/:/app/services/scheduler/init-data-volume
     ports:
       - 50070:50050
     depends_on:

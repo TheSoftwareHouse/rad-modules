@@ -41,3 +41,35 @@ JOB_ATTEMPTS_NUMBER:
 TIME_BETWEEN_ATTEMPTS_IN_MS:
 - **_Description_**: Setting for automatic retries if the job fails.
 - **_Default_**: `5000`
+
+INITIAL_JOBS_JSON_PATH:
+
+- **_Description_**: The variable specifies the path to file with initial scheduler jobs
+- **_Default_**: `"/app/services/scheduler/init-data-volume/jobs.json"`
+  - Example jobs.json file:
+    ```
+    [
+      {
+        "name": "Initial Job 1",
+        "type": "http",
+        "payload": {
+          "method": "POST",
+          "url": "http://example.com?foo=bar",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": "{}",
+          "options": {
+            "compress": true,
+            "follow": 0,
+            "size": 0,
+            "timeout": 0
+          }
+        },
+        "jobOptions": {
+          "cron": "0 22 * * 1"
+        },
+        "startImmediately": true
+      }
+    ]
+    ```
