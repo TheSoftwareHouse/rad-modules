@@ -17,6 +17,15 @@ export class JobsTypeormRepository extends Repository<JobModel> implements JobsR
     });
   }
 
+  public async upsertJob(job: JobModel) {
+    return this.save(job).catch((error) => {
+      if (error?.code === this.PG_UNIQUE_CONSTRAINT_VIOLATION) {
+        return this.update({ name: job.name }, job);
+      }
+      throw error;
+    });
+  }
+
   public async addJobs(jobs: JobModel[]) {
     return this.save(jobs);
   }
@@ -52,5 +61,9 @@ export class JobsTypeormRepository extends Repository<JobModel> implements JobsR
 
   public async getActiveJobs(): Promise<JobModel[]> {
     return this.find({ where: { status: In([JobStatus.Active, JobStatus.New]) } });
+  }
+
+  public async removeJob(criteria: Partial<JobModel>) {
+    return this.delete(criteria);
   }
 }

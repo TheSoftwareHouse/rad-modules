@@ -31,10 +31,17 @@ export type HttpPayload = {
   };
 };
 
+export enum SchedulerRule {
+  NORMAL = "normal",
+  OVERWRITE = "overwrite",
+  DELETE = "delete",
+}
+
 export type JobDescription = {
   name: string;
   type: JobType;
   payload: HttpPayload;
   jobOptions: JobOptions;
   startImmediately: boolean;
+  rule?: SchedulerRule;
 };

@@ -1,7 +1,7 @@
 import { TransportProtocol } from "../../../../shared/enums/transport-protocol";
 import { Joi } from "celebrate";
 import { DbConfigSchema, DbConfig, getDbConfig } from "./db.config";
-import { HttpMethod, JobType } from "../scheduler";
+import { HttpMethod, JobType, SchedulerRule } from "../scheduler";
 
 export const appConfigSchema = Joi.object({
   port: Joi.number().port().required(),
@@ -64,6 +64,9 @@ export const ScheduleJobSchema = Joi.object({
     stackTraceLimit: Joi.number().optional(),
   }).optional(),
   startImmediately: Joi.boolean().optional(),
+  rule: Joi.string()
+    .valid(...Object.values(SchedulerRule))
+    .optional(),
 });
 
 export const InitialJobsSchema = Joi.array().items(ScheduleJobSchema).required();

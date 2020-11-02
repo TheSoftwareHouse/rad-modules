@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { celebrate } from "celebrate";
 import { CommandBus } from "../../../../../../../shared/command-bus";
 import { ScheduleJobCommand } from "../commands/schedule-job.command";
 import { CREATED } from "http-status-codes";
 import { ScheduleJobSchema } from "../../../../config/config";
+import { SchedulerRule } from "../../../../scheduler";
 
 export interface ScheduleJobActionProps {
   commandBus: CommandBus;
@@ -218,6 +219,7 @@ export const scheduleJobAction = ({ commandBus }: ScheduleJobActionProps) => (
         payload: req.body.payload,
         jobOptions: req.body.jobOptions,
         startImmediately: req.body.startImmediately ?? true,
+        rule: SchedulerRule.NORMAL,
       }),
     )
     .then((commandResult) => {

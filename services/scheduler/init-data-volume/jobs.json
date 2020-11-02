@@ -1,1 +1,25 @@
-[]
+[
+  {
+    "name": "Initial Job 1",
+    "type": "http",
+    "payload": {
+      "method": "GET",
+      "url": "http://example.com?foo=bar",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "test",
+      "options": {
+        "compress": true,
+        "follow": 0,
+        "size": 0,
+        "timeout": 0
+      }
+    },
+    "jobOptions": {
+      "cron": "0 22 * * 1"
+    },
+    "startImmediately": true,
+    "rule": "delete"
+  }
+]
