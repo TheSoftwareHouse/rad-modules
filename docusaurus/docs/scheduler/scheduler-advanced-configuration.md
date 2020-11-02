@@ -3,6 +3,16 @@ id: scheduler-advanced-configuration
 title: Advanced configuration
 ---
 
+## Production usage
+
+It is recommended to create a project specific image of scheduler that will be based on `tshio/scheduler` and (if you need) contain [Initial jobs](./scheduler-getting-started#how-to-add-startup-jobs). The easiest way to do so is to create your own `Dockerfile`:
+
+```
+FROM tshio/scheduler:latest as scheduler
+
+COPY jobs.json /app/services/scheduler/init-data-volume/
+```
+
 ## Supported environment variables
 
 LOG_LEVEL
