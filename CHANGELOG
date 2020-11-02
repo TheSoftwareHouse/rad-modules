@@ -99,8 +99,12 @@ Changed
 
 ## scheduler
 
-### 2020-10-09 v0.0.14
+### 2020-11-02 v0.0.15
 Added
+- Add initial jobs
+
+### 2020-10-09 v0.0.14
+Fixed
 - Fixed scheduled jobs and proxy call
 
 ### 2020-08-19 v0.0.13

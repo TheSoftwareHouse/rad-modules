@@ -1,3 +1,5 @@
+import { JobOptions } from "../app/features/scheduling/models/job.model";
+
 export type ObjectType = { [key: string]: string };
 
 export enum JobType {
@@ -27,4 +29,19 @@ export type HttpPayload = {
     size?: number;
     timeout?: number;
   };
+};
+
+export enum SchedulerRule {
+  NORMAL = "normal",
+  OVERWRITE = "overwrite",
+  DELETE = "delete",
+}
+
+export type JobDescription = {
+  name: string;
+  type: JobType;
+  payload: HttpPayload;
+  jobOptions: JobOptions;
+  startImmediately: boolean;
+  rule?: SchedulerRule;
 };

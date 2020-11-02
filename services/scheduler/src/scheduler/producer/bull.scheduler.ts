@@ -4,11 +4,14 @@ import * as Bull from "bull";
 import { SchedulerConfig } from "../../config/config";
 import { Job } from "bull";
 import { BullQueueDb } from "../bull-db";
-import { JobOptions } from "../../app/features/scheduling/models/job.model";
+import { JobModel, JobOptions, JobStatus } from "../../app/features/scheduling/models/job.model";
+import { JobDescription } from "../index";
+import { JobsRepository } from "../../repositories/jobs.repository";
 
 type BullSchedulerProps = {
   schedulerConfig: SchedulerConfig;
   dbBull: BullQueueDb;
+  jobsRepository: JobsRepository;
 };
 
 export class BullScheduler implements Scheduler {
@@ -40,6 +43,27 @@ export class BullScheduler implements Scheduler {
       backoff: jobOptions?.backoff || timeBetweenAttemptsInMs,
     });
     return { id: jobId };
+  }
+
+  public async createJob(jobDescription: JobDescription) {
+    const { jobsRepository } = this.dependencies;
+    const { name, type, payload, jobOptions, startImmediately } = jobDescription;
+    const status = startImmediately ? JobStatus.New : JobStatus.Paused;
+
+    const job = {
+      name,
+      type,
+      payload,
+      jobOptions,
+      status,
+    };
+    const { id } = await jobsRepository.addJob(JobModel.create(job));
+
+    if (startImmediately) {
+      await this.scheduleJob(job);
+    }
+
+    return { id };
   }
 
   public async cancelJob(jobName: string) {

@@ -15,6 +15,9 @@ COPY --from=build /app/services/scheduler/build/ /app/build/
 COPY --from=build /app/services/scheduler/package.json /app/build/services/scheduler/package.json
 COPY --from=build /app/services/scheduler/docker/prod/docker-entrypoint.sh /docker-entrypoint.sh
 
+RUN mkdir -p /app/services/scheduler/init-data-volume/
+COPY --from=build /app/services/scheduler/init-data-volume/ /app/services/scheduler/init-data-volume/
+
 RUN mkdir -p /app/services/scheduler/swagger
 COPY --from=build /app/services/scheduler/swagger/ /app/services/scheduler/swagger/
 

@@ -60,6 +60,8 @@ services:
     working_dir: /app/build/services/scheduler
     command: "api"
     hostname: scheduler
+    volumes:
+      - ./init-data-volume/:/app/services/scheduler/init-data-volume
     ports:
       - 50070:50050
     depends_on:
@@ -249,6 +251,50 @@ After that you should see TEST-SCHEDULER every minute in your console.
 ```
 
 Scheduler service depends on other container to work correctly: Cache (Redis). Therefore we need to use depends_on property.
+
+## How to add startup jobs?
+If you would like to initialize the database with jobs that you already have, you can do it by creating a new directory e.g. init-data-volume with the file in it: jobs.json. After that you need to add volumes to scheduler container in your docker-compose.
+```
+volumes:
+    - ./init-data-volume/:/app/services/scheduler/init-data-volume
+````
+jobs.json schema:
+```
+[
+  {
+    "name": "Initial Job 1",
+    "type": "http",
+    "payload": {
+      "method": "GET",
+      "url": "http://example.com?foo=bar",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "test",
+      "options": {
+        "compress": true,
+        "follow": 0,
+        "size": 0,
+        "timeout": 0
+      }
+    },
+    "jobOptions": {
+      "cron": "0 22 * * 1"
+    },
+    "startImmediately": true,
+    "rule": "overwrite"
+  }
+]
+```
+```rule``` 
+   This parameter specifies initial job behavior.
+   Available rules:
+- `normal`
+   add job without override if exist
+- `override`
+   override (stop and remove if exist, add new) job after scheduler service start
+- `delete`
+   delete the job after scheduler service start
 
 ## How to cancel scheduled job?
 
