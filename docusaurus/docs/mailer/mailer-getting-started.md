@@ -130,6 +130,14 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - app
 networks:
   app:
 ```
