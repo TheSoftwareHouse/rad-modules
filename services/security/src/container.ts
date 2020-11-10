@@ -17,11 +17,12 @@ import {
 import { createApiRouter } from "./app/applications/http/router";
 import { CommandBus } from "../../../shared/command-bus";
 import { getAuthenticationClient } from "./app/features/users/strategies/authentication/authentication-client.factory";
-import { createConnection, EntityManager, getCustomRepository } from "typeorm";
+import { createConnection, getCustomRepository } from "typeorm";
 import { createLogger } from "winston";
 import { loggerConfiguration } from "./utils/logger-configuration";
 import { PolicyService } from "./app/features/policy/services/policy-service";
 import { AttributesTypeormRepository } from "./repositories/typeorm/attributes.typeorm.repository";
+import { AttributesKeycloakRepository } from "./repositories/keycloak/attributes.keycloak.repository";
 import { usersRouting } from "./app/features/users/routing";
 import { createApp } from "./app/application-factories/create-http-app";
 import { errorHandler } from "./middleware/error-handler";
@@ -32,7 +33,7 @@ import { PolicyTypeormRepository } from "./repositories/typeorm/policy.typeorm.r
 import { policyRouting } from "./app/features/policy/routing";
 import { GoogleClient } from "./app/features/users/oauth/google/google-client";
 import { FacebookClient } from "./app/features/users/oauth/facebook/facebook-client";
-import { InitialUsers, InitialUsersProperties } from "./init/initial-users";
+import { InitialUsers } from "./init/initial-users";
 import { JwtUtils } from "./tokens/jwt-utils";
 import { ActivationTokenUtils } from "./tokens/activation-token-utils";
 import { XSecurityTokenUtils } from "./tokens/x-security-token-utils";
@@ -58,6 +59,7 @@ import PolicyEventSubscriber from "./app/features/policy/subscribers/policy.subs
 import UserEventSubscriber from "./app/features/users/subscribers/user.subscriber";
 import { httpEventHandler } from "./shared/event-dispatcher/http-event-hander";
 import { KeycloakClient } from "./app/features/users/oauth/keycloak/keycloak-client";
+import { InitialData } from "./utils/initial-configuration";
 
 // MODELS_IMPORTS
 
@@ -76,12 +78,14 @@ function getRepositories(strategy: AuthenticationStrategy) {
     case AuthenticationStrategy.Builtin: {
       const usersRepository = awilix.asValue(getCustomRepository(UsersTypeormRepository));
       const policyRepository = awilix.asValue(getCustomRepository(PolicyTypeormRepository));
-      return { usersRepository, policyRepository };
+      const attributesRepository = awilix.asValue(getCustomRepository(AttributesTypeormRepository));
+      return { usersRepository, policyRepository, attributesRepository };
     }
     case AuthenticationStrategy.Keycloak: {
       const usersRepository = awilix.asClass(UsersKeycloakRepository).singleton();
       const policyRepository = awilix.asClass(PolicyKeycloakRepository).singleton();
-      return { usersRepository, policyRepository };
+      const attributesRepository = awilix.asClass(AttributesKeycloakRepository).singleton();
+      return { usersRepository, policyRepository, attributesRepository };
     }
     default:
       throw new Error(`Strategy '${strategy}' not supported`);
@@ -120,7 +124,9 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   };
 
   container.register({
+    keycloakClient: awilix.asClass(KeycloakClient),
     keycloakManager: awilix.asClass(KeycloakManager).singleton(),
+    keycloakClientConfig: awilix.asValue(config.keycloakClientConfig),
   });
 
   container.register({
@@ -141,25 +147,13 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
 
   const apiKeyGenerator = new RandExp(config.apiKeyRegex);
 
-  const activationTokenUtils = new ActivationTokenUtils({ userActivationConfig: config.userActivationConfig });
+  const { usersRepository, policyRepository, attributesRepository } = getRepositories(config.authenticationStrategy);
 
-  const { usersRepository, policyRepository } = getRepositories(config.authenticationStrategy);
-
-  const initialUsersProperties: InitialUsersProperties = {
-    entityManager: new EntityManager(dbConnection),
-    usersRepository: getCustomRepository(UsersTypeormRepository),
-    passwordGenerator,
-    userPasswordIsRandom,
-    activationTokenUtils,
+  const initialData: InitialData = {
+    usersData: initialUsersData,
+    policyData: initialPoliciesData,
+    apiKeysData: config.initialApiKeys,
   };
-  const initialUsers = new InitialUsers(initialUsersProperties);
-  await initialUsers.update(initialUsersData);
-
-  const initialPolicy = new InitialPolicy();
-  await initialPolicy.update(initialPoliciesData);
-
-  const initialApiKeys = new InitialApiKeys();
-  await initialApiKeys.update(config.initialApiKeys);
 
   container.register({
     errorHandler: awilix.asValue(errorHandler),
@@ -177,7 +171,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     redisUrl: awilix.asValue(config.redisUrl),
     redisPrefix: awilix.asValue(config.redisPrefix),
     usersRepository,
-    attributesRepository: awilix.asValue(getCustomRepository(AttributesTypeormRepository)),
+    attributesRepository,
     policyRepository,
     redisRepository: awilix.asClass(RedisRepository).singleton(),
     tokensRepository: awilix.asClass(TokensRedisRepository),
@@ -185,16 +179,18 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     googleClient: awilix.asClass(GoogleClient),
     facebookClient: awilix.asClass(FacebookClient),
     microsoftClient: awilix.asClass(MicrosoftClient),
-    keycloakClient: awilix.asClass(KeycloakClient),
     usersService: awilix.asClass(UsersService),
     policyService: awilix.asClass(PolicyService),
     accessKeyService: awilix.asClass(AccessKeyService),
     superAdminRoleName: awilix.asValue(config.superAdminRoleName),
     superAdminUser: awilix.asValue(config.superAdminUser),
-    keycloakClientConfig: awilix.asValue(config.keycloakClientConfig),
     apiKeyHeaderName: awilix.asValue(config.apiKeyHeaderName),
     apiKeyRegex: awilix.asValue(config.apiKeyRegex),
     authenticationStrategy: awilix.asValue(config.authenticationStrategy),
+    initialUsers: awilix.asClass(InitialUsers).singleton(),
+    initialPolicy: awilix.asClass(InitialPolicy).singleton(),
+    initialApiKeys: awilix.asClass(InitialApiKeys).singleton(),
+    initialData: awilix.asValue(initialData),
   });
 
   container.register({

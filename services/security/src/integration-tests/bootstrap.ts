@@ -141,7 +141,8 @@ async function InitiateTestUsers() {
 
   const resolvedUsers = await Promise.all(users);
 
-  return initialUsersProperties.entityManager.transaction(async (transactionalEntityManager) => {
-    await transactionalEntityManager.save(resolvedUsers);
-  });
+  // TODO
+  // return initialUsersProperties.entityManager.transaction(async (transactionalEntityManager) => {
+  //   await transactionalEntityManager.save(resolvedUsers);
+  // });
 }
