@@ -84,9 +84,9 @@ describe("reset-password.action", () => {
       .send({ newPassword: tooShortPassword })
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect((response: any) => {
+      .expect((res: any) => {
         assert.strictEqual(
-          response.body.error.details[0].message,
+          res.body.error.details[0].message,
           BadRequestResponses.passwordNotMatchRegexpErrorFactory("newPassword").error,
         );
       });

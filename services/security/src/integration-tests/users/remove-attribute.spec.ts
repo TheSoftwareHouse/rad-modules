@@ -76,7 +76,6 @@ describe("remove-attribute.action", () => {
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
       .expect((response: any) => {
-        console.log(JSON.stringify(response.body));
         assert.strictEqual(
           response.body.error.details[0].message,
           BadRequestResponses.attributesNotMatchPatternErrorFactory(`${attributes.join(",")},,,`).error,
