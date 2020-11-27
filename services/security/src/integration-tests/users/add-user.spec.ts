@@ -47,7 +47,12 @@ describe("add-user.action", () => {
       .send({ username: "randomUserName", password: "123" })
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit(BadRequestResponses.passwordNotMatchRegexpErrorFactory("password")));
+      .expect((response: any) => {
+        assert.strictEqual(
+          response.body.error.details[0].message,
+          BadRequestResponses.passwordNotMatchRegexpErrorFactory("password").error,
+        );
+      });
   });
 
   it("Should not create a user with already existing username", async () => {
@@ -131,7 +136,9 @@ describe("add-user.action", () => {
       .send({ username: "randomUserName", password: "randomPassword", attributes: [] })
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"attributes" does not contain 1 required value(s)' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"attributes" does not contain 1 required value(s)');
+      });
   });
 
   it("Should trigger UserAdded", async () => {

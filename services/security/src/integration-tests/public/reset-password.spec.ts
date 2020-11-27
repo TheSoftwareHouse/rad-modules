@@ -24,7 +24,12 @@ describe("public reset-password.action", () => {
       .send({ newPassword: "123" })
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit(BadRequestResponses.passwordNotMatchRegexpErrorFactory("newPassword")));
+      .expect((response: any) => {
+        assert.strictEqual(
+          response.body.error.details[0].message,
+          BadRequestResponses.passwordNotMatchRegexpErrorFactory("newPassword").error,
+        );
+      });
   });
 
   it("Should not reset a password with bad pattern", async () => {
@@ -46,7 +51,12 @@ describe("public reset-password.action", () => {
       .send({ newPassword: tooShortPassword })
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit(BadRequestResponses.passwordNotMatchRegexpErrorFactory("newPassword")));
+      .expect((response: any) => {
+        assert.strictEqual(
+          response.body.error.details[0].message,
+          BadRequestResponses.passwordNotMatchRegexpErrorFactory("newPassword").error,
+        );
+      });
   });
 
   it("Should reset user password and not allow to login with old password", async () => {

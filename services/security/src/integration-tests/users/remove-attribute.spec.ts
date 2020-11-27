@@ -75,7 +75,13 @@ describe("remove-attribute.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit(BadRequestResponses.attributesNotMatchPatternErrorFactory(`${attributes.join(",")},,,`)));
+      .expect((response: any) => {
+        console.log(JSON.stringify(response.body));
+        assert.strictEqual(
+          response.body.error.details[0].message,
+          BadRequestResponses.attributesNotMatchPatternErrorFactory(`${attributes.join(",")},,,`).error,
+        );
+      });
   });
 
   it("Should not remove an attribute when not found", async () => {

@@ -96,7 +96,9 @@ describe("public password-reset-token.action", () => {
       .post("/api/users/password-reset-token")
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"username" is required' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"username" is required');
+      });
   });
 
   it("Should return bad request if a user wants reset password and provide bad username", async () => {

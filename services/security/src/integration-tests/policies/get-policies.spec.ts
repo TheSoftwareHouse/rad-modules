@@ -2,7 +2,7 @@ import * as request from "supertest";
 import { OK, BAD_REQUEST } from "http-status-codes";
 import * as assert from "assert";
 import { usersFixture } from "../fixtures/users.fixture";
-import { deepEqualOmit, isUuid, isNotEmptyString } from "../../../../../shared/test-utils";
+import { isUuid, isNotEmptyString } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 
 const [userWithAdminPanelAttr] = usersFixture;
@@ -25,7 +25,10 @@ describe("Get policies test", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"page" must be a number. "limit" must be a number' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"page" must be a number');
+        assert.strictEqual(response.body.error.details[1].message, '"limit" must be a number');
+      });
   });
 
   it("Should return bad request if empty query parameters", async () => {
@@ -37,7 +40,10 @@ describe("Get policies test", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"page" must be a number. "limit" must be a number' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"page" must be a number');
+        assert.strictEqual(response.body.error.details[1].message, '"limit" must be a number');
+      });
   });
 
   it("Should return bad request if page is float point number", async () => {
@@ -49,7 +55,9 @@ describe("Get policies test", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"page" must be an integer' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"page" must be an integer');
+      });
   });
 
   it("Should return max 10 policies records if limit parameter set to 10", async () => {

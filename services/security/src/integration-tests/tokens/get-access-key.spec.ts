@@ -1,7 +1,7 @@
 import { CREATED, OK, BAD_REQUEST } from "http-status-codes";
 import * as request from "supertest";
 import * as assert from "assert";
-import { deepEqualOmit, isUuid, isValidTokenType, isNotEmptyString } from "../../../../../shared/test-utils";
+import { isUuid, isValidTokenType, isNotEmptyString } from "../../../../../shared/test-utils";
 import { GlobalData } from "../bootstrap";
 import { appConfig } from "../../config/config";
 
@@ -25,7 +25,10 @@ describe("Access API key tests", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"page" must be a number. "limit" must be a number' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"page" must be a number');
+        assert.strictEqual(response.body.error.details[1].message, '"limit" must be a number');
+      });
   });
 
   it("Should return bad request if empty query parameters", async () => {
@@ -37,7 +40,10 @@ describe("Access API key tests", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"page" must be a number. "limit" must be a number' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"page" must be a number');
+        assert.strictEqual(response.body.error.details[1].message, '"limit" must be a number');
+      });
   });
 
   it("Should return bad request if page is float point number", async () => {
@@ -49,7 +55,9 @@ describe("Access API key tests", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"page" must be an integer' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"page" must be an integer');
+      });
   });
 
   it("Should return max 10 access keys records if limit parameter set to 10", async () => {

@@ -13,11 +13,10 @@ export const removeAttributeActionValidation = celebrate(
     query: {
       attributes: Joi.string()
         .regex(/^([^,;]+,?\s*)+$/) // comma-delimited string
-        .error(
-          new Error(
+        .messages({
+          "string.pattern.base":
             'child "attributes" fails because ["attributes" with value "attr1,attr2,,," fails to match the required pattern: /^([^,;]+,?\\s*)+$/]',
-          ),
-        )
+        })
         .required(),
       userId: Joi.string().guid().required(),
     },

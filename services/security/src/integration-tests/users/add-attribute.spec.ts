@@ -1,6 +1,7 @@
 import { BAD_REQUEST, CONFLICT, CREATED, NOT_FOUND, OK } from "http-status-codes";
 import * as request from "supertest";
 import { v4 } from "uuid";
+import * as assert from "assert";
 import { usersFixture } from "../fixtures/users.fixture";
 import { BadRequestResponses, UsersResponses } from "../fixtures/response.fixture";
 import { GlobalData } from "../bootstrap";
@@ -76,7 +77,9 @@ describe("add-attribute.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes: [] })
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"attributes" does not contain 1 required value(s)' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"attributes" does not contain 1 required value(s)');
+      });
   });
 
   it("Should return BAD_REQUEST if attributes not array.", async () => {
@@ -98,7 +101,9 @@ describe("add-attribute.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes: "WrongValueForAttributes" })
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"attributes" must be an array' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"attributes" must be an array');
+      });
   });
 
   it("Should return BAD_REQUEST if attributes not array.", async () => {
@@ -120,7 +125,9 @@ describe("add-attribute.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes: "WrongValueForAttributes" })
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"attributes" must be an array' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"attributes" must be an array');
+      });
   });
 
   it("Should return BAD_REQUEST if userId is missing.", async () => {
@@ -134,7 +141,9 @@ describe("add-attribute.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ attributes })
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"userId" is required' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"userId" is required');
+      });
   });
 
   it("Should return BAD_REQUEST if userId is not guid.", async () => {
@@ -148,7 +157,9 @@ describe("add-attribute.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId: "wrongUserId", attributes })
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"userId" must be a valid GUID' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"userId" must be a valid GUID');
+      });
   });
 
   it("Should return NOT_FOUND if try to add attributes for user that not exist.", async () => {
