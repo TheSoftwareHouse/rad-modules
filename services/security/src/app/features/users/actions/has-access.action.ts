@@ -59,11 +59,6 @@ export const hasAccessActionValidation = celebrate(
  *                 hasAccess:
  *                   type: boolean
  *                   example: false
- *                 forbidden:
- *                   type: array
- *                   items:
- *                     type: string
- *                   example: ["resource1"]
  *       400:
  *         description: Bad Request
  *         content:
