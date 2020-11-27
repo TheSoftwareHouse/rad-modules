@@ -21,7 +21,9 @@ export const setPasswordActionValidation = celebrate(
         .empty()
         .required()
         .regex(appConfig.passwordRegex)
-        .error(new Error(`newPassword does not meet criteria: ${appConfig.passwordValidationError}`)),
+        .messages({
+          "string.pattern.base": `newPassword does not meet criteria: ${appConfig.passwordValidationError}`,
+        }),
     }),
   },
   { abortEarly: false },

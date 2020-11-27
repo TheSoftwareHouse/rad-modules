@@ -15,8 +15,10 @@ export const addUserActionValidation = celebrate(
       username: Joi.string().required(),
       password: Joi.string()
         .regex(appConfig.passwordRegex)
-        .error(new Error(`password does not meet criteria: ${appConfig.passwordValidationError}`))
-        .required(),
+        .required()
+        .messages({
+          "string.pattern.base": `password does not meet criteria: ${appConfig.passwordValidationError}`,
+        }),
       attributes: Joi.array().items(Joi.string().required()).unique(),
     }).required(),
   },

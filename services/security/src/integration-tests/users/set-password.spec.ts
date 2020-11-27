@@ -56,7 +56,12 @@ describe("set-password.action", () => {
       .send({ oldPassword: "newPassw0rd", newPassword: "pass" })
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit(BadRequestResponses.passwordNotMatchRegexpErrorFactory("newPassword")));
+      .expect((response: any) => {
+        assert.strictEqual(
+          response.body.error.details[0].message,
+          BadRequestResponses.passwordNotMatchRegexpErrorFactory("newPassword").error,
+        );
+      });
   });
 
   it("Should return bad request if a user provide invalid old password", async () => {
@@ -74,7 +79,9 @@ describe("set-password.action", () => {
       .send({ oldPassword: "invalidPassword", newPassword: "newPassw0rd" })
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit(BadRequestResponses.passwordCantSetNew));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error, BadRequestResponses.passwordCantSetNew.error);
+      });
   });
 
   it("Should return unauthorized error if a user provide invalid token", () => {

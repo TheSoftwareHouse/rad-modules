@@ -32,7 +32,9 @@ describe("Get user test", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"userId" must be a valid GUID' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"userId" must be a valid GUID');
+      });
   });
 
   it("Should return 404 if user not found", async () => {

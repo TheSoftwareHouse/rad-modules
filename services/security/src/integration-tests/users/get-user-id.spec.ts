@@ -37,7 +37,9 @@ describe("get-user-id.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
       .expect(BAD_REQUEST)
-      .expect(deepEqualOmit({ error: '"username" is required' }));
+      .expect((response: any) => {
+        assert.strictEqual(response.body.error.details[0].message, '"username" is required');
+      });
   });
 
   it("Should returns Not found if no user with given username", async () => {
