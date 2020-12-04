@@ -580,7 +580,7 @@ export class KeycloakManager {
 
     const tokenPayload = jwt.decode(accessToken) as any;
     if (tokenPayload?.type === "user") {
-      const validToken = jwtUtils.verifyToken(accessToken, accessTokenConfig);
+      const validToken = await jwtUtils.verifyToken(accessToken, accessTokenConfig);
       if (!validToken) {
         throw new UnathorizedError("Invalid token");
       }

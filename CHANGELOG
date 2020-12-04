@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2020-12-03 v0.0.66
+Added
+- Fix verify keycloak oauth token
+
+### 2020-11-30 v0.0.65
+Added
+- BadRequest response format changed. Now is the full joi error https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/hapi__joi/index.d.ts#L635
+
 ### 2020-10-26 v0.0.64
 Added
 - Keycloak/OpenID auth provider
