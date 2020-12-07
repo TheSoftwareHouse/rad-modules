@@ -1,5 +1,6 @@
 import { AuthorizationClient, AuthorizationClientProps, HasAccessResponse } from "../authorization-client.types";
 import { NotFoundError } from "../../errors/not-found.error";
+import * as jwt from "jsonwebtoken";
 
 export class KeycloakAuthorizationClient implements AuthorizationClient {
   constructor(private dependencies: AuthorizationClientProps) {}
@@ -36,5 +37,30 @@ export class KeycloakAuthorizationClient implements AuthorizationClient {
     const userAttributesNames = user.attributes.map((attribute) => attribute.name);
 
     return attributes.every((attribute) => userAttributesNames.includes(attribute));
+  }
+
+  public async getTokenInfo(accessToken: string): Promise<any> {
+    const { keycloakManager } = this.dependencies;
+
+    const decoded = jwt.decode(accessToken) as any;
+    const {
+      realm_access: { roles },
+      username,
+      email,
+      email_verified: isActive,
+      user_id: id,
+    } = decoded;
+
+    const result = await keycloakManager.getPolicies();
+
+    const userResources = result.filter((policy) => roles.includes(policy.attribute)).map((policy) => policy.resource);
+    return {
+      id,
+      username,
+      email,
+      isActive,
+      attributes: roles,
+      resource: userResources,
+    };
   }
 }

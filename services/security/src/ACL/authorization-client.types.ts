@@ -19,4 +19,5 @@ export interface AuthorizationClient {
   isSuperAdmin: (accessToken: string) => Promise<boolean>;
   hasAccess: (accessToken: string, resources: string[]) => Promise<HasAccessResponse>;
   hasAttributes: (accessToken: string, attributes: string[]) => Promise<boolean>;
+  getTokenInfo: (accessToken: string) => Promise<any>;
 }
