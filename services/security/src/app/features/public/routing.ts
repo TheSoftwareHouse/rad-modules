@@ -1,4 +1,5 @@
 import * as express from "express";
+import { Logger } from "winston";
 import { CommandBus } from "../../../../../../shared/command-bus";
 import { Request, Response, NextFunction } from "express";
 import { OauthProvider } from "../../../config/config";
@@ -7,16 +8,17 @@ import { refreshTokenAction, refreshTokenActionValidation } from "../users/actio
 import { oauthRedirectAction, oauthRedirectActionDefaultValidation } from "../users/actions/oauth-redirect.action";
 import { passwordResetTokenAction, passwordResetTokenActionValidation } from "./actions/password-reset-token.action";
 import { resetPasswordAction, resetPasswordActionValidation } from "./actions/reset-password.action";
-import { Logger } from "winston";
+import { meAction, meActionValidation } from "./actions/me.action";
 import { loginGoogleIdTokenAction, loginGoogleIdTokenActionValidation } from "./actions/login-google-id-token.action";
 // COMMAND_IMPORTS
 
 export interface PublicRoutingProps {
   commandBus: CommandBus;
   logger: Logger;
+  accessTokenHandler: express.RequestHandler;
 }
 
-export const publicRouting = ({ commandBus, logger }: PublicRoutingProps) => {
+export const publicRouting = ({ commandBus, logger, accessTokenHandler }: PublicRoutingProps) => {
   const router = express.Router();
 
   router.post(
@@ -49,6 +51,7 @@ export const publicRouting = ({ commandBus, logger }: PublicRoutingProps) => {
     [loginGoogleIdTokenActionValidation],
     loginGoogleIdTokenAction({ commandBus }),
   );
+  router.get("/me", [accessTokenHandler, meActionValidation], meAction({ commandBus }));
   // COMMANDS_SETUP
 
   return router;

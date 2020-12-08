@@ -57,7 +57,9 @@ export const getUserActionValidation = celebrate(
  *                   type: string
  *                   example: 2020-04-28T09:34:13.424Z
  *                 attributes:
- *                   type: An array of strings
+ *                   type: array
+ *                   items:
+ *                     type: string
  *                   example: ["attr1", "attr2"]
  *                 isSuperAdmin:
  *                   type: boolean
