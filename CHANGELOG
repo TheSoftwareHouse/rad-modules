@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2020-12-16 v0.0.68
+Added
+- Fix /api/users/add-user endpoint
+
 ### 2020-12-03 v0.0.67
 Added
 - Add /api/public/me endpoint
