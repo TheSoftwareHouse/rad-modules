@@ -31,15 +31,12 @@ export class UsersKeycloakRepository implements UsersRepository {
 
   public async addUser(user: UserModelGeneric) {
     const { keycloakManager } = this.dependencies;
+
     await keycloakManager.addUser(user);
 
-    const userExist = await keycloakManager.findUserByUsername(user.username);
-    if (userExist) {
-      await keycloakManager.updateUser(user);
-    } else {
-      await keycloakManager.addUser(user);
-    }
-    return user;
+    const userData = await keycloakManager.findUserByUsername(user.username);
+
+    return { ...user, id: userData.id };
   }
 
   public async findByUsername(username: string) {
