@@ -23,7 +23,9 @@ export class KeycloakManager {
   constructor(private dependencies: KeycloakManagerProps) {}
 
   public async setCredentials() {
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakClientConfig.realmName}/protocol/openid-connect/token`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/protocol/openid-connect/token`;
 
     const body = queryString.stringify({
       username: this.dependencies.keycloakClientConfig.clientUsername,
@@ -51,7 +53,9 @@ export class KeycloakManager {
   }
 
   public async login(username: string, password: string) {
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakClientConfig.realmName}/protocol/openid-connect/token`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/protocol/openid-connect/token`;
 
     const body = queryString.stringify({
       username,
@@ -89,7 +93,9 @@ export class KeycloakManager {
   }
 
   public async refreshToken(refreshToken: string) {
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakClientConfig.realmName}/protocol/openid-connect/token`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/protocol/openid-connect/token`;
 
     const params = new URLSearchParams();
 
@@ -128,7 +134,9 @@ export class KeycloakManager {
 
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/users/${user.id}`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users/${encodeURIComponent(user.id)}`;
 
     const updatePassword = {
       type: "password",
@@ -164,7 +172,9 @@ export class KeycloakManager {
 
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/users/${user.id}`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users/${encodeURIComponent(user.id)}`;
 
     const updatePassword = {
       type: "password",
@@ -190,7 +200,11 @@ export class KeycloakManager {
   public async getPolicies() {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/resource`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/clients/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.radSecurityClientId,
+    )}/authz/resource-server/resource`;
 
     return fetch(url, {
       method: "GET",
@@ -230,7 +244,11 @@ export class KeycloakManager {
 
     if (resourceExist) {
       // update
-      const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/resource`;
+      const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+        this.dependencies.keycloakClientConfig.realmName,
+      )}/clients/${encodeURIComponent(
+        this.dependencies.keycloakClientConfig.radSecurityClientId,
+      )}/authz/resource-server/resource`;
 
       return fetch(url, {
         method: "GET",
@@ -245,7 +263,11 @@ export class KeycloakManager {
           (resource: any) => resource.type === "resources:default" && resource.name === policy.resource,
         );
         resourceToUpdate.attributes.attributes.push(policy.attribute);
-        const updateUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/resource/${resourceToUpdate._id}`;
+        const updateUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+          this.dependencies.keycloakClientConfig.realmName,
+        )}/clients/${encodeURIComponent(
+          this.dependencies.keycloakClientConfig.radSecurityClientId,
+        )}/authz/resource-server/resource/${encodeURIComponent(resourceToUpdate._id)}`;
         return fetch(updateUrl, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
@@ -259,7 +281,11 @@ export class KeycloakManager {
       });
     }
     // create new
-    const createUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/resource`;
+    const createUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/clients/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.radSecurityClientId,
+    )}/authz/resource-server/resource`;
     const newPolicy = {
       scopes: [],
       attributes: { attributes: policy.attribute },
@@ -290,7 +316,11 @@ export class KeycloakManager {
 
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/resource`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/clients/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.radSecurityClientId,
+    )}/authz/resource-server/resource`;
 
     return fetch(url, {
       method: "GET",
@@ -306,7 +336,13 @@ export class KeycloakManager {
 
         if (resourceAttributes.length === 0) {
           // remove resource
-          const removeUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/resource/${resourceToUpdate._id}`;
+          const removeUrl = `${
+            this.dependencies.keycloakClientConfig.keycloakUrl
+          }/auth/admin/realms/${encodeURIComponent(
+            this.dependencies.keycloakClientConfig.realmName,
+          )}/clients/${encodeURIComponent(
+            this.dependencies.keycloakClientConfig.radSecurityClientId,
+          )}/authz/resource-server/resource/${encodeURIComponent(resourceToUpdate._id)}`;
           return fetch(removeUrl, {
             method: "DELETE",
             headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
@@ -319,7 +355,11 @@ export class KeycloakManager {
         }
         // update resource
         resourceToUpdate.attributes.attributes = resourceAttributes;
-        const updateUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/resource/${resourceToUpdate._id}`;
+        const updateUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+          this.dependencies.keycloakClientConfig.realmName,
+        )}/clients/${encodeURIComponent(
+          this.dependencies.keycloakClientConfig.radSecurityClientId,
+        )}/authz/resource-server/resource/${encodeURIComponent(resourceToUpdate._id)}`;
         return fetch(updateUrl, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
@@ -337,7 +377,9 @@ export class KeycloakManager {
   public async getUsers() {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/users?briefRepresentation=false`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users?briefRepresentation=false`;
 
     return fetch(url, {
       method: "GET",
@@ -354,7 +396,9 @@ export class KeycloakManager {
   public async addUser(user: UserModelGeneric) {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/users`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users`;
 
     const newUser = {
       username: user.username,
@@ -394,7 +438,9 @@ export class KeycloakManager {
   public async findUserByUsername(username: string) {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/users?username=${username}&briefRepresentation=false`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users?username=${encodeURIComponent(username)}&briefRepresentation=false`;
 
     return fetch(url, {
       method: "GET",
@@ -413,9 +459,9 @@ export class KeycloakManager {
   public async findUserById(id: string) {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${
-      this.dependencies.keycloakClientConfig.realmName
-    }/users?max=${0x7fffffff}&briefRepresentation=false`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users?max=${0x7fffffff}&briefRepresentation=false`;
 
     return fetch(url, {
       method: "GET",
@@ -434,9 +480,9 @@ export class KeycloakManager {
   public async findUserByActivationToken(activationToken: string) {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${
-      this.dependencies.keycloakClientConfig.realmName
-    }/users?max=${0x7fffffff}&briefRepresentation=false`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users?max=${0x7fffffff}&briefRepresentation=false`;
 
     return fetch(url, {
       method: "GET",
@@ -455,9 +501,9 @@ export class KeycloakManager {
   public async findUserByResetPasswordToken(resetPasswordToken: string) {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${
-      this.dependencies.keycloakClientConfig.realmName
-    }/users?max=${0x7fffffff}&briefRepresentation=false`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users?max=${0x7fffffff}&briefRepresentation=false`;
 
     return fetch(url, {
       method: "GET",
@@ -476,7 +522,9 @@ export class KeycloakManager {
   public async updateUser(user: UserModelGeneric) {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/users/${user.id}`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users/${user.id}`;
 
     let userCredentials;
 
@@ -522,7 +570,9 @@ export class KeycloakManager {
   public async removeUser(id: string) {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/users/${id}`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/users/${encodeURIComponent(id)}`;
 
     await fetch(url, {
       method: "DELETE",
@@ -550,7 +600,9 @@ export class KeycloakManager {
       return (tokenPayload.policy || []).some((resource: string) => resource === permission);
     }
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakClientConfig.realmName}/protocol/openid-connect/token`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/protocol/openid-connect/token`;
     const body = queryString.stringify({
       grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket",
       audience: "rad-security",
@@ -574,7 +626,9 @@ export class KeycloakManager {
   }
 
   public async checkToken(accessToken: string) {
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakClientConfig.realmName}/protocol/openid-connect/userinfo`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/protocol/openid-connect/userinfo`;
 
     const { jwtUtils, accessTokenConfig } = this.dependencies;
 
@@ -603,9 +657,9 @@ export class KeycloakManager {
   public async getKeycloakPermissions() {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${
-      this.dependencies.keycloakClientConfig.realmName
-    }/clients/${
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/clients/${
       this.dependencies.keycloakClientConfig.radSecurityClientId
     }/authz/resource-server/permission?max=${0x7fffffff}`;
 
@@ -624,9 +678,9 @@ export class KeycloakManager {
   public async getKeycloakPolicies() {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${
-      this.dependencies.keycloakClientConfig.realmName
-    }/clients/${
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/clients/${
       this.dependencies.keycloakClientConfig.radSecurityClientId
     }/authz/resource-server/policy?max=${0x7fffffff}`;
 
@@ -645,7 +699,11 @@ export class KeycloakManager {
   public async getKeycloakResources() {
     const credentials = await this.setCredentials();
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/resource`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/clients/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.radSecurityClientId,
+    )}/authz/resource-server/resource`;
 
     return fetch(url, {
       method: "GET",
@@ -665,7 +723,11 @@ export class KeycloakManager {
     const resourceId = resources.find((resource: any) => resource.name === resourceName)._id;
     const policies = await this.getKeycloakPolicies();
     const abacId = policies.find((policy: any) => policy.name === "abac").id;
-    const createUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/clients/${this.dependencies.keycloakClientConfig.radSecurityClientId}/authz/resource-server/permission/resource`;
+    const createUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/clients/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.radSecurityClientId,
+    )}/authz/resource-server/permission/resource`;
     const newPermission = {
       name: resourceName,
       type: "resource",
@@ -694,7 +756,9 @@ export class KeycloakManager {
     const permissions = await this.getKeycloakPermissions();
     const permissionId = permissions.find((permission: any) => permission.name === permissionName)?.id;
 
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${this.dependencies.keycloakClientConfig.realmName}/permission/${permissionId}`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/permission/${encodeURIComponent(permissionId)}`;
 
     await fetch(url, {
       method: "DELETE",
@@ -711,7 +775,9 @@ export class KeycloakManager {
   }
 
   public async verifyToken(accessToken: string) {
-    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${this.dependencies.keycloakClientConfig.realmName}/protocol/openid-connect/token`;
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/protocol/openid-connect/token`;
     const body = queryString.stringify({
       grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket",
       audience: "rad-security",
