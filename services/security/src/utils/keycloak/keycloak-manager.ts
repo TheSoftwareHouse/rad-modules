@@ -605,7 +605,7 @@ export class KeycloakManager {
     )}/protocol/openid-connect/token`;
     const body = queryString.stringify({
       grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket",
-      audience: "rad-security",
+      audience: this.dependencies.keycloakClientConfig.realmName,
       permission,
     });
 
@@ -780,7 +780,7 @@ export class KeycloakManager {
     )}/protocol/openid-connect/token`;
     const body = queryString.stringify({
       grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket",
-      audience: "rad-security",
+      audience: this.dependencies.keycloakClientConfig.realmName,
     });
 
     return fetch(url, {
