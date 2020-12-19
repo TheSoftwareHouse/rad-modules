@@ -757,7 +757,7 @@ export class KeycloakManager {
     const permissionId = permissions.find((permission: any) => permission.name === permissionName)?.id;
 
     const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
-      this.dependencies.keycloakClientConfig.realmName,
+      this.dependencies.keycloakClientConfig.clientId,
     )}/permission/${encodeURIComponent(permissionId)}`;
 
     await fetch(url, {
@@ -780,7 +780,7 @@ export class KeycloakManager {
     )}/protocol/openid-connect/token`;
     const body = queryString.stringify({
       grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket",
-      audience: this.dependencies.keycloakClientConfig.realmName,
+      audience: this.dependencies.keycloakClientConfig.clientId,
     });
 
     return fetch(url, {
