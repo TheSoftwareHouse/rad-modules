@@ -1,0 +1,27 @@
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: RAD Modules CI
+on: [push]
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    name: Compile TypeScript
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-watcher
+      - run: npm run lint
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+  security-integration:
+    runs-on: ubuntu-latest
+    name: Security integration
+    needs:
+      - setup
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-security-prod
+      - run: npm run security-integration
