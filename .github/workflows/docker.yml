@@ -1,0 +1,53 @@
+name: Build and deploy docker images
+on:
+  release:
+    types: [created]
+
+jobs:
+  mailer:
+    runs-on: ubuntu-latest
+    name: Deploy Mailer to DockerHub
+    if: contains(github.ref, "*mailer*")
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh mailer ./services/mailer/docker/prod/Dockerfile ./services/mailer/package.json
+
+  scheduler:
+    runs-on: ubuntu-latest
+    name: Deploy Scheduler to DockerHub
+    if: contains(github.ref, "*scheduler*")
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh scheduler ./services/scheduler/docker/prod/Dockerfile ./services/scheduler/package.json
+
+  security:
+    runs-on: ubuntu-latest
+    name: Deploy Security to DockerHub
+    if: contains(github.ref, "*security*")
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh security ./services/security/docker/prod/Dockerfile ./services/security/package.json
+
+  gateway:
+    runs-on: ubuntu-latest
+    name: Deploy Gateway to DockerHub
+    if: contains(github.ref, "*gateway*")
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh gateway ./services/gateway/docker/prod/Dockerfile ./services/gateway/package.json
+
+  notifications:
+    runs-on: ubuntu-latest
+    name: Deploy Notifications to DockerHub
+    if: contains(github.ref, "*notifications*")
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh notifications ./services/notifications/docker/prod/Dockerfile ./services/notifications/package.json
+
+  pdf:
+    runs-on: ubuntu-latest
+    name: Deploy Pdf to DockerHub
+    if: contains(github.ref, "*pdf*")
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh pdf ./services/pdf/docker/prod/Dockerfile ./services/pdf/package.json
