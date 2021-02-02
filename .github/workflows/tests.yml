@@ -10,7 +10,7 @@ jobs:
       - run: npm run lint
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14]
   security-integration:
     runs-on: ubuntu-latest
     name: Security integration
@@ -18,7 +18,7 @@ jobs:
       - setup
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14]
     steps:
       - uses: actions/checkout@v2
       - run: npm run docker-build-security-prod
@@ -30,7 +30,7 @@ jobs:
       - setup
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14]
     steps:
       - uses: actions/checkout@v2
       - run: npm run docker-build-mailer-prod
@@ -42,7 +42,7 @@ jobs:
       - setup
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14]
     steps:
       - uses: actions/checkout@v2
       - run: npm run docker-build-notifications-prod
@@ -54,7 +54,7 @@ jobs:
       - setup
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14]
     steps:
       - uses: actions/checkout@v2
       - run: npm run docker-build-scheduler-prod
@@ -65,7 +65,7 @@ jobs:
       - setup
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14]
     steps:
       - uses: actions/checkout@v2
       - run: npm run docker-build-security-prod
@@ -78,7 +78,7 @@ jobs:
       - setup
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14]
     steps:
       - uses: actions/checkout@v2
       - run: npm run docker-build-pdf-prod
