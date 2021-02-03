@@ -70,7 +70,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm run docker-build-security-prod
       - run: npm run docker-build-gateway-prod
-      - run: npm run gateway-integration
+#      - run: npm run gateway-integration
   pdf-integration:
     runs-on: ubuntu-latest
     name: PDF integration
