@@ -1,5 +1,5 @@
 import { PDFOptions } from "puppeteer-core";
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const CREATE_PDF_COMMAND_TYPE = "pdf/CREATEPDF";
 

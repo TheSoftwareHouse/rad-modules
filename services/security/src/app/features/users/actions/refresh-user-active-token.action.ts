@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { RefreshUserActiveTokenCommand } from "../commands/refresh-user-active-token.command";
 import { OK } from "http-status-codes";
 

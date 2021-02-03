@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { LOGIN_COMMAND_TYPE, LoginCommand } from "../commands/login.command";
 import { AuthenticationClient } from "../strategies/authentication/authentication-client.types";
 
@@ -6,7 +6,7 @@ export interface LoginHandlerProps {
   authenticationClient: AuthenticationClient;
 }
 
-export default class LoginHandler implements Handler<LoginCommand> {
+export default class LoginHandler implements CommandHandler<LoginCommand> {
   public commandType: string = LOGIN_COMMAND_TYPE;
 
   constructor(private dependencies: LoginHandlerProps) {}

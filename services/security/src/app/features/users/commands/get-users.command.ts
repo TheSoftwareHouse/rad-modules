@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 import { FilterOperators } from "../../../../repositories/helpers/query-filter";
 
 export const GET_USERS_COMMAND_TYPE = "users/GETUSERS";

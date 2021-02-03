@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { DEACTIVATE_USER_COMMAND_TYPE, DeactivateUserCommand } from "../commands/deactivate-user.command";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { NotFoundError } from "../../../../errors/not-found.error";
@@ -15,7 +15,7 @@ export interface DeactivateUserHandlerProps {
   eventDispatcher: EventDispatcher;
 }
 
-export default class DeactivateUserHandler implements Handler<DeactivateUserCommand> {
+export default class DeactivateUserHandler implements CommandHandler<DeactivateUserCommand> {
   public commandType: string = DEACTIVATE_USER_COMMAND_TYPE;
 
   constructor(private dependencies: DeactivateUserHandlerProps) {}

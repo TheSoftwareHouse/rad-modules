@@ -6,7 +6,8 @@ import { CONFLICT, CREATED } from "http-status-codes";
 import { JobStatus } from "../../app/features/scheduling/models/job.model";
 
 describe("Scheduler tests: schedule job", () => {
-  const GLOBAL = global as GlobalData;
+  const _GLOBAL = global as any;
+  const GLOBAL = _GLOBAL as GlobalData;
 
   it("Should schedule one time job", async () => {
     const jobRepository = GLOBAL.container.resolve<JobsRepository>("jobsRepository");

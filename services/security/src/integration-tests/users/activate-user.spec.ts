@@ -17,7 +17,7 @@ describe("activate-user.action", () => {
   const GLOBAL = {} as GlobalData;
 
   before(() => {
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
   });
 
@@ -163,7 +163,7 @@ describe("User tests with mocked Date.now one week time in future", () => {
   }
 
   before(() => {
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
     Date.now = mockDateNow;
   });

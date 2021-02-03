@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tshio/command-bus": "^1.0.2",
     "awilix": "4.2.5",
     "celebrate": "12.0.1",
     "cors": "2.8.5",
@@ -25,15 +26,15 @@
     "jsonwebtoken": "8.5.1",
     "lodash": "4.17.19",
     "morgan": "1.10.0",
+    "pg": "7.12.1",
     "qs": "6.9.4",
     "redis": "3.0.2",
     "socket.io": "2.4.0",
     "swagger-jsdoc": "4.0.0",
     "swagger-ui-express": "4.1.4",
+    "typeorm": "0.2.24",
     "uuid": "7.0.3",
-    "winston": "3.2.1",
-    "pg": "7.12.1",
-    "typeorm": "0.2.24"
+    "winston": "3.2.1"
   },
   "devDependencies": {
     "@types/cors": "2.8.6",

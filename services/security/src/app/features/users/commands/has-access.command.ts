@@ -1,5 +1,5 @@
+import { Command } from "@tshio/command-bus";
 import { BearerToken } from "../../../../tokens/bearer-token";
-import { Command } from "../../../../../../../shared/command-bus";
 
 export const HAS_ACCESS_COMMAND_TYPE = "users/HASACCESS";
 

@@ -1,5 +1,5 @@
+import { CommandHandler } from "@tshio/command-bus";
 import { PolicyRepository } from "../../../../repositories/policy.repository";
-import { Handler } from "../../../../../../../shared/command-bus";
 import { REMOVE_POLICY_COMMAND_TYPE, RemovePolicyCommand } from "../commands/remove-policy.command";
 import { NotFoundError } from "../../../../errors/not-found.error";
 import { AdminPanelPoliciesConfig } from "../../../../config/config";
@@ -13,7 +13,7 @@ interface RemovePolicyHandlerProps {
   eventDispatcher: EventDispatcher;
 }
 
-export default class RemovePolicyHandler implements Handler<RemovePolicyCommand> {
+export default class RemovePolicyHandler implements CommandHandler<RemovePolicyCommand> {
   public commandType: string = REMOVE_POLICY_COMMAND_TYPE;
 
   constructor(private dependencies: RemovePolicyHandlerProps) {}

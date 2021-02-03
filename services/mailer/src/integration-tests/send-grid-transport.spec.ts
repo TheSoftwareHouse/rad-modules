@@ -10,7 +10,7 @@ describe("SendGrid transport tests", () => {
   let originalMailConfig = {};
 
   before(async () => {
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
     const { container } = GLOBAL.bootstrap;
 

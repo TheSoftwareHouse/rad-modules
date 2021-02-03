@@ -1,7 +1,7 @@
 import { CREATED } from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { AddAttributeCommand } from "../commands/add-attribute.command";
 
 export interface AddAttributeActionProps {

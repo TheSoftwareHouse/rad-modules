@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { LoginGoogleIdTokenCommand } from "../commands/login-google-id-token.command";
 import { appConfig, OauthProvider } from "../../../../config/config";
 import { HttpError } from "../../../../errors/http.error";

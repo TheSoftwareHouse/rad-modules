@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { ADD_ATTRIBUTE_COMMAND_TYPE, AddAttributeCommand } from "../commands/add-attribute.command";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { NotFoundError } from "../../../../errors/not-found.error";
@@ -12,7 +12,7 @@ export interface AddAttributeHandlerProps {
   eventDispatcher: EventDispatcher;
 }
 
-export default class AddAttributeHandler implements Handler<AddAttributeCommand> {
+export default class AddAttributeHandler implements CommandHandler<AddAttributeCommand> {
   public commandType: string = ADD_ATTRIBUTE_COMMAND_TYPE;
 
   constructor(private dependencies: AddAttributeHandlerProps) {}

@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { CREATE_PDF_COMMAND_TYPE, CreatePdfCommand } from "../commands/create-pdf.command";
 import { AppConfig } from "../../../../config/config";
 import { ChromiumBrowser } from "../../../../utils/chromium-browser";
@@ -8,7 +8,7 @@ export type CreatePdfHandlerProperties = {
   chromiumBrowser: ChromiumBrowser;
 };
 
-export default class CreatePdfHandler implements Handler<CreatePdfCommand> {
+export default class CreatePdfHandler implements CommandHandler<CreatePdfCommand> {
   public commandType: string = CREATE_PDF_COMMAND_TYPE;
 
   constructor(private properties: CreatePdfHandlerProperties) {}

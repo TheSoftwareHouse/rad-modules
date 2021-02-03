@@ -1,5 +1,5 @@
 import * as express from "express";
-import { CommandBus } from "../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 
 import { sendAction, sendActionValidation } from "./actions/send.action";
 import { getNotificationsAction, getNotificationsActionValidation } from "./actions/get-notifications.action";

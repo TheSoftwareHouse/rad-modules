@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { IS_AUTHENTICATED_COMMAND_TYPE, IsAuthenticatedCommand } from "../commands/is-authenticated.command";
 import { AuthenticationClient } from "../strategies/authentication/authentication-client.types";
 import { Logger } from "winston";
@@ -9,7 +9,7 @@ export interface IsAuthenticatedHandlerProps {
   logger: Logger;
 }
 
-export default class IsAuthenticatedHandler implements Handler<IsAuthenticatedCommand> {
+export default class IsAuthenticatedHandler implements CommandHandler<IsAuthenticatedCommand> {
   public commandType: string = IS_AUTHENTICATED_COMMAND_TYPE;
 
   constructor(private dependencies: IsAuthenticatedHandlerProps) {}

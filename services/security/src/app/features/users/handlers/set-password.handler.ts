@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { SET_PASSWORD_COMMAND_TYPE, SetPasswordCommand } from "../commands/set-password.command";
 import { AuthenticationClient } from "../strategies/authentication/authentication-client.types";
 
@@ -6,7 +6,7 @@ export interface SetPasswordProps {
   authenticationClient: AuthenticationClient;
 }
 
-export default class SetPasswordHandler implements Handler<SetPasswordCommand> {
+export default class SetPasswordHandler implements CommandHandler<SetPasswordCommand> {
   public commandType: string = SET_PASSWORD_COMMAND_TYPE;
 
   constructor(private dependencies: SetPasswordProps) {}

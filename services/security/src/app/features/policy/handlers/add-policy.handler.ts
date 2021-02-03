@@ -1,6 +1,6 @@
+import { CommandHandler } from "@tshio/command-bus";
 import { PolicyModel } from "../models/policy.model";
 import { PolicyRepository } from "../../../../repositories/policy.repository";
-import { Handler } from "../../../../../../../shared/command-bus";
 import { ADD_POLICY_COMMAND_TYPE, AddPolicyCommand } from "../commands/add-policy.command";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
 import { PolicyAddedEvent } from "../subscribers/events/policy-added.event";
@@ -10,7 +10,7 @@ export interface AddPolicyHandlerProps {
   eventDispatcher: EventDispatcher;
 }
 
-export default class AddPolicyHandler implements Handler<AddPolicyCommand> {
+export default class AddPolicyHandler implements CommandHandler<AddPolicyCommand> {
   public commandType: string = ADD_POLICY_COMMAND_TYPE;
 
   constructor(private dependencies: AddPolicyHandlerProps) {}

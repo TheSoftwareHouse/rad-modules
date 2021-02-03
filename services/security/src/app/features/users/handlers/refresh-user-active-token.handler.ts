@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import {
   REFRESH_USER_ACTIVE_TOKEN_COMMAND_TYPE,
   RefreshUserActiveTokenCommand,
@@ -13,7 +13,7 @@ export interface RefreshUserActiveTokenHandlerProps {
   activationTokenUtils: ActivationTokenUtils;
 }
 
-export default class RefreshUserActiveTokenHandler implements Handler<RefreshUserActiveTokenCommand> {
+export default class RefreshUserActiveTokenHandler implements CommandHandler<RefreshUserActiveTokenCommand> {
   public commandType: string = REFRESH_USER_ACTIVE_TOKEN_COMMAND_TYPE;
 
   constructor(private dependencies: RefreshUserActiveTokenHandlerProps) {}

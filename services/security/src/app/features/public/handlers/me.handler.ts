@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { ME_COMMAND_TYPE, MeCommand } from "../commands/me.command";
 import { Logger } from "winston";
 import { AuthorizationClient } from "../../../../ACL/authorization-client.types";
@@ -8,7 +8,7 @@ interface MeHandlerProps {
   logger: Logger;
 }
 
-export default class MeHandler implements Handler<MeCommand> {
+export default class MeHandler implements CommandHandler<MeCommand> {
   public commandType: string = ME_COMMAND_TYPE;
 
   constructor(private dependencies: MeHandlerProps) {}

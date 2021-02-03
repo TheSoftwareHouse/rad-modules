@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { NotificationsRepository } from "../../../../repositories/notifications.repository";
 import { GET_NOTIFICATIONS_COMMAND_TYPE, GetNotificationsCommand } from "../commands/get-notifications.command";
 
@@ -6,7 +6,7 @@ export interface GetNotificationsHandlerProps {
   notificationsRepository: NotificationsRepository;
 }
 
-export default class GetNotificationsHandler implements Handler<GetNotificationsCommand> {
+export default class GetNotificationsHandler implements CommandHandler<GetNotificationsCommand> {
   constructor(private dependencies: GetNotificationsHandlerProps) {}
 
   public commandType: string = GET_NOTIFICATIONS_COMMAND_TYPE;

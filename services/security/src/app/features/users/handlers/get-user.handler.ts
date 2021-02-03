@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { GET_USER_COMMAND_TYPE, GetUserCommand } from "../commands/get-user.command";
 import { UsersService } from "../services/users-service";
 
@@ -6,7 +6,7 @@ export interface GetUserHandlerProps {
   usersService: UsersService;
 }
 
-export default class GetUserHandler implements Handler<GetUserCommand> {
+export default class GetUserHandler implements CommandHandler<GetUserCommand> {
   public commandType: string = GET_USER_COMMAND_TYPE;
 
   constructor(private dependencies: GetUserHandlerProps) {}

@@ -1,5 +1,5 @@
 import * as express from "express";
-import { CommandBus } from "../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { createAccessKeyAction, createAccessKeyActionValidation } from "./actions/create-access-key.action";
 
 import { generateTokenAction, generateTokenActionValidation } from "./actions/generate-token.action";

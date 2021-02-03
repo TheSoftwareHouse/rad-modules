@@ -15,7 +15,7 @@ describe("is-authenticated.action", () => {
   let accessTokenConfigOriginal: any;
 
   before(() => {
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
   });
 

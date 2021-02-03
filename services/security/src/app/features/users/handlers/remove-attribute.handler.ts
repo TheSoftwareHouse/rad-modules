@@ -1,6 +1,6 @@
+import { CommandHandler } from "@tshio/command-bus";
 import { NotFoundError } from "../../../../errors/not-found.error";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
-import { Handler } from "../../../../../../../shared/command-bus";
 import { REMOVE_ATTRIBUTE_COMMAND_TYPE, RemoveAttributeCommand } from "../commands/remove-attribute.command";
 import { AttributesRepository } from "../../../../repositories/attributes.repostiory";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
@@ -12,7 +12,7 @@ export interface RemoveAttributeHandlerProps {
   eventDispatcher: EventDispatcher;
 }
 
-export default class RemoveAttributeHandler implements Handler<RemoveAttributeCommand> {
+export default class RemoveAttributeHandler implements CommandHandler<RemoveAttributeCommand> {
   public commandType: string = REMOVE_ATTRIBUTE_COMMAND_TYPE;
 
   constructor(private dependencies: RemoveAttributeHandlerProps) {}

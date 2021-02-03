@@ -1,4 +1,4 @@
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import * as express from "express";
 
 import { scheduleJobAction, scheduleJobActionValidation } from "../actions/schedule-job.action";

@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { GET_JOBS_COMMAND_TYPE, GetJobsCommand } from "../commands/get-jobs.command";
 import { JobsRepository } from "../../../../repositories/jobs.repository";
 
@@ -6,7 +6,7 @@ export interface GetJobsHandlerProps {
   jobsRepository: JobsRepository;
 }
 
-export default class GetJobsHandler implements Handler<GetJobsCommand> {
+export default class GetJobsHandler implements CommandHandler<GetJobsCommand> {
   constructor(private dependencies: GetJobsHandlerProps) {}
 
   public commandType: string = GET_JOBS_COMMAND_TYPE;

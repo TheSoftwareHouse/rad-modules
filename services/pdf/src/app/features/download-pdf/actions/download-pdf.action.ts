@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { DownloadPdfCommand } from "../commands/download-pdf.command";
 
 export interface DownloadPdfActionProps {

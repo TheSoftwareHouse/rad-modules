@@ -12,7 +12,7 @@ describe("Access API key tests", () => {
   const DEFAULT_LIMIT = 25;
 
   before(() => {
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
   });
 

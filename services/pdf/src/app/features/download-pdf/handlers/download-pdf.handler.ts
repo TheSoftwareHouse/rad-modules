@@ -1,9 +1,9 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { DOWNLOAD_PDF_COMMAND_TYPE, DownloadPdfCommand } from "../commands/download-pdf.command";
 import * as glob from "glob";
 import { NotFoundError } from "../../../../errors/not-found.error";
 
-export default class DownloadPdfHandler implements Handler<DownloadPdfCommand> {
+export default class DownloadPdfHandler implements CommandHandler<DownloadPdfCommand> {
   public commandType: string = DOWNLOAD_PDF_COMMAND_TYPE;
 
   private getFilePath = (path: string) =>

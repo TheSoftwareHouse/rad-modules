@@ -1,4 +1,4 @@
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { LoginCommand } from "../commands/login.command";

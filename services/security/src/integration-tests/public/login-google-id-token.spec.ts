@@ -79,7 +79,7 @@ describe("login-google-id-token.action", () => {
   };
 
   before(() => {
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
   });
 

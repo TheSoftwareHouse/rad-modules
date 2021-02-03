@@ -1,6 +1,6 @@
+import { CommandHandler } from "@tshio/command-bus";
 import { TokenConfig } from "../../../../config/config";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
-import { Handler } from "../../../../../../../shared/command-bus";
 import { HAS_ATTRIBUTE_COMMAND_TYPE, HasAttributeCommand } from "../commands/has-attribute.command";
 import { UnathorizedError } from "../../../../errors/unathorized.error";
 import { NotFoundError } from "../../../../errors/not-found.error";
@@ -18,7 +18,7 @@ export interface AddAttributeHandlerProps {
   authorizationClient: AuthorizationClient;
 }
 
-export default class HasAttributeHandler implements Handler<HasAttributeCommand> {
+export default class HasAttributeHandler implements CommandHandler<HasAttributeCommand> {
   public commandType: string = HAS_ATTRIBUTE_COMMAND_TYPE;
 
   constructor(private dependencies: AddAttributeHandlerProps) {}

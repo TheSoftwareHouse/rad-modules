@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { PASSWORD_RESET_TOKEN_COMMAND_TYPE, PasswordResetTokenCommand } from "../commands/password-reset-token.command";
 import { UsersService } from "../services/users-service";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
@@ -9,7 +9,7 @@ interface PasswordResetTokenProps {
   usersRepository: UsersRepository;
 }
 
-export default class PasswordResetTokenHandler implements Handler<PasswordResetTokenCommand> {
+export default class PasswordResetTokenHandler implements CommandHandler<PasswordResetTokenCommand> {
   public commandType: string = PASSWORD_RESET_TOKEN_COMMAND_TYPE;
 
   constructor(private dependencies: PasswordResetTokenProps) {}

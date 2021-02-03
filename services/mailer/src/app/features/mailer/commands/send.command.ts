@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 import { MailMessage } from "../../../../utils/mail-sender";
 import { EmailQueuePriority } from "../../../../utils/worker/email-queue";
 

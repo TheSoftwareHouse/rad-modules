@@ -1,5 +1,5 @@
 import * as express from "express";
-import { CommandBus } from "../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 
 import { downloadPdfAction, downloadPdfActionValidation } from "./actions/download-pdf.action";
 // COMMAND_IMPORTS

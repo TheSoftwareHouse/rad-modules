@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const REMOVE_ACCESS_KEY_COMMAND_TYPE = "tokens/REMOVEACCESSKEY";
 

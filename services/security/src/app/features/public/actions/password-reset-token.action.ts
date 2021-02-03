@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { PasswordResetTokenCommand } from "../commands/password-reset-token.command";
 import { ACCEPTED } from "http-status-codes";
 import { Logger } from "winston";

@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const DOWNLOAD_PDF_COMMAND_TYPE = "download-pdf/DOWNLOADPDF";
 

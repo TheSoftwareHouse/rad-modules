@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 import { FilterOperators } from "../../../../../../security/src/repositories/helpers/query-filter";
 
 export const GET_JOBS_COMMAND_TYPE = "scheduling/GETJOBS";

@@ -4,7 +4,9 @@ import { JobModel } from "../app/features/scheduling/models/job.model";
 import { JobType } from "../scheduler";
 
 export const createJobs = async () => {
-  const GLOBAL = global as GlobalData;
+  const _GLOBAL = global as any;
+  const GLOBAL = _GLOBAL as GlobalData;
+
   await GLOBAL.container.resolve<JobsRepository>("jobsRepository").addJobs(
     [
       { name: "A super test1", type: JobType.HTTP, payload: { url: "example.com" } },

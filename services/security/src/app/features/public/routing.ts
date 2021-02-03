@@ -1,6 +1,6 @@
 import * as express from "express";
 import { Logger } from "winston";
-import { CommandBus } from "../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { Request, Response, NextFunction } from "express";
 import { OauthProvider } from "../../../config/config";
 import { loginAction, loginActionValidation } from "../users/actions/login.action";

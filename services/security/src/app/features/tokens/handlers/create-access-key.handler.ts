@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { CREATE_ACCESS_KEY_COMMAND_TYPE, CreateAccessKeyCommand } from "../commands/create-access-key.command";
 import { AccessKeyService } from "../services/access-key-service";
 import { JwtUtils } from "../../../../tokens/jwt-utils";
@@ -9,7 +9,7 @@ export interface CreateAccessKeyProps {
   accessKeyService: AccessKeyService;
   jwtUtils: JwtUtils;
 }
-export default class CreateAccessKeyHandler implements Handler<CreateAccessKeyCommand> {
+export default class CreateAccessKeyHandler implements CommandHandler<CreateAccessKeyCommand> {
   public commandType: string = CREATE_ACCESS_KEY_COMMAND_TYPE;
 
   constructor(private dependencies: CreateAccessKeyProps) {}

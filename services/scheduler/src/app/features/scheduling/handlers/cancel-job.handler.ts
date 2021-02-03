@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { CANCEL_JOB_COMMAND_TYPE, CancelJobCommand } from "../commands/cancel-job.command";
 import { Scheduler } from "../../../../scheduler/producer/scheduler.types";
 import { JobsRepository } from "../../../../repositories/jobs.repository";
@@ -10,7 +10,7 @@ export interface CancelJobHandlerProps {
   jobsRepository: JobsRepository;
 }
 
-export default class CancelJobHandler implements Handler<CancelJobCommand> {
+export default class CancelJobHandler implements CommandHandler<CancelJobCommand> {
   public commandType: string = CANCEL_JOB_COMMAND_TYPE;
 
   constructor(private dependencies: CancelJobHandlerProps) {}

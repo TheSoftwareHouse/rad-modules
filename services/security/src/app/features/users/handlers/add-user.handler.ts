@@ -1,5 +1,5 @@
 import { UsersRepository } from "../../../../repositories/users.repostiory";
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { ADD_USER_COMMAND_TYPE, AddUserCommand } from "../commands/add-user.command";
 import { Mailer } from "../../../../utils/mailer/mailer";
 import { Logger } from "winston";
@@ -15,7 +15,7 @@ export interface AddUserHandlerProps {
   eventDispatcher: EventDispatcher;
 }
 
-export default class AddUserHandler implements Handler<AddUserCommand> {
+export default class AddUserHandler implements CommandHandler<AddUserCommand> {
   public commandType: string = ADD_USER_COMMAND_TYPE;
 
   constructor(private dependencies: AddUserHandlerProps) {}

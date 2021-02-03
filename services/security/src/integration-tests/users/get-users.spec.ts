@@ -12,7 +12,7 @@ describe("get-users.action", () => {
   const GLOBAL = {} as GlobalData;
 
   before(() => {
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
   });
 

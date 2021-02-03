@@ -1,5 +1,5 @@
 import * as express from "express";
-import { CommandBus } from "../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 
 import { createPdfAction, createPdfActionValidation } from "./actions/create-pdf.action";
 import { AppConfig } from "../../../config/config";

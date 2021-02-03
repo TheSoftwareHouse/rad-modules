@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { GetJobsCommand, GetJobsCommandPayload } from "../commands/get-jobs.command";
 
 export interface GetJobsActionProps {

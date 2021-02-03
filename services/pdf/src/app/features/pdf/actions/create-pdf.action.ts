@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { CreatePdfCommand } from "../commands/create-pdf.command";
 import { CREATED } from "http-status-codes";
 import { AppConfig } from "../../../../config/config";
