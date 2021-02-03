@@ -206,7 +206,8 @@ Changed
 
 ## gateway
 
-### 2020-04-28 v0.0.4
+
+### 2021-02-03 v0.0.5
 Changed
 - Bugfix. Possible race condition when check permissions
 - Set WORKDIR to "/app/build/services/gateway" (before "WORKDIR /app")
