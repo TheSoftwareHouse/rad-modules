@@ -11,6 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh mailer ./services/mailer/docker/prod/Dockerfile ./services/mailer/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
 
   scheduler:
     runs-on: ubuntu-latest
@@ -19,6 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh scheduler ./services/scheduler/docker/prod/Dockerfile ./services/scheduler/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
 
   security:
     runs-on: ubuntu-latest
@@ -27,6 +35,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh security ./services/security/docker/prod/Dockerfile ./services/security/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
 
   gateway:
     runs-on: ubuntu-latest
@@ -35,6 +47,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh gateway ./services/gateway/docker/prod/Dockerfile ./services/gateway/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
 
   notifications:
     runs-on: ubuntu-latest
@@ -43,6 +59,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh notifications ./services/notifications/docker/prod/Dockerfile ./services/notifications/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
 
   pdf:
     runs-on: ubuntu-latest
@@ -51,3 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh pdf ./services/pdf/docker/prod/Dockerfile ./services/pdf/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}

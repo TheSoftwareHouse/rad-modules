@@ -11,6 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docusaurus-to-github.sh
+        env:
+          GH_NAME: ${{ secrets.GH_NAME }}
+          GH_EMAIL: ${{ secrets.GH_EMAIL }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   redoc:
     runs-on: ubuntu-latest
@@ -25,3 +29,7 @@ jobs:
       - run: make npm-install-in-all-build-services
       - run: node ./ci-scripts/generate-api-docs.js
       - run: bash ./ci-scripts/api-docs-to-github.sh
+        env:
+          GH_NAME: ${{ secrets.GH_NAME }}
+          GH_EMAIL: ${{ secrets.GH_EMAIL }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
