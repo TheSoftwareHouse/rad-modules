@@ -168,6 +168,10 @@ Changed
 
 ## notifications
 
+### 2021-02-03 v0.0.11
+Updated
+- socket.io 2.3.0 => 2.4.0
+
 ### 2020-07-29 v0.0.10
 Added
 - `get-notifications` endpoint to fetch notifications information
