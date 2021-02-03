@@ -1,0 +1,35 @@
+name: Build and deploy documentation
+on:
+  pull_request:
+    types: closed
+    branches:
+      - master
+jobs:
+  docusaurus:
+    runs-on: ubuntu-latest
+    name: Prepare and push Docusaurus Docs to GitHub
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docusaurus-to-github.sh
+        env:
+          GH_NAME: ${{ secrets.GH_NAME }}
+          GH_EMAIL: ${{ secrets.GH_EMAIL }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  redoc:
+    runs-on: ubuntu-latest
+    name: Prepare and push API ReDocs to GitHub
+    strategy:
+      matrix:
+        node-version: [14]
+    steps:
+      - uses: actions/checkout@v2
+      - run: make install
+      - run: npm run build
+      - run: make npm-install-in-all-build-services
+      - run: node ./ci-scripts/generate-api-docs.js
+      - run: bash ./ci-scripts/api-docs-to-github.sh
+        env:
+          GH_NAME: ${{ secrets.GH_NAME }}
+          GH_EMAIL: ${{ secrets.GH_EMAIL }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

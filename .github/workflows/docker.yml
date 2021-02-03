@@ -1,0 +1,120 @@
+name: Build and deploy docker images
+on:
+  release:
+    types: [created]
+
+jobs:
+  check-mailer-tag:
+    name: Check mailer tag
+    id: check-mailer-tag
+    run: |
+      if [[ ${{ github.event.ref }} =~ ^refs/tags/mailer-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo ::set-output name=match::true
+      fi
+  check-scheduler-tag:
+    name: Check scheduler tag
+    id: check-scheduler-tag
+    run: |
+      if [[ ${{ github.event.ref }} =~ ^refs/tags/scheduler-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo ::set-output name=match::true
+      fi
+  check-security-tag:
+    name: Check security tag
+    id: check-security-tag
+    run: |
+      if [[ ${{ github.event.ref }} =~ ^refs/tags/security-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo ::set-output name=match::true
+      fi
+  check-gateway-tag:
+    name: Check gateway tag
+    id: check-gateway-tag
+    run: |
+      if [[ ${{ github.event.ref }} =~ ^refs/tags/gateway-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo ::set-output name=match::true
+      fi
+  check-notifications-tag:
+    name: Check notifications tag
+    id: check-notifications-tag
+    run: |
+      if [[ ${{ github.event.ref }} =~ ^refs/tags/notifications-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo ::set-output name=match::true
+      fi
+  check-pdf-tag:
+    name: Check pdf tag
+    id: check-pdf-tag
+    run: |
+      if [[ ${{ github.event.ref }} =~ ^refs/tags/pdf-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo ::set-output name=match::true
+      fi
+
+  mailer:
+    runs-on: ubuntu-latest
+    name: Deploy Mailer to DockerHub
+    if: steps.check-mailer-tag.outputs.match == 'true'
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh mailer ./services/mailer/docker/prod/Dockerfile ./services/mailer/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+
+  scheduler:
+    runs-on: ubuntu-latest
+    name: Deploy Scheduler to DockerHub
+    if: steps.check-scheduler-tag.outputs.match == 'true'
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh scheduler ./services/scheduler/docker/prod/Dockerfile ./services/scheduler/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+
+  security:
+    runs-on: ubuntu-latest
+    name: Deploy Security to DockerHub
+    if: steps.check-security-tag.outputs.match == 'true'
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh security ./services/security/docker/prod/Dockerfile ./services/security/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+
+  gateway:
+    runs-on: ubuntu-latest
+    name: Deploy Gateway to DockerHub
+    if: steps.check-gateway-tag.outputs.match == 'true'
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh gateway ./services/gateway/docker/prod/Dockerfile ./services/gateway/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+
+  notifications:
+    runs-on: ubuntu-latest
+    name: Deploy Notifications to DockerHub
+    if: steps.check-notifications-tag.outputs.match == 'true'
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh notifications ./services/notifications/docker/prod/Dockerfile ./services/notifications/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+
+  pdf:
+    runs-on: ubuntu-latest
+    name: Deploy Pdf to DockerHub
+    if: steps.check-pdf-tag.outputs.match == 'true'
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash ./ci-scripts/docker-release.sh pdf ./services/pdf/docker/prod/Dockerfile ./services/pdf/package.json
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}

@@ -1,0 +1,85 @@
+name: RAD Modules CI
+on: [push]
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    name: Compile TypeScript
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-watcher
+      - run: npm run lint
+    strategy:
+      matrix:
+        node-version: [14]
+  security-integration:
+    runs-on: ubuntu-latest
+    name: Security integration
+    needs:
+      - setup
+    strategy:
+      matrix:
+        node-version: [14]
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-security-prod
+      - run: npm run security-integration
+  mailer-integration:
+    runs-on: ubuntu-latest
+    name: Mailer integration
+    needs:
+      - setup
+    strategy:
+      matrix:
+        node-version: [14]
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-mailer-prod
+      - run: npm run mailer-integration
+  notifications-integration:
+    runs-on: ubuntu-latest
+    name: Notifications integration
+    needs:
+      - setup
+    strategy:
+      matrix:
+        node-version: [14]
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-notifications-prod
+      - run: npm run notifications-integration
+  scheduler-integration:
+    runs-on: ubuntu-latest
+    name: Scheduler integration
+    needs:
+      - setup
+    strategy:
+      matrix:
+        node-version: [14]
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-scheduler-prod
+  gateway-integration:
+    runs-on: ubuntu-latest
+    name: Gateway integration
+    needs:
+      - setup
+    strategy:
+      matrix:
+        node-version: [14]
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-security-prod
+      - run: npm run docker-build-gateway-prod
+#      - run: npm run gateway-integration
+  pdf-integration:
+    runs-on: ubuntu-latest
+    name: PDF integration
+    needs:
+      - setup
+    strategy:
+      matrix:
+        node-version: [14]
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run docker-build-pdf-prod
+      - run: npm run pdf-integration
