@@ -1,13 +1,21 @@
 name: Build and deploy docker images
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
+    tags:
+      - 'mailer-[0-9]+.[0-9]+.[0-9]+'
+      - 'scheduler-[0-9]+.[0-9]+.[0-9]+'
+      - 'security-[0-9]+.[0-9]+.[0-9]+'
+      - 'gateway-[0-9]+.[0-9]+.[0-9]+'
+      - 'notifications-[0-9]+.[0-9]+.[0-9]+'
+      - 'pdf-[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   mailer:
     runs-on: ubuntu-latest
     name: Deploy Mailer to DockerHub
-    if: contains(github.ref, "*mailer*")
+    if: startsWith(github.ref, 'refs/tags/mailer')
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh mailer ./services/mailer/docker/prod/Dockerfile ./services/mailer/package.json
@@ -19,7 +27,7 @@ jobs:
   scheduler:
     runs-on: ubuntu-latest
     name: Deploy Scheduler to DockerHub
-    if: contains(github.ref, "*scheduler*")
+    if: startsWith(github.ref, 'refs/tags/scheduler')
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh scheduler ./services/scheduler/docker/prod/Dockerfile ./services/scheduler/package.json
@@ -31,7 +39,7 @@ jobs:
   security:
     runs-on: ubuntu-latest
     name: Deploy Security to DockerHub
-    if: contains(github.ref, "*security*")
+    if: startsWith(github.ref, 'refs/tags/security')
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh security ./services/security/docker/prod/Dockerfile ./services/security/package.json
@@ -43,7 +51,7 @@ jobs:
   gateway:
     runs-on: ubuntu-latest
     name: Deploy Gateway to DockerHub
-    if: contains(github.ref, "*gateway*")
+    if: startsWith(github.ref, 'refs/tags/gateway')
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh gateway ./services/gateway/docker/prod/Dockerfile ./services/gateway/package.json
@@ -55,7 +63,7 @@ jobs:
   notifications:
     runs-on: ubuntu-latest
     name: Deploy Notifications to DockerHub
-    if: contains(github.ref, "*notifications*")
+    if: startsWith(github.ref, 'refs/tags/notifications')
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh notifications ./services/notifications/docker/prod/Dockerfile ./services/notifications/package.json
@@ -67,7 +75,7 @@ jobs:
   pdf:
     runs-on: ubuntu-latest
     name: Deploy Pdf to DockerHub
-    if: contains(github.ref, "*pdf*")
+    if: startsWith(github.ref, 'refs/tags/pdf')
     steps:
       - uses: actions/checkout@v2
       - run: bash ./ci-scripts/docker-release.sh pdf ./services/pdf/docker/prod/Dockerfile ./services/pdf/package.json
