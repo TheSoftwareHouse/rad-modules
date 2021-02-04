@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const GET_ACCESS_KEYS_COMMAND_TYPE = "tokens/GETACCESSKEYS";
 

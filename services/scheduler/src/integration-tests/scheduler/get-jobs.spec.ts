@@ -5,7 +5,8 @@ import { createJobs } from "../helper";
 import { deepStrictEqual } from "assert";
 
 describe("Scheduler tests: get jobs", () => {
-  const GLOBAL = global as GlobalData;
+  const _GLOBAL = global as any;
+  const GLOBAL = _GLOBAL as GlobalData;
 
   it("Should return empty set when there is no jobs", async () => {
     return request(GLOBAL.container.resolve("app")).get("/api/scheduling/get-jobs").expect(200).expect({

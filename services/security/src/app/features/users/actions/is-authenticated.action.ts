@@ -1,6 +1,6 @@
 import { BearerToken } from "../../../../tokens/bearer-token";
 import { Request, Response, NextFunction } from "express";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { IsAuthenticatedCommand } from "../commands/is-authenticated.command";
 import { OK, UNAUTHORIZED } from "http-status-codes";
 

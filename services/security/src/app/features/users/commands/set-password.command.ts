@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const SET_PASSWORD_COMMAND_TYPE = "users/SETPASSWORD";
 

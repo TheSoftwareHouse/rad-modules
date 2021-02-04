@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const ADD_USER_COMMAND_TYPE = "users/ADD_USER";
 

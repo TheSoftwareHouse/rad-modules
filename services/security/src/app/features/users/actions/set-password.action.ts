@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { SetPasswordCommand } from "../commands/set-password.command";
 import { appConfig } from "../../../../config/config";
 import { JwtUtils } from "../../../../tokens/jwt-utils";

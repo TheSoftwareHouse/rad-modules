@@ -1,5 +1,5 @@
 import * as express from "express";
-import { CommandBus } from "../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 
 import { getAttributesAction, getAttributesActionValidation } from "./actions/get-attributes.action";
 import { RequireAccessFactory } from "../../../middleware/require-access";

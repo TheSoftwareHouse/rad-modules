@@ -1,7 +1,7 @@
-import { AuthenticationClient } from "../strategies/authentication/authentication-client.types";
-import { Handler } from "../../../../../../../shared/command-bus";
-import { OAUTH_REDIRECT_COMMAND_TYPE, OauthRedirectCommand } from "../commands/oauth-redirect.command";
+import { CommandHandler } from "@tshio/command-bus";
 import { Logger } from "winston";
+import { AuthenticationClient } from "../strategies/authentication/authentication-client.types";
+import { OAUTH_REDIRECT_COMMAND_TYPE, OauthRedirectCommand } from "../commands/oauth-redirect.command";
 import { AuthenticationStrategy, OauthFirstLogin, OauthProvider } from "../../../../config/config";
 import { UsersService } from "../services/users-service";
 import { GoogleClient } from "../oauth/google/google-client";
@@ -22,7 +22,7 @@ interface OauthRedirectHandlerProps {
   authenticationStrategy: AuthenticationStrategy;
 }
 
-export default class OauthRedirectHandler implements Handler<OauthRedirectCommand> {
+export default class OauthRedirectHandler implements CommandHandler<OauthRedirectCommand> {
   public commandType: string = OAUTH_REDIRECT_COMMAND_TYPE;
 
   constructor(private dependencies: OauthRedirectHandlerProps) {}

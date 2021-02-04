@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { GET_POLICIES_COMMAND_TYPE, GetPoliciesCommand, GetPoliciesResponse } from "../commands/get-policies.command";
 import { PolicyRepository } from "../../../../repositories/policy.repository";
 
@@ -6,7 +6,7 @@ export interface GetPoliciesHandlerProps {
   policyRepository: PolicyRepository;
 }
 
-export default class GetPoliciesHandler implements Handler<GetPoliciesCommand> {
+export default class GetPoliciesHandler implements CommandHandler<GetPoliciesCommand> {
   public commandType: string = GET_POLICIES_COMMAND_TYPE;
 
   constructor(private dependencies: GetPoliciesHandlerProps) {}

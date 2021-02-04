@@ -36,7 +36,7 @@ function createProxyRoute(hasAccessEndpointUrl: string, options: ProxyRoute): Re
     ...options,
     onProxyReq: (proxyReq, req, res) => {
       if (!options.isPublic) {
-        proxyReq.socket.pause();
+        proxyReq!.socket!.pause();
         hasAccess(hasAccessEndpointUrl, proxyReq.getHeaders(), options.resource)
           .then((access) => {
             if (!access) {
@@ -46,7 +46,7 @@ function createProxyRoute(hasAccessEndpointUrl: string, options: ProxyRoute): Re
             }
           })
           .catch((error) => res.status(error.code ?? 500).json({ error: error.message }))
-          .finally(() => proxyReq.socket.resume());
+          .finally(() => proxyReq!.socket!.resume());
       }
     },
   });

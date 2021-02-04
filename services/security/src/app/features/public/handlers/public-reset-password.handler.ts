@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { RESET_PASSWORD_COMMAND_TYPE, ResetPasswordCommand } from "../commands/reset-password.command";
 import * as RandExp from "randexp";
 import { AuthenticationClient } from "../../users/strategies/authentication/authentication-client.types";
@@ -20,7 +20,7 @@ type ResetPasswordResponse = {
   newPassword: string;
 };
 
-export default class ResetPasswordHandler implements Handler<ResetPasswordCommand> {
+export default class ResetPasswordHandler implements CommandHandler<ResetPasswordCommand> {
   public commandType: string = RESET_PASSWORD_COMMAND_TYPE;
 
   constructor(private dependencies: ResetPasswordProps) {}

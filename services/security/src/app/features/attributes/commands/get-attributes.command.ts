@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const GET_ATTRIBUTES_COMMAND_TYPE = "attributes/GETATTRIBUTES";
 

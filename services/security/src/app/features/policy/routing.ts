@@ -1,6 +1,6 @@
 import * as express from "express";
+import { CommandBus } from "@tshio/command-bus";
 import { addPolicyActionValidation, addPolicyAction } from "./actions/add-policy.action";
-import { CommandBus } from "../../../../../../shared/command-bus";
 import { AdminPanelPoliciesConfig } from "../../../config/config";
 import { RequireAccessFactory } from "../../../middleware/require-access";
 import { removePolicyAction, removePolicyActionValidation } from "./actions/remove-policy.action";

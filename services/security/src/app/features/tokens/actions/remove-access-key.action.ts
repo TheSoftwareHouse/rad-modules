@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { RemoveAccessKeyCommand } from "../commands/remove-access-key.command";
 import { NO_CONTENT } from "http-status-codes";
 

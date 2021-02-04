@@ -4,7 +4,7 @@ import * as awilix from "awilix";
 import { AwilixContainer, Lifetime } from "awilix";
 import { AppConfig } from "./config/config";
 import { createRouter } from "./app/applications/http/router";
-import { CommandBus } from "../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { createApp } from "./app/application-factories/create-http-app";
 import { errorHandler } from "./middleware/error-handler";
 import { appConfigSchema } from "./config/config";

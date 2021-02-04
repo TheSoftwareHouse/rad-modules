@@ -27,7 +27,7 @@ const generateToken = async (userId: string, tokenConfig: TokenConfig): Promise<
           return reject(new Error("Failed to sign a token"));
         }
 
-        return resolve(token);
+        return resolve(token as string);
       },
     );
   });

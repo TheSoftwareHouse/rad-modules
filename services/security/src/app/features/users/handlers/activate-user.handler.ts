@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { ACTIVATE_USER_COMMAND_TYPE, ActivateUserCommand } from "../commands/activate-user.command";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { NotFoundError } from "../../../../errors/not-found.error";
@@ -13,7 +13,7 @@ export interface ActiveUserHandlerProps {
   eventDispatcher: EventDispatcher;
 }
 
-export default class ActiveUserHandler implements Handler<ActivateUserCommand> {
+export default class ActiveUserHandler implements CommandHandler<ActivateUserCommand> {
   public commandType: string = ACTIVATE_USER_COMMAND_TYPE;
 
   constructor(private dependencies: ActiveUserHandlerProps) {}

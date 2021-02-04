@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { SEND_COMMAND_TYPE, SendCommand } from "../commands/send.command";
 import { MailSender } from "../../../../utils/mail-sender";
 import { EmailQueue, EmailQueuePriority } from "../../../../utils/worker/email-queue";
@@ -8,7 +8,7 @@ export type SendHandlerProperties = {
   emailQueue: EmailQueue;
 };
 
-export default class SendHandler implements Handler<SendCommand> {
+export default class SendHandler implements CommandHandler<SendCommand> {
   constructor(private properties: SendHandlerProperties) {}
 
   public commandType: string = SEND_COMMAND_TYPE;

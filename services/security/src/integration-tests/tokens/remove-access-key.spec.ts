@@ -8,7 +8,7 @@ describe("Access API key tests", () => {
   const password = "superadmin";
 
   before(() => {
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
   });
 

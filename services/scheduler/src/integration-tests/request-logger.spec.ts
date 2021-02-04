@@ -4,10 +4,9 @@ import { Application } from "../app/application.types";
 import { asValue, AwilixContainer } from "awilix";
 import { appConfig } from "../config/config";
 import { deepCloneAndHideKeys } from "../middleware/request-logger";
-import { GlobalData } from "./bootstrap";
 
 describe("Request logger tests", () => {
-  const GLOBAL = global as GlobalData;
+  const GLOBAL = global as any;
 
   let app: Application;
   let container: AwilixContainer;

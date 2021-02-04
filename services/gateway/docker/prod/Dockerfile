@@ -1,4 +1,4 @@
-FROM node:12.16.1-alpine as build
+FROM node:14-alpine3.12 as build
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY . ./
 
 RUN cd ./services/gateway && npm i && ./node_modules/.bin/tsc --skipLibCheck
 
-FROM node:12.16.1-alpine
+FROM node:14-alpine3.12
 
 WORKDIR /app
 

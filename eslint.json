@@ -22,32 +22,24 @@
     "no-underscore-dangle": "off",
     "no-useless-constructor": "off",
     "class-methods-use-this": "off",
-    "@typescript-eslint/quotes": ["error", "double"],
-    "@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "never" }],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": ["PascalCase"],
+        "custom": {
+          "regex": "^I[A-Z]",
+          "match": false
+        }
+      }
+    ],
     "no-empty-interface": "off",
     "ordered-imports": "off",
     "object-literal-sort-keys": "off",
-    "unicorn/filename-case": [
-      "error",
-      {
-        "case": "kebabCase"
-      }
-    ],
+    "unicorn/filename-case": ["error", { "case": "kebabCase" }],
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-    "quotes": [
-      "error",
-      "double",
-      {
-        "avoidEscape": true
-      }
-    ],
-    "@typescript-eslint/quotes": [
-      "error",
-      "double",
-      {
-        "avoidEscape": true
-      }
-    ]
+    "quotes": ["error", "double", { "avoidEscape": true }],
+    "@typescript-eslint/quotes": [ "error", "double", { "avoidEscape": true }]
   }
 }

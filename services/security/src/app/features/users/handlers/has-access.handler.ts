@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { HAS_ACCESS_COMMAND_TYPE, HasAccessCommand } from "../commands/has-access.command";
 import { AuthorizationClient } from "../../../../ACL/authorization-client.types";
 
@@ -6,7 +6,7 @@ export interface HasAccessHandlerProps {
   authorizationClient: AuthorizationClient;
 }
 
-export default class HasAccessHandler implements Handler<HasAccessCommand> {
+export default class HasAccessHandler implements CommandHandler<HasAccessCommand> {
   public commandType: string = HAS_ACCESS_COMMAND_TYPE;
 
   constructor(private dependencies: HasAccessHandlerProps) {}

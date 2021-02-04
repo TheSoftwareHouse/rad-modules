@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const CANCEL_JOB_COMMAND_TYPE = "scheduling/CANCELJOB";
 

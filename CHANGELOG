@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2021-02-04 v0.0.73
+Added
+- Update dependencies
+
 ### 2020-12-17 v0.0.69
 Added
 - Fix url encode
@@ -119,6 +123,10 @@ Changed
 
 ## scheduler
 
+### 2021-02-04 v0.0.16
+Added
+- Update dependencies
+
 ### 2020-11-02 v0.0.15
 Added
 - Add initial jobs
@@ -168,6 +176,10 @@ Changed
 
 ## notifications
 
+### 2021-02-04 v0.0.12
+Added
+- Update dependencies
+
 ### 2021-02-03 v0.0.11
 Updated
 - socket.io 2.3.0 => 2.4.0
@@ -192,6 +204,10 @@ Changed
 
 ## mailer
 
+### 2021-02-04 v0.0.9
+Added
+- Update dependencies
+
 ### 2020-07-01 v0.0.8
 Added
 - Batch processing
@@ -210,6 +226,9 @@ Changed
 
 ## gateway
 
+### 2021-02-04 v0.0.7
+Added
+- Update dependencies
 
 ### 2021-02-03 v0.0.6
 Changed
@@ -225,6 +244,10 @@ Changed
 
 ## pdf
 
+### 2021-02-04 v0.0.3
+Added
+- Update dependencies
+
 ### 2020-09-24 v0.0.2
 Added
 - Add auto size
@@ -234,6 +257,10 @@ Added
 - Pdf service provides a ready-to-use rendering HTML content from URL or HTML string, which can be used to convert HTML to PDF.
 
 ## Main project
+
+### 2021-02-04 v1.0.1
+Added
+- Update dependencies
 
 ### 2020-04-09
 Changed

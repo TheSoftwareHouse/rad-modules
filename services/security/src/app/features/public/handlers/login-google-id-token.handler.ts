@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import {
   LOGIN_GOOGLE_ID_TOKEN_COMMAND_TYPE,
   LoginGoogleIdTokenCommand,
@@ -17,7 +17,7 @@ interface LoginGoogleIdTokenHandlerProps {
   usersService: UsersService;
 }
 
-export default class LoginGoogleIdTokenHandler implements Handler<LoginGoogleIdTokenCommand> {
+export default class LoginGoogleIdTokenHandler implements CommandHandler<LoginGoogleIdTokenCommand> {
   public commandType: string = LOGIN_GOOGLE_ID_TOKEN_COMMAND_TYPE;
 
   constructor(private dependencies: LoginGoogleIdTokenHandlerProps) {}

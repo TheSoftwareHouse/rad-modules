@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const LOGIN_GOOGLE_ID_TOKEN_COMMAND_TYPE = "public/LOGINGOOGLEIDTOKEN";
 

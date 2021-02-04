@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { GET_ATTRIBUTES_COMMAND_TYPE, GetAttributesCommand } from "../commands/get-attributes.command";
 import { AttributesRepository } from "../../../../repositories/attributes.repostiory";
 
@@ -6,7 +6,7 @@ export interface GetAttributesHandlerProps {
   attributesRepository: AttributesRepository;
 }
 
-export default class GetAttributesHandler implements Handler<GetAttributesCommand> {
+export default class GetAttributesHandler implements CommandHandler<GetAttributesCommand> {
   public commandType: string = GET_ATTRIBUTES_COMMAND_TYPE;
 
   constructor(private dependencies: GetAttributesHandlerProps) {}

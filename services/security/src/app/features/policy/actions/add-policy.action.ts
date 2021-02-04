@@ -1,7 +1,7 @@
 import { CREATED } from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { AddPolicyCommand } from "../commands/add-policy.command";
 
 export interface AddPolicyActionProps {

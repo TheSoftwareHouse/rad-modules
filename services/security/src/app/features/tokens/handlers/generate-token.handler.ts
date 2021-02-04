@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { GENERATE_TOKEN_COMMAND_TYPE, GenerateTokenCommand } from "../commands/generate-token.command";
 import { AccessKeyService } from "../services/access-key-service";
 import { JwtUtils } from "../../../../tokens/jwt-utils";
@@ -12,7 +12,7 @@ export interface GenerateTokenProps {
   policyService: PolicyService;
 }
 
-export default class GenerateTokenHandler implements Handler<GenerateTokenCommand> {
+export default class GenerateTokenHandler implements CommandHandler<GenerateTokenCommand> {
   public commandType: string = GENERATE_TOKEN_COMMAND_TYPE;
 
   constructor(private dependencies: GenerateTokenProps) {}

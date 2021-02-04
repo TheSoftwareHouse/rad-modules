@@ -15,7 +15,7 @@ describe("oauth-redirect.action", () => {
         return Promise.resolve({ email: testOauthUserEmail });
       }
     }
-    const { getBootstrap } = global as GlobalData;
+    const { getBootstrap } = global as any;
     GLOBAL.bootstrap = getBootstrap();
     const { container } = GLOBAL.bootstrap;
 

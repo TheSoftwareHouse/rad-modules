@@ -6,7 +6,7 @@ import { AuthorizationClient } from "../ACL/authorization-client.types";
 
 export type RequireAccessFactory = (accessAttribute: string) => RequestHandler;
 
-interface requireAdminAccessProps {
+interface RequireAdminAccessProps {
   authenticationClient: AuthenticationClient;
   authorizationClient: AuthorizationClient;
   accessKeyRepository: AccessKeyRepository;
@@ -16,7 +16,7 @@ export const requireAccess = ({
   authenticationClient,
   authorizationClient,
   accessKeyRepository,
-}: requireAdminAccessProps) => (accessAttribute: string): RequestHandler => async (
+}: RequireAdminAccessProps) => (accessAttribute: string): RequestHandler => async (
   req: Request,
   res: Response,
   next: NextFunction,

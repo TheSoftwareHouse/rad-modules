@@ -7,7 +7,8 @@ import { JobStatus } from "../../app/features/scheduling/models/job.model";
 import { v4 } from "uuid";
 
 describe("Scheduler tests: cancel job", () => {
-  const GLOBAL = global as GlobalData;
+  const _GLOBAL = global as any;
+  const GLOBAL = _GLOBAL as GlobalData;
 
   const name = v4();
 

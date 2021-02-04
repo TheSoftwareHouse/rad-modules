@@ -1,4 +1,4 @@
-import { Handler } from "../../../../../../../shared/command-bus";
+import { CommandHandler } from "@tshio/command-bus";
 import { SEND_COMMAND_TYPE, SendCommand } from "../commands/send.command";
 import { NotificationsBroker } from "../../../../notifications-broker/notifications-broker";
 
@@ -6,7 +6,7 @@ export interface SendHandlerProps {
   notificationsBroker: NotificationsBroker;
 }
 
-export default class SendHandler implements Handler<SendCommand> {
+export default class SendHandler implements CommandHandler<SendCommand> {
   public commandType: string = SEND_COMMAND_TYPE;
 
   constructor(private dependencies: SendHandlerProps) {}

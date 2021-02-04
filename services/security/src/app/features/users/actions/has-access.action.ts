@@ -1,8 +1,8 @@
 import { OK } from "http-status-codes";
-import { BearerToken } from "../../../../tokens/bearer-token";
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
+import { BearerToken } from "../../../../tokens/bearer-token";
 import { HasAccessCommand } from "../commands/has-access.command";
 
 export interface HasAccessActionProps {

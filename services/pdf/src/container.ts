@@ -2,9 +2,9 @@ import { TransportProtocol } from "../../../shared/enums/transport-protocol";
 import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
 import { AwilixContainer, Lifetime } from "awilix";
+import { CommandBus } from "@tshio/command-bus";
 import { AppConfig } from "./config/config";
 import { createRouter } from "./app/applications/http/router";
-import { CommandBus } from "../../../shared/command-bus";
 import { createApp } from "./app/application-factories/create-http-app";
 import { errorHandler } from "./middleware/error-handler";
 import { AppConfigSchema } from "./config/config";
@@ -79,7 +79,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     .map(key => handlersScope.resolve(key));
 
   container.register({
-    handlers: awilix.asValue(handlers),
+    commandHandlers: awilix.asValue(handlers),
   });
 
   if (config.applicationType === TransportProtocol.HTTP) {

@@ -7,6 +7,7 @@ import { UsersService } from "./app/features/users/services/users-service";
 import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
 import { AwilixContainer, Lifetime, Resolver } from "awilix";
+import { CommandBus } from "@tshio/command-bus";
 import {
   AppConfig,
   appConfigSchema,
@@ -15,7 +16,6 @@ import {
   initialUsersDataSchema,
 } from "./config/config";
 import { createApiRouter } from "./app/applications/http/router";
-import { CommandBus } from "../../../shared/command-bus";
 import { getAuthenticationClient } from "./app/features/users/strategies/authentication/authentication-client.factory";
 import { createConnection, EntityManager, getCustomRepository } from "typeorm";
 import { createLogger } from "winston";
@@ -224,7 +224,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     .map((key) => handlersScope.resolve(key));
 
   container.register({
-    handlers: awilix.asValue(handlers),
+    commandHandlers: awilix.asValue(handlers),
   });
 
   if (config.applicationType === TransportProtocol.HTTP) {

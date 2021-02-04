@@ -2,9 +2,9 @@ import { TransportProtocol } from "../../../shared/enums/transport-protocol";
 import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
 import { AwilixContainer, Lifetime } from "awilix";
+import { CommandBus } from "@tshio/command-bus";
 import { AppConfig, appConfigSchema } from "./config/config";
 import { createRouter } from "./app/applications/http/router";
-import { CommandBus } from "../../../shared/command-bus";
 import { createApp } from "./app/application-factories/create-http-app";
 import { errorHandler } from "./middleware/error-handler";
 import { mailerRouting } from "./app/features/mailer/routing";
@@ -36,6 +36,13 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
   };
 
   container.register({
+    commandBus: awilix
+      .asClass(CommandBus)
+      .classic()
+      .singleton(),
+  });
+
+  container.register({
     logger: awilix.asValue(logger),
     requestLoggerFormat: awilix.asValue(requestLoggerFormat),
     loggerStream: awilix.asValue(loggerStream),
@@ -53,13 +60,6 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
 
   const handlersScope = container.createScope();
 
-  container.register({
-    commandBus: awilix
-      .asClass(CommandBus)
-      .classic()
-      .singleton(),
-  });
-
   handlersScope.loadModules(["src/**/*.handler.ts", "src/**/*.handler.js"], {
     formatName: "camelCase",
     resolverOptions: {
@@ -73,7 +73,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     .map(key => handlersScope.resolve(key));
 
   container.register({
-    handlers: awilix.asValue(handlers),
+    commandHandlers: awilix.asValue(handlers),
   });
 
   if (config.applicationType === TransportProtocol.HTTP) {

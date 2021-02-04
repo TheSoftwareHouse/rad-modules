@@ -77,7 +77,6 @@ export class ChromiumBrowser {
         try {
           logger.info("trying to close chromium browser");
           await this.browser.close();
-          delete this.browser;
         } catch (closeBrowserError) {
           logger.error(closeBrowserError.message);
         }

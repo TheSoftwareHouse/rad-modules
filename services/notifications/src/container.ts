@@ -2,9 +2,9 @@ import * as awilix from "awilix";
 import { createLogger } from "winston";
 import { AwilixContainer, Lifetime } from "awilix";
 import { createConnection, getCustomRepository } from "typeorm";
+import { CommandBus } from "@tshio/command-bus";
 import { JwtUtils } from "./tokens/jwt-utils";
 import { createApp } from "./app/application-factories/create-http-app";
-import { CommandBus } from "../../../shared/command-bus";
 import { createRouter } from "./app/applications/http/router";
 import { errorHandler } from "./middleware/error-handler";
 import { requestLogger } from "./middleware/request-logger";
@@ -85,7 +85,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     .map(key => handlersScope.resolve(key));
 
   container.register({
-    handlers: awilix.asValue(handlers),
+    commandHandlers: awilix.asValue(handlers),
   });
 
   if (config.applicationType === TransportProtocol.HTTP) {

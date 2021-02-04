@@ -1,4 +1,4 @@
-import { Command } from "../../../../../../../shared/command-bus";
+import { Command } from "@tshio/command-bus";
 
 export const REFRESH_USER_ACTIVE_TOKEN_COMMAND_TYPE = "users/REFRESHUSERACTIVETOKEN";
 

@@ -30,7 +30,7 @@ describe("download-pdf.action test", () => {
     const expiryTime = Math.floor(new Date(result.body.expiryAt).getTime() / 1000);
 
     // check expiry date
-    assert.strictEqual(Math.abs(startTime + config.expiration - expiryTime) < 1, true);
+    assert.strictEqual(Math.abs(startTime + config.expiration - expiryTime) < 5, true);
 
     // check download url
     const pattern = `${config.apiUrl}\\/api\\/download-pdf\\/\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}`;

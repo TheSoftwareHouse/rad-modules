@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { celebrate } from "celebrate";
-import { CommandBus } from "../../../../../../../shared/command-bus";
+import { CommandBus } from "@tshio/command-bus";
 import { ScheduleJobCommand } from "../commands/schedule-job.command";
 import { CREATED } from "http-status-codes";
 import { ScheduleJobSchema } from "../../../../config/config";
