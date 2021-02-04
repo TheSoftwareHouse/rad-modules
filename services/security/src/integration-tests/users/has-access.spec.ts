@@ -1,4 +1,4 @@
-import { CREATED, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import { GlobalData } from "../bootstrap";
 import { appConfig } from "../../config/config";
@@ -22,7 +22,7 @@ describe("has-access.action", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { apiKey } = body;
 
@@ -31,6 +31,6 @@ describe("has-access.action", () => {
       .set(appConfig.apiKeyHeaderName, apiKey)
       .send({ resources: ["resource1"] })
       .expect("Content-Type", /json/)
-      .expect(OK, UsersResponses.hasAccess);
+      .expect(StatusCodes.OK, UsersResponses.hasAccess);
   });
 });

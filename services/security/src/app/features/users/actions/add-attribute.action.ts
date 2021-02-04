@@ -1,4 +1,4 @@
-import { CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
@@ -92,7 +92,7 @@ export const addAttributeAction = ({ commandBus }: AddAttributeActionProps) => (
       }),
     )
     .then(() => {
-      res.status(CREATED).type("application/json").json({});
+      res.status(StatusCodes.CREATED).type("application/json").json({});
     })
     .catch(next);
 };

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { RefreshUserActiveTokenCommand } from "../commands/refresh-user-active-token.command";
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface RefreshUserActiveTokenActionProps {
   commandBus: CommandBus;
@@ -90,7 +90,7 @@ export const refreshUserActiveTokenAction = ({ commandBus }: RefreshUserActiveTo
       }),
     )
     .then((commandResult) => {
-      res.status(OK).json(commandResult);
+      res.status(StatusCodes.OK).json(commandResult);
     })
     .catch(next);
 };

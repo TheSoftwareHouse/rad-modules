@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AccessKeyRepository } from "../repositories/access-key.repostiory";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { HttpError } from "../errors/http.error";
 
 interface XApiKeyHandlerProps {
@@ -23,7 +23,7 @@ export const xApiKeyResponseFactory = (req: Request) => {
     case "has-access":
       return { hasAccess: true };
     default:
-      throw new HttpError("Invalid operation in xApiKeyResponseFactory", INTERNAL_SERVER_ERROR);
+      throw new HttpError("Invalid operation in xApiKeyResponseFactory", StatusCodes.INTERNAL_SERVER_ERROR);
   }
 };
 

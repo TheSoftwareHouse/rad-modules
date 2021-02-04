@@ -1,4 +1,4 @@
-import { CREATED, UNAUTHORIZED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import * as assert from "assert";
 import { deepEqualOmit, isUuid, isValidTokenType, isNotEmptyString } from "../../../../../shared/test-utils";
@@ -24,7 +24,7 @@ describe("Access API key tests", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED)
+      .expect(StatusCodes.CREATED)
       .then((data) => (data.body.apiKey.match(apiKeyRegex) === null ? assert.fail() : assert.ok("ok")));
   });
 
@@ -36,7 +36,7 @@ describe("Access API key tests", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     assert(isNotEmptyString(body.apiKey) && isUuid(body.apiKey));
     assert(isNotEmptyString(body.type) && isValidTokenType(body.type));
@@ -51,7 +51,7 @@ describe("Access API key tests", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { apiKey } = body;
 
@@ -60,7 +60,7 @@ describe("Access API key tests", () => {
       .set(appConfig.apiKeyHeaderName, apiKey)
       .send({ username: "NewInActiveUser", password: "randomPassword" })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     assert(isNotEmptyString(addUserBody.newUserId) && isUuid(addUserBody.newUserId));
   });
@@ -73,7 +73,7 @@ describe("Access API key tests", () => {
       .set(appConfig.apiKeyHeaderName, "WrongAccessKey")
       .send({ username: "NewInActiveUser", password: "randomPassword" })
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.accessKeyWrong));
   });
 });

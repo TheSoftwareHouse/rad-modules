@@ -1,4 +1,4 @@
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -24,7 +24,7 @@ describe("get-users.action", () => {
       .get("/api/users")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { users } = usersResponse.body;
 
@@ -43,7 +43,7 @@ describe("get-users.action", () => {
       .get(`/api/users?filter[attribute.name][eq]=${attributeName}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { users }: { users: any[] } = usersResponse.body;
 
@@ -58,7 +58,7 @@ describe("get-users.action", () => {
       .get("/api/users?filter[attribute.name][eq]=WrongAttribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { users }: { users: any[] } = usersResponse.body;
 

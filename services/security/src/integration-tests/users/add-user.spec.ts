@@ -1,4 +1,4 @@
-import { CREATED, CONFLICT, BAD_REQUEST } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { asValue } from "awilix";
@@ -31,7 +31,7 @@ describe("add-user.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "randomUserName", password: "randomPassword" })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     assert(isNotEmptyString(body?.newUserId));
     assert(isUuid(body?.newUserId));
@@ -46,7 +46,7 @@ describe("add-user.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "randomUserName", password: "123" })
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(
           response.body.error.details[0].message,
@@ -65,14 +65,14 @@ describe("add-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username, password })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     return request(app)
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username, password })
       .expect("Content-Type", /json/)
-      .expect(CONFLICT)
+      .expect(StatusCodes.CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.userNameAlreadyExistsErrorFactory(username)));
   });
 
@@ -89,7 +89,7 @@ describe("add-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "InActiveUser", password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = response.body;
     assert(isNotEmptyString(newUserId));
@@ -113,7 +113,7 @@ describe("add-user.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "randomUserName", password: "randomPassword", attributes: [TEST_ATTRIBUTE_NAME] })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = body;
     assert(isNotEmptyString(newUserId));
@@ -135,7 +135,7 @@ describe("add-user.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "randomUserName", password: "randomPassword", attributes: [] })
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"attributes" does not contain 1 required value(s)');
       });
@@ -156,7 +156,7 @@ describe("add-user.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "randomUserName", password: "randomPassword" })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     deepStrictEqual(triggeredEvent, new UserAddedEvent({ userId: body?.newUserId, attributes: [] }));
   });

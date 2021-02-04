@@ -3,7 +3,7 @@ import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { ResetPasswordCommand } from "../commands/reset-password.command";
 import { appConfig } from "../../../../config/config";
-import { CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface ResetPasswordActionProps {
   commandBus: CommandBus;
@@ -98,11 +98,11 @@ export const resetPasswordAction = ({ commandBus }: ResetPasswordActionProps) =>
     )
     .then((commandResult) => {
       if (!commandResult) {
-        res.status(CREATED).type("application/json").json({});
+        res.status(StatusCodes.CREATED).type("application/json").json({});
         return;
       }
 
-      res.status(CREATED).json(commandResult);
+      res.status(StatusCodes.CREATED).json(commandResult);
     })
     .catch(next);
 };

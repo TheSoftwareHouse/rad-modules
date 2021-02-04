@@ -2,7 +2,7 @@ import * as assert from "assert";
 import * as io from "socket.io-client";
 import * as request from "supertest";
 import { sign } from "jsonwebtoken";
-import { BAD_REQUEST, CREATED, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { Application } from "../app/application.types";
 import { TokenConfig } from "../config/config";
 import { appConfig } from "../config/config";
@@ -64,12 +64,12 @@ describe("send.action", () => {
     });
 
     notifyClient.on("connect", async () => {
-      await request(app).post("/api/notifications/send").send({ message: "123" }).expect(CREATED);
+      await request(app).post("/api/notifications/send").send({ message: "123" }).expect(StatusCodes.CREATED);
     });
   });
 
   it("Request OK", async () => {
-    return request(app).post("/api/notifications/send").send({ message: "123" }).expect(CREATED);
+    return request(app).post("/api/notifications/send").send({ message: "123" }).expect(StatusCodes.CREATED);
   });
 
   it("Should receive notify that sent to specific userId.", (done) => {
@@ -85,7 +85,7 @@ describe("send.action", () => {
       await request(app)
         .post("/api/notifications/send")
         .send({ channels: ["user1"], message: "123" })
-        .expect(CREATED);
+        .expect(StatusCodes.CREATED);
     });
   });
 
@@ -99,16 +99,19 @@ describe("send.action", () => {
     });
 
     notifyClient.on("connect", async () => {
-      await request(app).post("/api/notifications/send").send({ message: "123" }).expect(CREATED);
+      await request(app).post("/api/notifications/send").send({ message: "123" }).expect(StatusCodes.CREATED);
     });
   });
 
   it("Bad request", () => {
-    return request(app).post("/api/notifications/send").send({}).expect(BAD_REQUEST);
+    return request(app).post("/api/notifications/send").send({}).expect(StatusCodes.BAD_REQUEST);
   });
 
   it("Should return notificationsIds in in body response", async () => {
-    const { body } = await request(app).post("/api/notifications/send").send({ message: "123" }).expect(CREATED);
+    const { body } = await request(app)
+      .post("/api/notifications/send")
+      .send({ message: "123" })
+      .expect(StatusCodes.CREATED);
 
     assert(Array.isArray(body?.notificationsIds));
     assert(isUuid(body?.notificationsIds[0]));
@@ -118,9 +121,9 @@ describe("send.action", () => {
     await request(app)
       .post("/api/notifications/send")
       .send({ channels: ["test1", "test2", "test3"], message: "123" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
-    const { body } = await request(app).get("/api/notifications/get-notifications").send({}).expect(OK);
+    const { body } = await request(app).get("/api/notifications/get-notifications").send({}).expect(StatusCodes.OK);
 
     const { notifications, total }: { notifications: NotificationModel[]; total: number } = body;
 
@@ -136,9 +139,9 @@ describe("send.action", () => {
     await request(app)
       .post("/api/notifications/send")
       .send({ channels: ["test1", "test2", "test3"], message: "123" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
-    const { body } = await request(app).get("/api/notifications/get-notifications").expect(OK);
+    const { body } = await request(app).get("/api/notifications/get-notifications").expect(StatusCodes.OK);
 
     const { notifications, total }: { notifications: NotificationModel[]; total: number } = body;
 
@@ -154,11 +157,11 @@ describe("send.action", () => {
     await request(app)
       .post("/api/notifications/send")
       .send({ channels: ["test1", "test2", "test3"], message: "123" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { body } = await request(app)
       .get("/api/notifications/get-notifications?filter[channel][eq]=test1")
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { notifications, total }: { notifications: NotificationModel[]; total: number } = body;
     const [firstNotification] = notifications;

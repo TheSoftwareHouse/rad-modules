@@ -1,4 +1,4 @@
-import { UNAUTHORIZED, OK, BAD_REQUEST, NOT_FOUND } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -24,7 +24,7 @@ describe("get-user-id.action", () => {
       .get("/api/users/get-user-id?username=user1")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.userHasNoAccess));
   });
 
@@ -36,7 +36,7 @@ describe("get-user-id.action", () => {
       .get("/api/users/get-user-id")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"username" is required');
       });
@@ -50,7 +50,7 @@ describe("get-user-id.action", () => {
       .get("/api/users/get-user-id?username=NotExistingUser")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(NOT_FOUND)
+      .expect(StatusCodes.NOT_FOUND)
       .expect(deepEqualOmit(BadRequestResponses.userNotFound));
   });
 
@@ -61,7 +61,7 @@ describe("get-user-id.action", () => {
     const response = await request(app)
       .get("/api/users/get-user-id?username=user2")
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { userId } = response.body;
 
@@ -77,7 +77,7 @@ describe("get-user-id.action", () => {
       .get("/api/users/get-user-id?username=user1")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { userId: user1Id } = user1IdResponse.body;
 
@@ -85,14 +85,14 @@ describe("get-user-id.action", () => {
       .get("/api/users/get-user-id?username=superadmin")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { userId: user2Id } = user2IdResponse.body;
 
     const usersResponse = await request(app)
       .get(`/api/users?filter[id][eq]=${user1Id}&filter[id][eqOr]=${user2Id}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { users }: { users: any[] } = usersResponse.body;
 

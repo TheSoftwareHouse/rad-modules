@@ -1,4 +1,4 @@
-import { BAD_REQUEST, CONFLICT, CREATED, NOT_FOUND, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import { v4 } from "uuid";
 import * as assert from "assert";
@@ -38,7 +38,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId: userId } = addUserResponse.body;
 
@@ -46,7 +46,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { accessToken: newUserAccessToken } = await authClient.login(newUsername, "randomPassword");
 
@@ -55,7 +55,7 @@ describe("add-attribute.action", () => {
       .set("Authorization", `Bearer ${newUserAccessToken}`)
       .send({ attributes: [...attributes] })
       .expect("Content-Type", /json/)
-      .expect(OK, UsersResponses.hasAttributeResponseFactory());
+      .expect(StatusCodes.OK, UsersResponses.hasAttributeResponseFactory());
   });
 
   it("Should return BAD_REQUEST if empty array of attributes.", async () => {
@@ -68,7 +68,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId: userId } = addUserResponse.body;
 
@@ -76,7 +76,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes: [] })
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"attributes" does not contain 1 required value(s)');
       });
@@ -92,7 +92,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId: userId } = addUserResponse.body;
 
@@ -100,7 +100,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes: "WrongValueForAttributes" })
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"attributes" must be an array');
       });
@@ -116,7 +116,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId: userId } = addUserResponse.body;
 
@@ -124,7 +124,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes: "WrongValueForAttributes" })
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"attributes" must be an array');
       });
@@ -140,7 +140,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ attributes })
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"userId" is required');
       });
@@ -156,7 +156,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId: "wrongUserId", attributes })
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"userId" must be a valid GUID');
       });
@@ -172,7 +172,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId: "11111111-1111-1111-1111-111111111111", attributes })
-      .expect(NOT_FOUND)
+      .expect(StatusCodes.NOT_FOUND)
       .expect(deepEqualOmit(BadRequestResponses.userWithIdNotExistFactory("11111111-1111-1111-1111-111111111111")));
   });
 
@@ -187,7 +187,7 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId: userId } = addUserResponse.body;
 
@@ -195,13 +195,13 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     return request(app)
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes })
-      .expect(CONFLICT)
+      .expect(StatusCodes.CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.userHasAttributesConflictErrorFactory(attributes)));
   });
 
@@ -220,13 +220,13 @@ describe("add-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     await request(app)
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId: response.body.newUserId, attributes })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     // eslint-disable-next-line no-console
     console.log(triggeredEvent);

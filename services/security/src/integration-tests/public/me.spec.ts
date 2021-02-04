@@ -1,4 +1,4 @@
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -22,13 +22,13 @@ describe("public me.action", () => {
       .post("/api/public/auth/login")
       .send({ username: normalUser!.username, password: normalUser!.password })
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     return request(app)
       .get("/api/public/me")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK)
+      .expect(StatusCodes.OK)
       .expect((result: any) => {
         assert.deepStrictEqual(Object.keys(result.body ?? []), [
           "id",

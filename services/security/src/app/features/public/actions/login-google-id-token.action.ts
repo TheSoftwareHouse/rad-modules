@@ -4,7 +4,7 @@ import { CommandBus } from "@tshio/command-bus";
 import { LoginGoogleIdTokenCommand } from "../commands/login-google-id-token.command";
 import { appConfig, OauthProvider } from "../../../../config/config";
 import { HttpError } from "../../../../errors/http.error";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface LoginGoogleIdTokenActionProps {
   commandBus: CommandBus;
@@ -81,7 +81,7 @@ export const loginGoogleIdTokenAction = ({ commandBus }: LoginGoogleIdTokenActio
 ) => {
   const { idToken } = req.body;
   if (!appConfig.oauth.enabled.includes(OauthProvider.GOOGLE)) {
-    throw new HttpError("Login with id_token is disabled (appConfig.oauth.enabled)", INTERNAL_SERVER_ERROR);
+    throw new HttpError("Login with id_token is disabled (appConfig.oauth.enabled)", StatusCodes.INTERNAL_SERVER_ERROR);
   }
   commandBus
     .execute(

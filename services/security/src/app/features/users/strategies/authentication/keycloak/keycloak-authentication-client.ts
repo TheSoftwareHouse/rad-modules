@@ -8,7 +8,7 @@ import { JwtPayload, TokenType } from "../../../../../../tokens/jwt-payload";
 import { UsersRepository } from "../../../../../../repositories/users.repostiory";
 import { PolicyRepository } from "../../../../../../repositories/policy.repository";
 import { HttpError } from "../../../../../../errors/http.error";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface KeycloakClientProperties {
   jwtUtils: JwtUtils;
@@ -104,6 +104,6 @@ export class KeycloakAuthenticationClient implements AuthenticationClient {
   }
 
   public async getUserResources(_username: string) {
-    throw new HttpError("Not implemented", INTERNAL_SERVER_ERROR);
+    throw new HttpError("Not implemented", StatusCodes.INTERNAL_SERVER_ERROR);
   }
 }

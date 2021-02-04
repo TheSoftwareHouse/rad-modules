@@ -1,4 +1,4 @@
-import { OK, UNAUTHORIZED, CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import { GlobalData } from "../bootstrap";
 import { appConfig } from "../../config/config";
@@ -27,7 +27,7 @@ describe("is-authenticated.action", () => {
       .get("/api/users/is-authenticated")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK, UsersResponses.isAuthenticated);
+      .expect(StatusCodes.OK, UsersResponses.isAuthenticated);
   });
 
   it("Should return valid response if access token expired", async () => {
@@ -50,7 +50,7 @@ describe("is-authenticated.action", () => {
       .get("/api/users/is-authenticated")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(UsersResponses.isNotAuthenticated));
 
     container.register("accessTokenConfig", asValue(accessTokenConfigOriginal));
@@ -63,7 +63,7 @@ describe("is-authenticated.action", () => {
       .get("/api/users/is-authenticated")
       .set(appConfig.apiKeyHeaderName, "wrongApiKey")
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.tokenMissingOrInvalid));
   });
 
@@ -73,7 +73,7 @@ describe("is-authenticated.action", () => {
     return request(app)
       .get("/api/users/is-authenticated")
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.tokenMissingOrInvalid));
   });
 
@@ -85,7 +85,7 @@ describe("is-authenticated.action", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { apiKey } = body;
 
@@ -93,6 +93,6 @@ describe("is-authenticated.action", () => {
       .get("/api/users/is-authenticated")
       .set(appConfig.apiKeyHeaderName, apiKey)
       .expect("Content-Type", /json/)
-      .expect(OK, UsersResponses.isAuthenticated);
+      .expect(StatusCodes.OK, UsersResponses.isAuthenticated);
   });
 });

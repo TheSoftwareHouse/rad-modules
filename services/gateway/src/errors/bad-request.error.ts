@@ -1,5 +1,5 @@
 import { HttpError } from "./http.error";
-import { BAD_REQUEST } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 /**
  * @swagger
@@ -16,6 +16,6 @@ import { BAD_REQUEST } from "http-status-codes";
 
 export class BadRequestError extends HttpError {
   constructor(message: string) {
-    super(message, BAD_REQUEST);
+    super(message, StatusCodes.BAD_REQUEST);
   }
 }

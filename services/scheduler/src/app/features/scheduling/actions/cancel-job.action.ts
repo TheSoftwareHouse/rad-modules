@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { CancelJobCommand } from "../commands/cancel-job.command";
-import { NO_CONTENT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface CancelJobActionProps {
   commandBus: CommandBus;
@@ -62,7 +62,7 @@ export const cancelJobAction = ({ commandBus }: CancelJobActionProps) => (
       }),
     )
     .then(() => {
-      res.status(NO_CONTENT).type("application/json").send();
+      res.status(StatusCodes.NO_CONTENT).type("application/json").send();
     })
     .catch(next);
 };

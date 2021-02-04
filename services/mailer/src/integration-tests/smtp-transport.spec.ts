@@ -1,7 +1,7 @@
 import "mocha";
 import * as request from "supertest";
 import { asValue } from "awilix";
-import { BAD_REQUEST, CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { base64JpgFile, base64PdfFile } from "./resources";
 import { GlobalData } from "./bootstrap";
 
@@ -44,7 +44,7 @@ describe("SMTP transport tests", () => {
       ],
     };
 
-    return request(app).post("/api/mailer/send").send(body).expect(CREATED);
+    return request(app).post("/api/mailer/send").send(body).expect(StatusCodes.CREATED);
   }).timeout(15000);
 
   it("Should return 400 - bad request response", () => {
@@ -53,6 +53,6 @@ describe("SMTP transport tests", () => {
 
     const body = {};
 
-    return request(app).post("/api/mailer/send").send(body).expect(BAD_REQUEST);
+    return request(app).post("/api/mailer/send").send(body).expect(StatusCodes.BAD_REQUEST);
   });
 });

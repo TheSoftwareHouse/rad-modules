@@ -1,4 +1,4 @@
-import { UNAUTHORIZED, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -23,7 +23,7 @@ describe("public login.action", () => {
       .post("/api/public/auth/login")
       .send({ username: normalUser.username, password: normalUser.password })
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     assert(decode(body.accessToken));
     assert(decode(body.refreshToken));
@@ -35,7 +35,7 @@ describe("public login.action", () => {
       .post("/api/public/auth/login")
       .send({ username: normalUser.username, password: "wrong password" })
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.wrongUsernameOrPassword));
   });
 });

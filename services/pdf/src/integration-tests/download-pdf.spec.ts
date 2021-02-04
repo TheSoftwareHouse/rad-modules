@@ -1,5 +1,5 @@
 import * as assert from "assert";
-import { BAD_REQUEST, CREATED, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import { Application } from "express";
 import { AppConfig } from "../config/config";
@@ -25,7 +25,7 @@ describe("download-pdf.action test", () => {
     };
     const startTime = Math.floor(Date.now() / 1000);
 
-    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(CREATED);
+    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(StatusCodes.CREATED);
 
     const expiryTime = Math.floor(new Date(result.body.expiryAt).getTime() / 1000);
 
@@ -52,7 +52,7 @@ describe("download-pdf.action test", () => {
 
     const fileFromTmpBuffer = await readFile(pdfPathInTmpDir);
 
-    await request(app).get(result.body.url.replace(config.apiUrl, "")).expect(OK, fileFromTmpBuffer);
+    await request(app).get(result.body.url.replace(config.apiUrl, "")).expect(StatusCodes.OK, fileFromTmpBuffer);
 
     await remove(pdfPathInTmpDir);
   }).timeout(5000);
@@ -60,7 +60,7 @@ describe("download-pdf.action test", () => {
   it("Should not download pdf file with wrong download url", async () => {
     const downloadUrl = "/api/download-pdf/wrong-file-id-format";
 
-    const result = await request(app).get(downloadUrl).expect(BAD_REQUEST);
+    const result = await request(app).get(downloadUrl).expect(StatusCodes.BAD_REQUEST);
 
     assert(result.body.error, '"fileId" must be a valid GUID');
   }).timeout(5000);

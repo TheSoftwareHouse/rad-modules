@@ -1,4 +1,4 @@
-import { CREATED, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { asValue } from "awilix";
@@ -33,20 +33,20 @@ describe("deactivate-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "NewUserToDeactivate", password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = response.body;
     let user = await usersRepository.findById(newUserId);
 
     if (user) {
       const { activationToken } = user;
-      await request(app).post(`/api/users/activate-user/${activationToken}`).expect(OK);
+      await request(app).post(`/api/users/activate-user/${activationToken}`).expect(StatusCodes.OK);
 
       const { body } = await request(app)
         .post("/api/users/deactivate-user")
         .set("Authorization", `Bearer ${accessToken}`)
         .send({ userId: newUserId })
-        .expect(OK);
+        .expect(StatusCodes.OK);
 
       assert(isNotEmptyString(body.userId));
       assert(isUuid(body.userId));
@@ -78,17 +78,17 @@ describe("deactivate-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "NewUserToDeactivate", password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
     const { newUserId } = response.body;
     const user = (await usersRepository.findById(newUserId))!;
     const { activationToken } = user;
-    await request(app).post(`/api/users/activate-user/${activationToken}`).expect(OK);
+    await request(app).post(`/api/users/activate-user/${activationToken}`).expect(StatusCodes.OK);
 
     const { body } = await request(app)
       .post("/api/users/deactivate-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId: newUserId })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     assert(isNotEmptyString(body.userId));
     assert(isUuid(body.userId));

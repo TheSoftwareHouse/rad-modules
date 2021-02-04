@@ -1,4 +1,4 @@
-import { CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
@@ -93,7 +93,7 @@ export const addPolicyAction = ({ commandBus }: AddPolicyActionProps) => (
       }),
     )
     .then((commandResult) => {
-      res.status(CREATED).json(commandResult);
+      res.status(StatusCodes.CREATED).json(commandResult);
     })
     .catch(next);
 };

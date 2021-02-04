@@ -1,5 +1,5 @@
 import * as request from "supertest";
-import { OK, BAD_REQUEST, NOT_FOUND } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import { v4 } from "uuid";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -23,7 +23,7 @@ describe("Get user test", () => {
       .post("/api/users/login")
       .send({ username: userWithAdminPanelAttr.username, password: userWithAdminPanelAttr.password })
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessToken } = loginResponse.body;
 
@@ -31,7 +31,7 @@ describe("Get user test", () => {
       .get("/api/users/get-user/IT_IS_NOT_USER_ID")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"userId" must be a valid GUID');
       });
@@ -43,7 +43,7 @@ describe("Get user test", () => {
       .post("/api/users/login")
       .send({ username: userWithAdminPanelAttr.username, password: userWithAdminPanelAttr.password })
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessToken } = loginResponse.body;
 
@@ -51,7 +51,7 @@ describe("Get user test", () => {
       .get(`/api/users/get-user/${v4()}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(NOT_FOUND)
+      .expect(StatusCodes.NOT_FOUND)
       .expect(deepEqualOmit(BadRequestResponses.userNotFound));
   });
 
@@ -60,7 +60,7 @@ describe("Get user test", () => {
     const loginResponse = await request(app)
       .post("/api/users/login")
       .send({ username: userWithAdminPanelAttr.username, password: userWithAdminPanelAttr.password })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessToken } = loginResponse.body;
     const user = await usersRepository.findByUsername(normalUser.username);
@@ -69,7 +69,7 @@ describe("Get user test", () => {
       .get(`/api/users/get-user/${user?.id}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK)
+      .expect(StatusCodes.OK)
       .then((data) =>
         assert.deepStrictEqual(
           { ...data.body, createdAt: undefined, updatedAt: undefined },

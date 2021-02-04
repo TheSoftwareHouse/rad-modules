@@ -1,4 +1,4 @@
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
@@ -90,6 +90,6 @@ export const hasAccessAction = ({ commandBus }: HasAccessActionProps) => (
         resources: req.body.resources as string[],
       }),
     )
-    .then((commandResult) => res.status(OK).json(commandResult))
+    .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
     .catch(next);
 };

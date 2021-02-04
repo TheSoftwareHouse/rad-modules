@@ -1,6 +1,6 @@
 import * as request from "supertest";
 import * as querystring from "querystring";
-import { CONFLICT, CREATED, NO_CONTENT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { appConfig } from "../../config/config";
 import { usersFixture } from "../fixtures/users.fixture";
 import { deepEqualOmit } from "../../../../../shared/test-utils";
@@ -31,7 +31,7 @@ describe("Remove policy test", () => {
       .post("/api/policy/add-policy")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ resource, attribute })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const query = querystring.encode({
       resource,
@@ -41,7 +41,7 @@ describe("Remove policy test", () => {
     return request(app)
       .delete(`/api/policy/remove-policy?${query}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(NO_CONTENT);
+      .expect(StatusCodes.NO_CONTENT);
   });
 
   it("Should return conflict status if user try to delete base policy", async () => {
@@ -56,7 +56,7 @@ describe("Remove policy test", () => {
       .delete(`/api/policy/remove-policy?${query}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CONFLICT)
+      .expect(StatusCodes.CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.policyCannotDelete));
   });
 
@@ -75,12 +75,12 @@ describe("Remove policy test", () => {
       .post("/api/policy/add-policy")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ resource, attribute })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     await request(app)
       .delete(`/api/policy/remove-policy?id=${body.id}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(NO_CONTENT);
+      .expect(StatusCodes.NO_CONTENT);
 
     // noinspection JSUnusedAssignment
     deepStrictEqual(triggeredEvent, new PolicyRemovedEvent([{ id: body.id, attribute, resource }]));

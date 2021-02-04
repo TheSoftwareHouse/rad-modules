@@ -1,7 +1,7 @@
 import { OAuth2Client } from "google-auth-library";
 import { GaxiosError, request } from "gaxios";
 import { OAuthClient, OAuthDefaultLogin, OAuthGoogleIdTokenLogin, OAuthLoginIdToken, OAuthUser } from "../client.types";
-import { FORBIDDEN, INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { HttpError } from "../../../../../errors/http.error";
 import { GoogleClientConfig } from "../../../../../config/config";
 
@@ -11,7 +11,7 @@ interface GoogleClientProps {
 
 const gaxiosErrorToHttpError = (error: GaxiosError) => {
   const message = error.response?.data?.error ?? "Google OAuthClient unknown error";
-  const statusCode = error.response?.status ?? INTERNAL_SERVER_ERROR;
+  const statusCode = error.response?.status ?? StatusCodes.INTERNAL_SERVER_ERROR;
   throw new HttpError(message, statusCode);
 };
 
@@ -30,12 +30,12 @@ export class GoogleClient implements OAuthClient {
     if (allowedDomains.length > 0 && !allowedDomains.includes(userInfo.hd)) {
       throw new HttpError(
         `Domain: ${userInfo.hd} is not allowed. Supported domains are: ${allowedDomains.join(",")}`,
-        FORBIDDEN,
+        StatusCodes.FORBIDDEN,
       );
     }
 
     if (!userInfo.email_verified) {
-      throw new HttpError("Email unverified", FORBIDDEN);
+      throw new HttpError("Email unverified", StatusCodes.FORBIDDEN);
     }
 
     return {

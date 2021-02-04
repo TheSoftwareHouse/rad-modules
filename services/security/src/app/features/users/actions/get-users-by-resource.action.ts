@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { GetUsersByResourceCommand } from "../commands/get-users-by-resource.command";
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface GetUsersByResourceActionProps {
   commandBus: CommandBus;
@@ -99,6 +99,6 @@ export const getUsersByResourceAction = ({ commandBus }: GetUsersByResourceActio
         limit: +limit,
       }),
     )
-    .then((commandResult) => res.status(OK).json(commandResult))
+    .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
     .catch(next);
 };

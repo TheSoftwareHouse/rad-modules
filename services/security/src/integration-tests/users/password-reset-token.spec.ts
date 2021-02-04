@@ -1,4 +1,4 @@
-import { UNAUTHORIZED, CREATED, BAD_REQUEST, NOT_FOUND } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -32,7 +32,7 @@ describe("password-reset-token.action", () => {
       .post("/api/users/password-reset-token")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: normalUser.username })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { resetPasswordToken } = response.body;
 
@@ -48,7 +48,7 @@ describe("password-reset-token.action", () => {
       .post("/api/users/password-reset-token")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: USERNAME })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { resetPasswordToken } = response.body;
     const user = await usersRepository.findByUsername(USERNAME);
@@ -63,7 +63,7 @@ describe("password-reset-token.action", () => {
       .post("/api/users/password-reset-token")
       .send({ username: "username99" })
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.tokenMissingOrInvalid));
   });
 
@@ -76,7 +76,7 @@ describe("password-reset-token.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "username99" })
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.userHasNoAccess));
   });
 
@@ -86,7 +86,7 @@ describe("password-reset-token.action", () => {
       .post("/api/users/password-reset-token")
       .send({ username: "wrongUsername" })
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.tokenMissingOrInvalid));
   });
 
@@ -95,7 +95,7 @@ describe("password-reset-token.action", () => {
     return request(app)
       .post("/api/users/password-reset-token")
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"username" is required');
       });
@@ -110,7 +110,7 @@ describe("password-reset-token.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "bad-user-name" })
       .expect("Content-Type", /json/)
-      .expect(NOT_FOUND)
+      .expect(StatusCodes.NOT_FOUND)
       .expect(deepEqualOmit(BadRequestResponses.wrongUsername));
   });
 
@@ -123,7 +123,7 @@ describe("password-reset-token.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: normalUser.username })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { resetPasswordToken } = response.body;
     assert(isNotEmptyString(resetPasswordToken));
@@ -132,7 +132,7 @@ describe("password-reset-token.action", () => {
       .post(`/api/users/reset-password/${resetPasswordToken}`)
       .send({ newPassword: "newValidPassword123" })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
   });
 
   it("Should set resetPasswordToken to null after successful password reset action", async () => {
@@ -144,7 +144,7 @@ describe("password-reset-token.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: normalUser.username })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { resetPasswordToken } = response.body;
 
@@ -152,7 +152,7 @@ describe("password-reset-token.action", () => {
       .post(`/api/users/reset-password/${resetPasswordToken}`)
       .send({ newPassword: "newValidPassword123" })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const user = await usersRepository.findByUsername(normalUser.username);
 
@@ -168,7 +168,7 @@ describe("password-reset-token.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: normalUser.username })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { resetPasswordToken: resetPasswordToken1 } = firstActionResponse.body;
     assert(isNotEmptyString(resetPasswordToken1));
@@ -178,7 +178,7 @@ describe("password-reset-token.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: normalUser.username })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { resetPasswordToken: resetPasswordToken2 } = secondActionResponse.body;
 
@@ -195,7 +195,7 @@ describe("password-reset-token.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: normalUser.username })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { resetPasswordToken } = response.body;
     assert(isNotEmptyString(resetPasswordToken));
@@ -203,6 +203,6 @@ describe("password-reset-token.action", () => {
     return request(app)
       .post(`/api/users/reset-password/${resetPasswordToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
   });
 });

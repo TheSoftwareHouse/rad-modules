@@ -1,4 +1,4 @@
-import { CREATED, OK, BAD_REQUEST } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import * as assert from "assert";
 import { isUuid, isValidTokenType, isNotEmptyString } from "../../../../../shared/test-utils";
@@ -24,7 +24,7 @@ describe("Access API key tests", () => {
       .get("/api/tokens/get-access-keys?page=badPage&limit=badLimit")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"page" must be a number');
         assert.strictEqual(response.body.error.details[1].message, '"limit" must be a number');
@@ -39,7 +39,7 @@ describe("Access API key tests", () => {
       .get("/api/tokens/get-access-keys?page=&limit=")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"page" must be a number');
         assert.strictEqual(response.body.error.details[1].message, '"limit" must be a number');
@@ -54,7 +54,7 @@ describe("Access API key tests", () => {
       .get("/api/tokens/get-access-keys?page=1.5")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"page" must be an integer');
       });
@@ -68,13 +68,13 @@ describe("Access API key tests", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const accessKeysResponse = await request(app)
       .get("/api/tokens/get-access-keys?limit=10")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessKeys }: { accessKeys: any[] } = accessKeysResponse.body;
 
@@ -95,13 +95,13 @@ describe("Access API key tests", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const accessKeysResponse = await request(app)
       .get("/api/tokens/get-access-keys")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessKeys } = accessKeysResponse.body;
 
@@ -122,13 +122,13 @@ describe("Access API key tests", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const accessKeysResponse = await request(app)
       .get("/api/tokens/get-access-keys?extraQueryItem=test")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessKeys } = accessKeysResponse.body;
 
@@ -149,7 +149,7 @@ describe("Access API key tests", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { apiKey } = body;
 
@@ -158,7 +158,7 @@ describe("Access API key tests", () => {
       .set(appConfig.apiKeyHeaderName, apiKey)
       .send({ username: "NewInActiveUser", password: "randomPassword" })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     assert(isNotEmptyString(addUserBody.newUserId) && isUuid(addUserBody.newUserId));
   });

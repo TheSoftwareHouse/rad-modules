@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { GetUserCommand } from "../commands/get-user.command";
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { AuthorizationClient } from "../../../../ACL/authorization-client.types";
 
 export interface GetUserActionProps {
@@ -105,6 +105,6 @@ export const getUserAction = ({ commandBus, authorizationClient }: GetUserAction
         isSuperAdmin,
       }),
     )
-    .then((commandResult) => res.status(OK).json(commandResult))
+    .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
     .catch(next);
 };

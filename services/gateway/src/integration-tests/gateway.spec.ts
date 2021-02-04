@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { CREATED, FORBIDDEN, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 
 import { Application } from "../app/application.types";
@@ -19,19 +19,19 @@ describe("Gateway tests", () => {
     const loginSuperadminResponse = await request(app)
       .post("/api/login")
       .send({ username: "superadmin", password: "superadmin" })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     await request(app)
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${loginSuperadminResponse.body.accessToken}`)
       .send({ username, password })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
-    const loginUserResponse = await request(app).post("/api/login").send({ username, password }).expect(OK);
+    const loginUserResponse = await request(app).post("/api/login").send({ username, password }).expect(StatusCodes.OK);
 
     return request(app)
       .get("/api/users")
       .set("Authorization", `Bearer ${loginUserResponse.body.accessToken}`)
-      .expect(FORBIDDEN, { error: "User has no access" });
+      .expect(StatusCodes.FORBIDDEN, { error: "User has no access" });
   });
 });

@@ -1,6 +1,6 @@
 import "mocha";
 import * as request from "supertest";
-import { CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { asValue } from "awilix";
 import { base64JpgFile, base64PdfFile } from "./resources";
 import { GlobalData } from "./bootstrap";
@@ -44,6 +44,6 @@ describe("SendGrid transport tests", () => {
       ],
     };
 
-    return request(app).post("/api/mailer/send").send(body).expect(CREATED);
+    return request(app).post("/api/mailer/send").send(body).expect(StatusCodes.CREATED);
   }).timeout(15000);
 });

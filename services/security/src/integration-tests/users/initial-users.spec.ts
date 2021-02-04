@@ -1,4 +1,4 @@
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { asValue } from "awilix";
@@ -87,14 +87,14 @@ describe("Initial users tests", () => {
         username: usersData1[0].username,
         password: usersData1[0].password,
       })
-      .expect(OK)
+      .expect(StatusCodes.OK)
       .then((loginResponse) => {
         const { accessToken } = loginResponse.body;
         return request(app)
           .post("/api/users/has-attributes")
           .set("Authorization", `Bearer ${accessToken}`)
           .send({ attributes: [...usersData1[0].attributes, ...usersData2[0].attributes] })
-          .expect(OK)
+          .expect(StatusCodes.OK)
           .then((hasAttributeResponse) => {
             const { hasAllAttributes } = hasAttributeResponse.body;
 
@@ -114,7 +114,7 @@ describe("Initial users tests", () => {
         username: usersData1[0].username,
         password: usersData1[0].password,
       })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const user = await usersRepository.findByUsername(usersData1[0].username);
 
@@ -136,7 +136,7 @@ describe("Initial users tests", () => {
         username: usersData1[2].username,
         password: usersData1[2].password,
       })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const user = await usersRepository.findByUsername(usersData1[2].username);
 

@@ -1,4 +1,4 @@
-import { CREATED, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { asValue } from "awilix";
@@ -29,7 +29,7 @@ describe("refresh-user-active-token.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "UserToRefreshToken", password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = response.body;
     const user = await usersRepository.findById(newUserId);
@@ -40,7 +40,7 @@ describe("refresh-user-active-token.action", () => {
         .post("/api/users/refresh-user-active-token")
         .set("Authorization", `Bearer ${accessToken}`)
         .send({ userId: newUserId })
-        .expect(OK);
+        .expect(StatusCodes.OK);
 
       const { body } = refreshEndpointResponse;
       assert(isNotEmptyString(body.activationToken));
