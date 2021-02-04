@@ -11,7 +11,7 @@
     "docker-build-scheduler": "docker build -t scheduler-service:latest -f ./services/scheduler/docker/dev/Dockerfile .",
     "docker-build-mailer": "docker build -t mailer-service:latest -f ./services/mailer/docker/dev/Dockerfile .",
     "docker-build-notifications": "docker build -t notifications-service:latest -f ./services/notifications/docker/dev/Dockerfile .",
-    "docker-build-pdf": "docker build -t pdf-service:latest -f ./services/pdf/docker/dev/Dockerfile .",
+    "docker-build-pdf": "docker build -t pdf-service:latest -f./services/pdf/docker/dev/Dockerfile .",
     "docker-build-security-prod": "docker build -t security-service-prod:latest -f ./services/security/docker/prod/Dockerfile .",
     "docker-build-gateway-prod": "docker build -t gateway-service-prod:latest -f ./services/gateway/docker/prod/Dockerfile .",
     "docker-build-scheduler-prod": "docker build -t scheduler-service-prod:latest -f ./services/scheduler/docker/prod/Dockerfile .",
@@ -40,7 +40,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "14.14.22",
+    "@types/node": "14.14.25",
     "@types/redis": "2.8.28",
     "@typescript-eslint/eslint-plugin": "4.14.2",
     "@typescript-eslint/parser": "4.14.2",

@@ -3,7 +3,7 @@ import { AccessKeyRepository } from "../repositories/access-key.repostiory";
 import { INTERNAL_SERVER_ERROR } from "http-status-codes";
 import { HttpError } from "../errors/http.error";
 
-interface xApiKeyHandlerProps {
+interface XApiKeyHandlerProps {
   accessKeyRepository: AccessKeyRepository;
   apiKeyHeaderName: string;
 }
@@ -27,7 +27,7 @@ export const xApiKeyResponseFactory = (req: Request) => {
   }
 };
 
-export const xApiKeyHandler = ({ accessKeyRepository, apiKeyHeaderName }: xApiKeyHandlerProps) => async (
+export const xApiKeyHandler = ({ accessKeyRepository, apiKeyHeaderName }: XApiKeyHandlerProps) => async (
   req: Request,
   res: Response,
   next: NextFunction,

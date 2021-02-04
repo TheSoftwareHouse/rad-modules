@@ -224,7 +224,7 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     .map((key) => handlersScope.resolve(key));
 
   container.register({
-    handlers: awilix.asValue(handlers),
+    commandHandlers: awilix.asValue(handlers),
   });
 
   if (config.applicationType === TransportProtocol.HTTP) {

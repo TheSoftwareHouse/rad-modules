@@ -6,7 +6,6 @@ import { BadRequestResponses, UsersResponses } from "../fixtures/response.fixtur
 import { deepEqualOmit } from "../../../../../shared/test-utils";
 import { decode } from "jsonwebtoken";
 import { GlobalData } from "../bootstrap";
-import Global = NodeJS.Global;
 
 const normalUser = usersFixture[1];
 
