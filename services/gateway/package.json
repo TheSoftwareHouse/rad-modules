@@ -1,6 +1,6 @@
 {
   "name": "gateway",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "gateway service",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,6 @@
   "devDependencies": {
     "@types/cors": "2.8.9",
     "@types/express": "4.17.5",
-    "@types/helmet": "4.0.0",
     "@types/mocha": "8.2.0",
     "@types/supertest": "2.0.10",
     "@types/uuid": "8.3.0",

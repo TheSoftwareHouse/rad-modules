@@ -1,6 +1,6 @@
 {
   "name": "security",
-  "version": "0.0.72",
+  "version": "0.0.73",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -53,7 +53,6 @@
     "@types/express": "4.17.5",
     "@types/fetch-mock": "7.3.3",
     "@types/hapi__joi": "17.1.6",
-    "@types/helmet": "4.0.0",
     "@types/jsonwebtoken": "8.3.3",
     "@types/lodash": "4.14.168",
     "@types/mocha": "8.2.0",

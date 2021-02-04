@@ -1,6 +1,6 @@
 {
   "name": "mailer",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -36,7 +36,6 @@
   "devDependencies": {
     "@types/cors": "2.8.9",
     "@types/express": "4.17.5",
-    "@types/helmet": "4.0.0",
     "@types/lodash": "4.14.168",
     "@types/mocha": "8.2.0",
     "@types/morgan": "1.9.0",
