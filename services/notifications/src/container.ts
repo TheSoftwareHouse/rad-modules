@@ -1,5 +1,5 @@
 import * as awilix from "awilix";
-import { createLogger } from "winston";
+import { createLogger } from "@tshio/logger";
 import { AwilixContainer, Lifetime } from "awilix";
 import { createConnection, getCustomRepository } from "typeorm";
 import { CommandBus } from "@tshio/command-bus";
@@ -11,7 +11,6 @@ import { requestLogger } from "./middleware/request-logger";
 import { TransportProtocol } from "../../../shared/enums/transport-protocol";
 import { ApplicationFactory } from "./app/application-factory";
 import { NotificationsBroker } from "./notifications-broker/notifications-broker";
-import { loggerConfiguration } from "./utils/logger-configuration";
 import { notificationsRouting } from "./app/features/notifications/routing";
 import { AppConfig, appConfigSchema } from "./config/config";
 import { NotificationsTypeormRepository } from "./repositories/typeorm/notifications.typeorm.repository";
@@ -29,9 +28,13 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
 
   const container: AwilixContainer = awilix.createContainer({
     injectionMode: awilix.InjectionMode.PROXY,
-  });  
+  });
 
-  const logger = createLogger(loggerConfiguration(config.logger.logLevel));
+  const logger = createLogger({
+    LOGGING_LEVEL: config.logger.logLevel,
+    APP_NAME: process.env.APP_NAME,
+    NODE_ENV: process.env.NODE_ENV,
+  });
   const { requestLoggerFormat } = config.requestLogger;
   const loggerStream = {
     write: (message: any) => logger.info(message.trimEnd()),

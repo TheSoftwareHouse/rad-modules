@@ -3,7 +3,7 @@ import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { PasswordResetTokenCommand } from "../commands/password-reset-token.command";
 import { StatusCodes } from "http-status-codes";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 
 export interface PasswordResetTokenActionProps {
   commandBus: CommandBus;

@@ -1,7 +1,7 @@
 import { TransportType } from "../config/config";
 import { CustomBroker } from "./brokers/custom-broker";
 import { JwtUtils } from "../tokens/jwt-utils";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { NotificationsRepository } from "../repositories/notifications.repository";
 
 export interface GenericNotificationsBroker {

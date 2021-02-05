@@ -1,6 +1,6 @@
 import { JobDescription, SchedulerRule } from "../scheduler";
 import { Scheduler } from "../scheduler/producer/scheduler.types";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { JobsRepository } from "../repositories/jobs.repository";
 
 type InitSchedulerProps = {

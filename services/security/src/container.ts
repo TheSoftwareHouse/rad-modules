@@ -18,8 +18,7 @@ import {
 import { createApiRouter } from "./app/applications/http/router";
 import { getAuthenticationClient } from "./app/features/users/strategies/authentication/authentication-client.factory";
 import { createConnection, EntityManager, getCustomRepository } from "typeorm";
-import { createLogger } from "winston";
-import { loggerConfiguration } from "./utils/logger-configuration";
+import { createLogger } from "@tshio/logger";
 import { PolicyService } from "./app/features/policy/services/policy-service";
 import { AttributesTypeormRepository } from "./repositories/typeorm/attributes.typeorm.repository";
 import { usersRouting } from "./app/features/users/routing";
@@ -113,7 +112,11 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     injectionMode: awilix.InjectionMode.PROXY,
   });
 
-  const logger = createLogger(loggerConfiguration(config.logger.logLevel));
+  const logger = createLogger({
+    LOGGING_LEVEL: config.logger.logLevel,
+    APP_NAME: process.env.APP_NAME,
+    NODE_ENV: process.env.NODE_ENV,
+  });
   const { requestLoggerFormat } = config.requestLogger;
   const loggerStream = {
     write: (message: any) => logger.info(message.trimEnd()),

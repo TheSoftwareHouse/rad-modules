@@ -2,7 +2,7 @@ import { ProxyCall } from "../proxy-call/proxy-call";
 import { SchedulerConsumer } from "./consumer.types";
 import { SchedulerConfig } from "../../config/config";
 import { Job } from "bull";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { JobsRepository } from "../../repositories/jobs.repository";
 import { JobModel, JobStatus } from "../../app/features/scheduling/models/job.model";
 import { BullQueueDb } from "../bull-db";

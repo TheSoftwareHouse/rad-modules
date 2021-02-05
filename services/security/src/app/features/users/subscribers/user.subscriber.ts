@@ -1,5 +1,4 @@
 import { EventSubscriberInterface, EventSubscribersMeta } from "../../../../shared/event-dispatcher";
-import { Logger } from "winston";
 import { EventHandler } from "../../../../shared/event-dispatcher/http-event-hander";
 import { UserAttributeAddedEvent } from "./events/user-attribute-added.event";
 import { UserAttributeRemovedEvent } from "./events/user-attribute-removed.event";
@@ -7,6 +6,7 @@ import { UserActivatedEvent } from "./events/user-activated.event";
 import { UserDeactivatedEvent } from "./events/user-deactivated.event";
 import { UserAddedEvent } from "./events/user-added.event";
 import { UserRemovedEvent } from "./events/user-removed.event";
+import { Logger } from "@tshio/logger";
 
 export interface UserEventSubscriberProps {
   logger: Logger;

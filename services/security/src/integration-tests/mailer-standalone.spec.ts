@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { Mailer } from "../utils/mailer/mailer";
 import fetch from "node-fetch";
-import { createLogger } from "winston";
+import { createLogger } from "@tshio/logger";
 import { MailerType } from "../config/config";
 
 const standaloneMailerProperties = {

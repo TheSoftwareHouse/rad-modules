@@ -4,7 +4,7 @@ import * as helmet from "helmet";
 import * as cors from "cors";
 import * as http from "http";
 import { ErrorRequestHandler, RequestHandler } from "express";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 
 type HttpAppDependencies = {
   app: express.Express;

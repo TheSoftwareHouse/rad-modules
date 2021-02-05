@@ -1,6 +1,6 @@
 {
   "name": "security",
-  "version": "0.0.73",
+  "version": "0.0.74",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@tshio/command-bus": "1.0.2",
+    "@tshio/logger": "^1.0.4",
     "awilix": "4.3.1",
     "celebrate": "12.2.0",
     "cookie-parser": "1.4.5",
@@ -42,8 +43,7 @@
     "swagger-ui-express": "4.1.6",
     "tslib": "2.1.0",
     "typeorm": "0.2.30",
-    "uuid": "8.3.2",
-    "winston": "3.3.3"
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "@types/chai": "4.2.14",

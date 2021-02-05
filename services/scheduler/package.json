@@ -1,6 +1,6 @@
 {
   "name": "scheduler",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@tshio/command-bus": "1.0.2",
+    "@tshio/logger": "^1.0.4",
     "awilix": "4.3.1",
     "bull": "3.20.0",
     "celebrate": "12.2.0",
@@ -34,8 +35,7 @@
     "swagger-jsdoc": "6.0.2",
     "swagger-ui-express": "4.1.6",
     "typeorm": "0.2.30",
-    "uuid": "8.3.2",
-    "winston": "3.3.3"
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "@types/bull": "3.15.0",

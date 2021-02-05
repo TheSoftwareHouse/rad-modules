@@ -3,7 +3,7 @@ import { use } from "chai";
 import * as chaiAsPromised from "chai-as-promised";
 import "mocha";
 import { Event, EventDispatcher, EventSubscriberInterface } from "../../shared/event-dispatcher";
-import { createLogger } from "winston";
+import { createLogger } from "@tshio/logger";
 import { delay, SpiedObject } from "../../utils/tests";
 
 use(chaiAsPromised);

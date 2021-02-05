@@ -2,7 +2,7 @@ import { verify } from "jsonwebtoken";
 import { JwtPayload } from "./jwt-payload";
 import { UnathorizedError } from "../errors/unathorized.error";
 import { TokenConfig } from "../config/config";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 
 export interface JwtUtilsProps {
   accessTokenConfig: TokenConfig;

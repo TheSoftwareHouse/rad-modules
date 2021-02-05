@@ -1,7 +1,7 @@
 import { Browser, launch, PDFOptions, Page, Response } from "puppeteer-core";
 import { StatusCodes } from "http-status-codes";
 import { HttpError } from "../errors/http.error";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { AppConfig } from "../config/config";
 import { v4 } from "uuid";
 

@@ -6,7 +6,7 @@ import {
 import { OauthFirstLogin } from "../../../../config/config";
 import { GoogleClient } from "../../users/oauth/google/google-client";
 import { AuthenticationClient } from "../../users/strategies/authentication/authentication-client.types";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { UsersService } from "../../users/services/users-service";
 
 interface LoginGoogleIdTokenHandlerProps {

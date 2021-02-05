@@ -1,5 +1,5 @@
 import * as express from "express";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { CommandBus } from "@tshio/command-bus";
 import { Request, Response, NextFunction } from "express";
 import { OauthProvider } from "../../../config/config";

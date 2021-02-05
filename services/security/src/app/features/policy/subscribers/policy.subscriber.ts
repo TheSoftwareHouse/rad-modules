@@ -1,5 +1,5 @@
 import { EventSubscriberInterface, EventSubscribersMeta } from "../../../../shared/event-dispatcher";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { EventHandler } from "../../../../shared/event-dispatcher/http-event-hander";
 import { PolicyAddedEvent } from "./events/policy-added.event";
 import { PolicyRemovedEvent } from "./events/policy-removed.event";

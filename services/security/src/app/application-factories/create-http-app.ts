@@ -6,7 +6,7 @@ import * as http from "http";
 import * as swaggerUi from "swagger-ui-express";
 import jsdoc from "../applications/http/swagger";
 import { ErrorRequestHandler, RequestHandler } from "express";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import * as cookieParser from "cookie-parser";
 
 type HttpAppDependencies = {

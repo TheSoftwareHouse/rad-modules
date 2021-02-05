@@ -12,8 +12,7 @@ import { scheduleRouting } from "./app/features/scheduling/http/routing";
 import { TransportProtocol } from "../../../shared/enums/transport-protocol";
 import { proxyCall } from "./scheduler/proxy-call/proxy-call";
 import { appConfigSchema } from "./config/config";
-import { createLogger } from "winston";
-import { loggerConfiguration } from "./utils/logger-configuration";
+import { createLogger } from "@tshio/logger";
 import { requestLogger } from "./middleware/request-logger";
 import { createConnection, getCustomRepository } from "typeorm";
 import { JobsTypeormRepository } from "./repositories/jobs.typeorm.repository";
@@ -41,7 +40,11 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     injectionMode: awilix.InjectionMode.PROXY,
   });
 
-  const logger = createLogger(loggerConfiguration(config.logger.logLevel));
+  const logger = createLogger({
+    LOGGING_LEVEL: config.logger.logLevel,
+    APP_NAME: process.env.APP_NAME,
+    NODE_ENV: process.env.NODE_ENV,
+  });
   const { requestLoggerFormat } = config.requestLogger;
   const loggerStream = {
     write: (message: any) => logger.info(message.trimEnd()),

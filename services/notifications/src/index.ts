@@ -2,10 +2,13 @@ import { Application } from "./app/application.types";
 import { createContainer } from "./container";
 import { appConfig as config } from "./config/config";
 import { NotificationsBroker } from "./notifications-broker/notifications-broker";
-import { createLogger } from "winston";
-import { loggerConfiguration } from "./utils/logger-configuration";
+import { createLogger } from "@tshio/logger";
 
-const logger = createLogger(loggerConfiguration(config.logger.logLevel));
+const logger = createLogger({
+  LOGGING_LEVEL: config.logger.logLevel,
+  APP_NAME: process.env.APP_NAME,
+  NODE_ENV: process.env.NODE_ENV,
+});
 
 process.on("uncaughtException", (err: any) => {
   logger.error(err);

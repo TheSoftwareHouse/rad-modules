@@ -1,6 +1,6 @@
 import { Event } from "./index";
-import { Logger } from "winston";
 import { Joi } from "celebrate";
+import { Logger } from "@tshio/logger";
 
 export type EventHandler = (event: Event) => Promise<any>;
 

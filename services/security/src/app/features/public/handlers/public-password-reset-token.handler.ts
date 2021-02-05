@@ -3,7 +3,7 @@ import { PASSWORD_RESET_TOKEN_COMMAND_TYPE, PasswordResetTokenCommand } from "..
 import { UsersService } from "../../users/services/users-service";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { Mailer } from "../../../../utils/mailer/mailer";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 
 interface PasswordResetTokenProps {
   usersService: UsersService;

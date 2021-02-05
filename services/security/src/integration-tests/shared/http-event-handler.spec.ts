@@ -1,5 +1,5 @@
 import * as fetchMock from "fetch-mock";
-import { createLogger } from "winston";
+import { createLogger } from "@tshio/logger";
 import { httpEventHandler } from "../../shared/event-dispatcher/http-event-hander";
 import { strictEqual } from "assert";
 

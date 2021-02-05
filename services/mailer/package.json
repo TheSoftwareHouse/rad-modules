@@ -1,6 +1,6 @@
 {
   "name": "mailer",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,6 +16,7 @@
   "dependencies": {
     "@sendgrid/mail": "7.4.2",
     "@tshio/command-bus": "1.0.2",
+    "@tshio/logger": "1.0.4",
     "awilix": "4.3.1",
     "celebrate": "12.2.0",
     "cors": "2.8.5",
@@ -30,8 +31,7 @@
     "redis": "3.0.2",
     "swagger-jsdoc": "6.0.2",
     "swagger-ui-express": "4.1.6",
-    "uuid": "8.3.2",
-    "winston": "3.3.3"
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "@types/cors": "2.8.9",

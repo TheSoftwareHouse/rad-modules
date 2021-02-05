@@ -1,6 +1,6 @@
 import { CommandHandler } from "@tshio/command-bus";
 import { ME_COMMAND_TYPE, MeCommand } from "../commands/me.command";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { AuthorizationClient } from "../../../../ACL/authorization-client.types";
 
 interface MeHandlerProps {
