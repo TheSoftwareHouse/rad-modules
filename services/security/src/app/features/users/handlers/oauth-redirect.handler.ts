@@ -1,5 +1,5 @@
 import { CommandHandler } from "@tshio/command-bus";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { AuthenticationClient } from "../strategies/authentication/authentication-client.types";
 import { OAUTH_REDIRECT_COMMAND_TYPE, OauthRedirectCommand } from "../commands/oauth-redirect.command";
 import { AuthenticationStrategy, OauthFirstLogin, OauthProvider } from "../../../../config/config";

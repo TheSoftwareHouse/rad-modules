@@ -1,6 +1,6 @@
 import { Application } from "../../application.types";
 import { Server } from "http";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 
 export interface HttpApplicationProps {
   server: Server;

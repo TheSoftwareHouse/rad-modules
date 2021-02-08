@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { SendCommand } from "../commands/send.command";
-import { CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { EmailQueuePriority } from "../../../../utils/worker/email-queue";
 
 export interface SendActionProps {
@@ -144,6 +144,6 @@ export const sendAction = ({ commandBus }: SendActionProps) => (req: Request, re
 
   commandBus
     .execute(new SendCommand({ emails, priority }))
-    .then(() => res.sendStatus(CREATED))
+    .then(() => res.sendStatus(StatusCodes.CREATED))
     .catch(next);
 };

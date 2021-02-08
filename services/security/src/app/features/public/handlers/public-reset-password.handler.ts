@@ -3,7 +3,7 @@ import { RESET_PASSWORD_COMMAND_TYPE, ResetPasswordCommand } from "../commands/r
 import * as RandExp from "randexp";
 import { AuthenticationClient } from "../../users/strategies/authentication/authentication-client.types";
 import { Mailer } from "../../../../utils/mailer/mailer";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { NotFoundError } from "../../../../errors/not-found.error";
 

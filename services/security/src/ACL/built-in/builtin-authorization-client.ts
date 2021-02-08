@@ -6,7 +6,7 @@ import { UserModelGeneric } from "../../app/features/users/models/user.model";
 import * as jwt from "jsonwebtoken";
 import { AttributeModelGeneric } from "../../app/features/users/models/attribute.model";
 import { HttpError } from "../../errors/http.error";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export class BuiltinAuthorizationClient implements AuthorizationClient {
   constructor(private dependencies: AuthorizationClientProps) {}
@@ -91,7 +91,7 @@ export class BuiltinAuthorizationClient implements AuthorizationClient {
 
     const { id, username, isActive, attributes } = await usersRepository.findById(userId).then((user) => {
       if (user === undefined) {
-        throw new HttpError("User not exist!", INTERNAL_SERVER_ERROR);
+        throw new HttpError("User not exist!", StatusCodes.INTERNAL_SERVER_ERROR);
       }
       return user;
     });

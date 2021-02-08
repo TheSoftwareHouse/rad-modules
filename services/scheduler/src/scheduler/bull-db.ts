@@ -4,7 +4,7 @@ import { Connection } from "typeorm/connection/Connection";
 import { SchedulerConfig } from "../config/config";
 import { JobsRepository } from "../repositories/jobs.repository";
 import { JobModel } from "../app/features/scheduling/models/job.model";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { v4 } from "uuid";
 
 type BullQueueDbProps = {

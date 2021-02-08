@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { RemoveAccessKeyCommand } from "../commands/remove-access-key.command";
-import { NO_CONTENT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface RemoveAccessKeyActionProps {
   commandBus: CommandBus;
@@ -69,6 +69,6 @@ export const removeAccessKeyAction = ({ commandBus }: RemoveAccessKeyActionProps
         apiKey,
       }),
     )
-    .then(() => res.status(NO_CONTENT).type("application/json").send())
+    .then(() => res.status(StatusCodes.NO_CONTENT).type("application/json").send())
     .catch(next);
 };

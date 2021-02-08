@@ -2,7 +2,7 @@ import { BearerToken } from "../../../../tokens/bearer-token";
 import { Request, Response, NextFunction } from "express";
 import { CommandBus } from "@tshio/command-bus";
 import { IsAuthenticatedCommand } from "../commands/is-authenticated.command";
-import { OK, UNAUTHORIZED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface IsAuthenticatedActionProps {
   commandBus: CommandBus;
@@ -55,7 +55,7 @@ export const isAuthenticatedAction = ({ commandBus }: IsAuthenticatedActionProps
   commandBus
     .execute(new IsAuthenticatedCommand({ accessToken: BearerToken.fromHeader(req.headers.authorization) }))
     .then((commandResult) => {
-      const status = commandResult && commandResult.isAuthenticated ? OK : UNAUTHORIZED;
+      const status = commandResult && commandResult.isAuthenticated ? StatusCodes.OK : StatusCodes.UNAUTHORIZED;
       res.status(status).json(commandResult);
     })
     .catch(next);

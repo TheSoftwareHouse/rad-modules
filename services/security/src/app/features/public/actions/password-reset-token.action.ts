@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { PasswordResetTokenCommand } from "../commands/password-reset-token.command";
-import { ACCEPTED } from "http-status-codes";
-import { Logger } from "winston";
+import { StatusCodes } from "http-status-codes";
+import { Logger } from "@tshio/logger";
 
 export interface PasswordResetTokenActionProps {
   commandBus: CommandBus;
@@ -77,6 +77,6 @@ export const passwordResetTokenAction = ({ commandBus, logger }: PasswordResetTo
   } catch (error) {
     logger.error(error);
   } finally {
-    res.status(ACCEPTED).json({});
+    res.status(StatusCodes.ACCEPTED).json({});
   }
 };

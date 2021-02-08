@@ -2,7 +2,7 @@ import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { CommandHandler } from "@tshio/command-bus";
 import { ADD_USER_COMMAND_TYPE, AddUserCommand } from "../commands/add-user.command";
 import { Mailer } from "../../../../utils/mailer/mailer";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { UsersService } from "../services/users-service";
 import { EventDispatcher } from "../../../../shared/event-dispatcher";
 import { UserAddedEvent } from "../subscribers/events/user-added.event";

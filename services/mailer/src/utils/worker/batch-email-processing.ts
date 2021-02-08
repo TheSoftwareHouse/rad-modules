@@ -1,7 +1,7 @@
 import { EmailQueue } from "./email-queue";
 import { MailerConfig, MailSender } from "../mail-sender";
-import { Logger } from "winston";
 import { TaskWorker } from "./task-worker";
+import { Logger } from "@tshio/logger";
 
 type BatchEmailProcessingProps = {
   emailQueue: EmailQueue;

@@ -2,7 +2,7 @@ import { sign, verify } from "jsonwebtoken";
 import { JwtPayload } from "./jwt-payload";
 import { UnathorizedError } from "../errors/unathorized.error";
 import { TokenConfig } from "../config/config";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { hashWithSha512 } from "../../../../shared/crypto";
 import { TokensRepository } from "../repositories/tokens.repository";
 

@@ -1,4 +1,4 @@
-import { CREATED, OK, GONE } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { asValue } from "awilix";
@@ -34,14 +34,14 @@ describe("activate-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "NewInActiveUser", password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = response.body;
     let user = await usersRepository.findById(newUserId);
 
     if (user) {
       const { activationToken } = user;
-      const { body } = await request(app).post(`/api/users/activate-user/${activationToken}`).expect(OK);
+      const { body } = await request(app).post(`/api/users/activate-user/${activationToken}`).expect(StatusCodes.OK);
 
       assert(isNotEmptyString(body.userId) && isUuid(body.userId));
       assert(typeof body?.isActive === "boolean");
@@ -67,14 +67,16 @@ describe("activate-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "UserToDeactivateAndActivate", password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = response.body;
     let user = await usersRepository.findById(newUserId);
 
     if (user) {
       const { activationToken } = user;
-      const { body: bodyActivate } = await request(app).post(`/api/users/activate-user/${activationToken}`).expect(OK);
+      const { body: bodyActivate } = await request(app)
+        .post(`/api/users/activate-user/${activationToken}`)
+        .expect(StatusCodes.OK);
 
       assert(isNotEmptyString(bodyActivate.userId) && isUuid(bodyActivate.userId));
       assert(typeof bodyActivate.isActive === "boolean");
@@ -84,7 +86,7 @@ describe("activate-user.action", () => {
         .post("/api/users/deactivate-user")
         .set("Authorization", `Bearer ${accessToken}`)
         .send({ userId: newUserId })
-        .expect(OK);
+        .expect(StatusCodes.OK);
 
       assert(isNotEmptyString(bodyDeactivate.userId) && isUuid(bodyDeactivate.userId));
       assert(typeof bodyDeactivate.isActive === "boolean");
@@ -100,12 +102,12 @@ describe("activate-user.action", () => {
         .post("/api/users/refresh-user-active-token")
         .set("Authorization", `Bearer ${accessToken}`)
         .send({ userId: newUserId })
-        .expect(OK);
+        .expect(StatusCodes.OK);
 
       const { activationToken: newToken } = refreshEndpointResponse.body;
       assert(isNotEmptyString(newToken));
 
-      await request(app).post(`/api/users/activate-user/${newToken}`).expect(OK);
+      await request(app).post(`/api/users/activate-user/${newToken}`).expect(StatusCodes.OK);
 
       user = await usersRepository.findById(newUserId);
 
@@ -135,10 +137,10 @@ describe("activate-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "NewInActiveUser", password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
     const user = (await usersRepository.findById(response.body.newUserId))!;
 
-    const { body } = await request(app).post(`/api/users/activate-user/${user.activationToken}`).expect(OK);
+    const { body } = await request(app).post(`/api/users/activate-user/${user.activationToken}`).expect(StatusCodes.OK);
 
     assert(isNotEmptyString(body.userId) && isUuid(body.userId));
     assert(typeof body?.isActive === "boolean");
@@ -181,7 +183,7 @@ describe("User tests with mocked Date.now one week time in future", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "NewInActiveUserWithExpiredToken", password: "randomPassword" })
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = response.body;
 
@@ -192,7 +194,7 @@ describe("User tests with mocked Date.now one week time in future", () => {
       return request(app)
         .post(`/api/users/activate-user/${activationToken}`)
         .expect("Content-Type", /json/)
-        .expect(GONE)
+        .expect(StatusCodes.GONE)
         .expect(deepEqualOmit(BadRequestResponses.tokenExpired));
     }
     return assert.fail();

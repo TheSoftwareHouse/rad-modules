@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { createProxyMiddleware, Options } from "http-proxy-middleware";
-import { FORBIDDEN } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import fetch from "node-fetch";
 import { HttpError } from "../errors/http.error";
 
@@ -40,7 +40,7 @@ function createProxyRoute(hasAccessEndpointUrl: string, options: ProxyRoute): Re
         hasAccess(hasAccessEndpointUrl, proxyReq.getHeaders(), options.resource)
           .then((access) => {
             if (!access) {
-              res.status(FORBIDDEN).json({
+              res.status(StatusCodes.FORBIDDEN).json({
                 error: "User has no access",
               });
             }

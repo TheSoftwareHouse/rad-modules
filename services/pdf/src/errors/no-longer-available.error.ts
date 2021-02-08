@@ -1,5 +1,5 @@
 import { HttpError } from "./http.error";
-import { GONE } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 /**
  * @swagger
@@ -16,6 +16,6 @@ import { GONE } from "http-status-codes";
 
 export class NoLongerAvailableError extends HttpError {
   constructor(message: string) {
-    super(message, GONE);
+    super(message, StatusCodes.GONE);
   }
 }

@@ -1,4 +1,4 @@
-import { UNAUTHORIZED, OK, BAD_REQUEST } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -22,7 +22,7 @@ describe("set-password.action", () => {
     const loginResponse = await request(app)
       .post("/api/users/login")
       .send({ username: normalUser.username, password: normalUser.password })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessToken } = loginResponse.body;
 
@@ -30,7 +30,7 @@ describe("set-password.action", () => {
       .post("/api/users/set-password")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ oldPassword: normalUser.password, newPassword: "newPassw0rd" })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     assert(typeof body.passwordChanged === "boolean");
     assert(body.passwordChanged === true);
@@ -38,7 +38,7 @@ describe("set-password.action", () => {
     return request(app)
       .post("/api/users/login")
       .send({ username: normalUser.username, password: "newPassw0rd" })
-      .expect(OK);
+      .expect(StatusCodes.OK);
   });
 
   it("Should return bad request if a user provide invalid new password for password regexp", async () => {
@@ -46,7 +46,7 @@ describe("set-password.action", () => {
     const loginResponse = await request(app)
       .post("/api/users/login")
       .send({ username: normalUser.username, password: normalUser.password })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessToken } = loginResponse.body;
 
@@ -55,7 +55,7 @@ describe("set-password.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ oldPassword: "newPassw0rd", newPassword: "pass" })
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(
           response.body.error.details[0].message,
@@ -69,7 +69,7 @@ describe("set-password.action", () => {
     const loginResponse = await request(app)
       .post("/api/users/login")
       .send({ username: normalUser.username, password: normalUser.password })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessToken } = loginResponse.body;
 
@@ -78,7 +78,7 @@ describe("set-password.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ oldPassword: "invalidPassword", newPassword: "newPassw0rd" })
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error, BadRequestResponses.passwordCantSetNew.error);
       });
@@ -92,7 +92,7 @@ describe("set-password.action", () => {
       .set("Authorization", "Bearer Wrong Token")
       .send({ oldPassword: "invalidPassword", newPassword: "newPassw0rd" })
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.tokenMissingOrInvalid));
   });
 
@@ -102,7 +102,7 @@ describe("set-password.action", () => {
     const loginResponse = await request(app)
       .post("/api/users/login")
       .send({ username: superAdminUser.username, password: superAdminUser.password })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { accessToken } = loginResponse.body;
     const newPassword = "newPassw0rd123";
@@ -112,19 +112,19 @@ describe("set-password.action", () => {
       .post("/api/users/set-password")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: normalUser.username, newPassword })
-      .expect(OK, UsersResponses.passwordChanged);
+      .expect(StatusCodes.OK, UsersResponses.passwordChanged);
 
     await request(app)
       .post("/api/users/login")
       .send({ username: normalUser.username, password: oldPassword })
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.wrongUsernameOrPassword));
 
     const { body: bodyLoginSuccess } = await request(app)
       .post("/api/users/login")
       .send({ username: normalUser.username, password: newPassword })
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     assert(decode(bodyLoginSuccess.accessToken));
     assert(decode(bodyLoginSuccess.refreshToken));

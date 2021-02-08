@@ -1,4 +1,4 @@
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 
 export interface Event {
   name: string;

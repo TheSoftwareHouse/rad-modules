@@ -1,4 +1,4 @@
-import { OK, CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import { GlobalData } from "../bootstrap";
 import { usersFixture, adminPanelAttributeName } from "../fixtures/users.fixture";
@@ -24,7 +24,7 @@ describe("has-attribute.action", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ attributes: [attributeName] })
       .expect("Content-Type", /json/)
-      .expect(OK, {
+      .expect(StatusCodes.OK, {
         hasAllAttributes: true,
       });
   });
@@ -38,7 +38,7 @@ describe("has-attribute.action", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { apiKey } = body;
 
@@ -47,6 +47,6 @@ describe("has-attribute.action", () => {
       .set(appConfig.apiKeyHeaderName, apiKey)
       .send({ attributes: [attributeName] })
       .expect("Content-Type", /json/)
-      .expect(OK, { hasAllAttributes: true, ownedAttributes: [attributeName] });
+      .expect(StatusCodes.OK, { hasAllAttributes: true, ownedAttributes: [attributeName] });
   });
 });

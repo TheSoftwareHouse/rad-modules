@@ -2,7 +2,7 @@ import { OAuthClient, OAuthDefaultLogin, OAuthLogin, OAuthLoginIdToken, OAuthUse
 import fetch from "node-fetch";
 import * as queryString from "querystring";
 import { HttpError } from "../../../../../errors/http.error";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { FacebookClientConfig } from "../../../../../config/config";
 
 interface FacebookClientProps {
@@ -38,6 +38,6 @@ export class FacebookClient implements OAuthClient {
   }
 
   async loginWithToken(_oauthLoginIdToken: OAuthLoginIdToken): Promise<OAuthUser> {
-    throw new HttpError("Operation not supported", INTERNAL_SERVER_ERROR);
+    throw new HttpError("Operation not supported", StatusCodes.INTERNAL_SERVER_ERROR);
   }
 }

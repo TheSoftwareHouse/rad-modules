@@ -1,4 +1,4 @@
-import { BAD_REQUEST, FORBIDDEN, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { deepEqualOmit } from "../../../../../shared/test-utils";
@@ -39,12 +39,12 @@ export class GoogleClientMock implements OAuthClient {
     if (allowedDomains.length > 0 && !allowedDomains.includes(userInfo.hd)) {
       throw new HttpError(
         `Domain: ${userInfo.hd} is not allowed. Supported domains are: ${allowedDomains.join(",")}`,
-        FORBIDDEN,
+        StatusCodes.FORBIDDEN,
       );
     }
 
     if (!userInfo.email_verified) {
-      throw new HttpError("Email unverified", FORBIDDEN);
+      throw new HttpError("Email unverified", StatusCodes.FORBIDDEN);
     }
 
     return {
@@ -93,7 +93,7 @@ describe("login-google-id-token.action", () => {
       .post("/api/public/auth/login/google-id-token")
       .send({ idToken: "some token" })
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     assert(decode(body.accessToken));
     assert(decode(body.refreshToken));
@@ -114,7 +114,7 @@ describe("login-google-id-token.action", () => {
       .send({ idToken: "some token" })
       .expect("Content-Type", /json/)
       .expect(deepEqualOmit({ error: "Email unverified" }))
-      .expect(FORBIDDEN);
+      .expect(StatusCodes.FORBIDDEN);
 
     container.register("googleClientConfig", asValue(appConfig.oauth.googleClientConfig));
     container.register("googleClient", asClass(GoogleClient));
@@ -142,7 +142,7 @@ describe("login-google-id-token.action", () => {
           )}`,
         }),
       )
-      .expect(FORBIDDEN);
+      .expect(StatusCodes.FORBIDDEN);
 
     container.register("googleClientConfig", asValue(appConfig.oauth.googleClientConfig));
     container.register("googleClient", asClass(GoogleClient));
@@ -155,6 +155,6 @@ describe("login-google-id-token.action", () => {
       .send({ idToken: "wrong token" })
       .expect("Content-Type", /json/)
       .expect(deepEqualOmit({ error: "invalid_token" }))
-      .expect(BAD_REQUEST);
+      .expect(StatusCodes.BAD_REQUEST);
   });
 });

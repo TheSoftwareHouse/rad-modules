@@ -3,7 +3,7 @@ import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { AddUserCommand } from "../commands/add-user.command";
 import { appConfig } from "../../../../config/config";
-import { CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface AddUserActionProps {
   commandBus: CommandBus;
@@ -102,7 +102,7 @@ export const addUserAction = ({ commandBus }: AddUserActionProps) => (
   commandBus
     .execute(new AddUserCommand({ username, password, attributes }))
     .then((commandResult) => {
-      res.status(CREATED).json(commandResult);
+      res.status(StatusCodes.CREATED).json(commandResult);
     })
     .catch(next);
 };

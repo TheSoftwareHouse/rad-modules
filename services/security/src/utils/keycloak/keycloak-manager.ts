@@ -8,7 +8,7 @@ import { NotFoundError } from "../../errors/not-found.error";
 import { BadRequestError } from "../../errors/bad-request.error";
 import * as jwt from "jsonwebtoken";
 import { UnathorizedError } from "../../errors/unathorized.error";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { KeycloakClientConfig } from "../../config/keycloak.config";
 import { JwtUtils } from "../../tokens/jwt-utils";
 import { TokenConfig } from "../../config/config";
@@ -81,7 +81,10 @@ export class KeycloakManager {
       const idToken = jwt.decode(jsonData.id_token) as any;
 
       if (!idToken.user_id) {
-        throw new HttpError("No user_id property in idToken. Wrong keycloak configuration.", INTERNAL_SERVER_ERROR);
+        throw new HttpError(
+          "No user_id property in idToken. Wrong keycloak configuration.",
+          StatusCodes.INTERNAL_SERVER_ERROR,
+        );
       }
 
       return {

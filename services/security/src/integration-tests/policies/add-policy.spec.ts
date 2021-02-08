@@ -1,5 +1,5 @@
 import * as request from "supertest";
-import { CREATED, CONFLICT, BAD_REQUEST } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import { usersFixture } from "../fixtures/users.fixture";
 import { deepEqualOmit, isUuid, isNotEmptyString } from "../../../../../shared/test-utils";
@@ -32,8 +32,8 @@ describe("Policy test", () => {
       .send({ resource, attribute })
       .expect("Content-Type", /json/);
 
-    assert(status === CREATED || status === CONFLICT);
-    if (status === CREATED) {
+    assert(status === StatusCodes.CREATED || status === StatusCodes.CONFLICT);
+    if (status === StatusCodes.CREATED) {
       assert(isNotEmptyString(body?.id));
       assert(isUuid(body?.id));
     }
@@ -49,7 +49,7 @@ describe("Policy test", () => {
       .post("/api/policy/add-policy")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ resource, attribute })
-      .expect(CREATED)
+      .expect(StatusCodes.CREATED)
       .expect("Content-Type", /json/);
 
     return request(app)
@@ -57,7 +57,7 @@ describe("Policy test", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ resource, attribute })
       .expect("Content-Type", /json/)
-      .expect(CONFLICT)
+      .expect(StatusCodes.CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.policyAlreadyExists));
   });
 
@@ -70,14 +70,14 @@ describe("Policy test", () => {
       .post("/api/policy/add-policy")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ resource: "", attribute: "" })
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect("Content-Type", /json/);
 
     return request(app)
       .post("/api/policy/add-policy")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ resource })
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect("Content-Type", /json/);
   });
 
@@ -97,7 +97,7 @@ describe("Policy test", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ resource, attribute })
       .expect("Content-Type", /json/);
-    assert(status === CREATED || status === CONFLICT);
+    assert(status === StatusCodes.CREATED || status === StatusCodes.CONFLICT);
 
     // noinspection JSUnusedAssignment
     deepStrictEqual(triggeredEvent, new PolicyAddedEvent({ id: body.id, attribute, resource }));

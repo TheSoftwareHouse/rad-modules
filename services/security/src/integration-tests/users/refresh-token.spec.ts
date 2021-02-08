@@ -1,4 +1,4 @@
-import { UNAUTHORIZED, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -33,7 +33,7 @@ describe("refresh-token.action", () => {
       .post("/api/users/refresh-token")
       .send({ refreshToken, accessToken })
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     assert(decode(bodyWithRefreshedTokens.accessToken));
     assert(decode(bodyWithRefreshedTokens.refreshToken));
@@ -47,7 +47,7 @@ describe("refresh-token.action", () => {
       .post("/api/users/refresh-token")
       .send({ refreshToken: "invalid", accessToken })
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.refreshTokenFailed));
   });
 });

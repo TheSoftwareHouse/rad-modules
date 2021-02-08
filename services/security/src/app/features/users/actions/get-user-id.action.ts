@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { UsersRepository } from "../../../../repositories/users.repostiory";
 import { NotFoundError } from "../../../../errors/not-found.error";
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface GetUserIdActionProps {
   usersRepository: UsersRepository;
@@ -81,7 +81,7 @@ export const getUserIdAction = ({ usersRepository }: GetUserIdActionProps) => as
     if (!userId) {
       throw new NotFoundError("User not found");
     }
-    return res.status(OK).json({ userId });
+    return res.status(StatusCodes.OK).json({ userId });
   } catch (err) {
     return next(err);
   }

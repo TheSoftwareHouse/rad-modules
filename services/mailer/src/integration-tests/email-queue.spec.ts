@@ -1,7 +1,7 @@
 import "mocha";
 import * as assert from "assert";
 import { EmailQueue } from "../utils/worker/email-queue";
-import { BAD_REQUEST } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import { asValue } from "awilix";
 import { GlobalData } from "./bootstrap";
@@ -38,7 +38,7 @@ describe("SMTP transport tests", () => {
     const body = {};
     const { app } = GLOBAL.bootstrap;
 
-    return request(app).post("/api/mailer/send").send(body).expect(BAD_REQUEST);
+    return request(app).post("/api/mailer/send").send(body).expect(StatusCodes.BAD_REQUEST);
   });
 
   after(async () => {

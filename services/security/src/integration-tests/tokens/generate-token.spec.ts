@@ -1,4 +1,4 @@
-import { CREATED, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import * as assert from "assert";
 import { appConfig } from "../../config/config";
@@ -23,7 +23,7 @@ describe("Custom tokens tests", () => {
     return request(app)
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(CREATED)
+      .expect(StatusCodes.CREATED)
       .then((data) => {
         const apiKey = data.body?.apiKey;
         if (apiKey.match(/^[a-z0-9\\-]{36}$/) === null) {
@@ -33,26 +33,26 @@ describe("Custom tokens tests", () => {
           .post("/api/tokens/generate-token")
           .set(appConfig.apiKeyHeaderName, apiKey)
           .send(tokenPayload)
-          .expect(OK)
+          .expect(StatusCodes.OK)
           .then((response) =>
             request(app)
               .post("/api/users/has-access")
               .set("Authorization", `Bearer ${response.body.accessToken}`)
               .send({ resources: ["attr1"] })
-              .expect(OK),
+              .expect(StatusCodes.OK),
           )
           .then(() =>
             request(app)
               .post("/api/tokens/generate-token")
               .set(appConfig.apiKeyHeaderName, apiKey)
               .send(tokenPayload)
-              .expect(OK)
+              .expect(StatusCodes.OK)
               .then((response) =>
                 request(app)
                   .post("/api/users/has-access")
                   .set("Authorization", `Bearer ${response.body.accessToken}`)
                   .send({ resources: ["attr2"] })
-                  .expect(OK)
+                  .expect(StatusCodes.OK)
                   .then((result) => assert.equal(result.body.hasAccess, false)),
               ),
           )
@@ -61,13 +61,13 @@ describe("Custom tokens tests", () => {
               .post("/api/tokens/generate-token")
               .set(appConfig.apiKeyHeaderName, apiKey)
               .send(tokenPayload)
-              .expect(OK)
+              .expect(StatusCodes.OK)
               .then((response) =>
                 request(app)
                   .post("/api/users/has-attributes")
                   .set("Authorization", `Bearer ${response.body.accessToken}`)
                   .send({ attributes: ["ADMIN_PANEL", "attr2"] })
-                  .expect(OK)
+                  .expect(StatusCodes.OK)
                   .then((result) =>
                     assert.deepStrictEqual(result.body, { hasAllAttributes: false, ownedAttributes: ["ADMIN_PANEL"] }),
                   ),

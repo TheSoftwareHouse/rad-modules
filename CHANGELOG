@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2021-02-05 v0.0.74
+Added
+- Add @tshio/logger
+
 ### 2021-02-04 v0.0.73
 Added
 - Update dependencies
@@ -204,6 +208,10 @@ Changed
 
 ## mailer
 
+### 2021-02-05 v0.0.10
+Added
+- Add @tshio/logger
+
 ### 2021-02-04 v0.0.9
 Added
 - Update dependencies
@@ -226,6 +234,10 @@ Changed
 
 ## gateway
 
+### 2021-02-05 v0.0.8
+Added
+- Add @tshio/logger
+
 ### 2021-02-04 v0.0.7
 Added
 - Update dependencies
@@ -243,6 +255,10 @@ Changed
 - Update npm dependencies
 
 ## pdf
+
+### 2021-02-05 v0.0.4
+Added
+- Add @tshio/logger
 
 ### 2021-02-04 v0.0.3
 Added

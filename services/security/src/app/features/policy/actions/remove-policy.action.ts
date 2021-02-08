@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { RemovePolicyCommand } from "../commands/remove-policy.command";
-import { NO_CONTENT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface RemovePolicyActionProps {
   commandBus: CommandBus;
@@ -92,7 +92,7 @@ export const removePolicyAction = ({ commandBus }: RemovePolicyActionProps) => (
       }),
     )
     .then(() => {
-      res.status(NO_CONTENT).send();
+      res.status(StatusCodes.NO_CONTENT).send();
     })
     .catch(next);
 };

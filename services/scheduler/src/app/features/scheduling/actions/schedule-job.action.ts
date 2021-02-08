@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { celebrate } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { ScheduleJobCommand } from "../commands/schedule-job.command";
-import { CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { ScheduleJobSchema } from "../../../../config/config";
 import { SchedulerRule } from "../../../../scheduler";
 
@@ -223,7 +223,7 @@ export const scheduleJobAction = ({ commandBus }: ScheduleJobActionProps) => (
       }),
     )
     .then((commandResult) => {
-      res.status(CREATED).json(commandResult);
+      res.status(StatusCodes.CREATED).json(commandResult);
     })
     .catch(next);
 };

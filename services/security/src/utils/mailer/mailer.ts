@@ -1,8 +1,8 @@
 import { StandaloneTransport } from "./transport/standalone";
 import { ExternalTransport } from "./transport/external";
 import { NoneTransport } from "./transport/none";
-import { Logger } from "winston";
 import { MailerConfig, MailerType } from "../../config/config";
+import { Logger } from "@tshio/logger";
 
 export type Template = {
   id: string;

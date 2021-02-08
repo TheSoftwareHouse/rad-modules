@@ -1,4 +1,4 @@
-import { OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { asValue, asClass } from "awilix";
@@ -26,7 +26,9 @@ describe("oauth-redirect.action", () => {
   it("Should add default attributes (if provided in config) for oauth user", async () => {
     const { usersRepository, app } = GLOBAL.bootstrap;
 
-    await request(app).get("/api/users/oauth-redirect?code=1234&redirectUrl=http://exampleRedirectUrl.xd").expect(OK);
+    await request(app)
+      .get("/api/users/oauth-redirect?code=1234&redirectUrl=http://exampleRedirectUrl.xd")
+      .expect(StatusCodes.OK);
 
     const testUser = await usersRepository.findByUsername(testOauthUserEmail);
 

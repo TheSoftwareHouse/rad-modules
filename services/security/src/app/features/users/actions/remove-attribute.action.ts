@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { RemoveAttributeCommand } from "../commands/remove-attribute.command";
-import { NO_CONTENT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface RemoveAttributeActionProps {
   commandBus: CommandBus;
@@ -88,7 +88,7 @@ export const removeAttributeAction = ({ commandBus }: RemoveAttributeActionProps
       }),
     )
     .then(() => {
-      res.status(NO_CONTENT).type("application/json").send();
+      res.status(StatusCodes.NO_CONTENT).type("application/json").send();
     })
     .catch(next);
 };

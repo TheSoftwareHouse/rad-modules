@@ -1,5 +1,5 @@
 import { HttpError } from "./http.error";
-import { CONFLICT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 /**
  * @swagger
@@ -16,6 +16,6 @@ import { CONFLICT } from "http-status-codes";
 
 export class ConflictError extends HttpError {
   constructor(message: string) {
-    super(message, CONFLICT);
+    super(message, StatusCodes.CONFLICT);
   }
 }

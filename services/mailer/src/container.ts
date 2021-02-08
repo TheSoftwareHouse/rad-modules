@@ -3,14 +3,13 @@ import { ApplicationFactory } from "./app/application-factory";
 import * as awilix from "awilix";
 import { AwilixContainer, Lifetime } from "awilix";
 import { CommandBus } from "@tshio/command-bus";
+import { createLogger } from "@tshio/logger";
 import { AppConfig, appConfigSchema } from "./config/config";
 import { createRouter } from "./app/applications/http/router";
 import { createApp } from "./app/application-factories/create-http-app";
 import { errorHandler } from "./middleware/error-handler";
 import { mailerRouting } from "./app/features/mailer/routing";
 import { MailSender } from "./utils/mail-sender";
-import { createLogger } from "winston";
-import { loggerConfiguration } from "./utils/logger-configuration";
 import { requestLogger } from "./middleware/request-logger";
 import { EmailQueue } from "./utils/worker/email-queue";
 import { BatchEmailProcessing } from "./utils/worker/batch-email-processing";
@@ -29,7 +28,12 @@ export async function createContainer(config: AppConfig): Promise<AwilixContaine
     injectionMode: awilix.InjectionMode.PROXY,
   });
 
-  const logger = createLogger(loggerConfiguration(config.logger.logLevel));
+  const logger = createLogger({
+    LOGGING_LEVEL: config.logger.logLevel,
+    APP_NAME: process.env.APP_NAME,
+    NODE_ENV: process.env.NODE_ENV,
+  });
+
   const { requestLoggerFormat } = config.requestLogger;
   const loggerStream = {
     write: (message: any) => logger.info(message.trimEnd()),

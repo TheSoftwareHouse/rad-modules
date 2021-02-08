@@ -1,4 +1,4 @@
-import { BAD_REQUEST, CREATED, NO_CONTENT, NOT_FOUND, OK } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import { deepStrictEqual } from "assert";
 import * as request from "supertest";
@@ -30,7 +30,7 @@ describe("remove-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId: userId } = addUserResponse.body;
 
@@ -38,12 +38,12 @@ describe("remove-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     await request(app)
       .delete(`/api/users/remove-attribute?userId=${userId}&attributes=${attributes.join(",")}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(NO_CONTENT);
+      .expect(StatusCodes.NO_CONTENT);
 
     const { accessToken: newUserAccessToken } = await authClient.login(newUsername, "randomPassword");
 
@@ -52,7 +52,7 @@ describe("remove-attribute.action", () => {
       .set("Authorization", `Bearer ${newUserAccessToken}`)
       .send({ attributes })
       .expect("Content-Type", /json/)
-      .expect(OK, UsersResponses.hasNotAnyAttribute);
+      .expect(StatusCodes.OK, UsersResponses.hasNotAnyAttribute);
   });
 
   it("Should not remove an attribute when bad request", async () => {
@@ -74,7 +74,7 @@ describe("remove-attribute.action", () => {
       .delete(`/api/users/remove-attribute?userId=${newUserId}&attributes=${attributes.join(",")},,,`)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(
           response.body.error.details[0].message,
@@ -94,7 +94,7 @@ describe("remove-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId: userId } = addUserResponse.body;
 
@@ -102,7 +102,7 @@ describe("remove-attribute.action", () => {
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const attributesThatUserNotHaveAdded = badAttributes.filter((attr) => {
       return !attributes.includes(attr);
@@ -112,7 +112,7 @@ describe("remove-attribute.action", () => {
       .delete(`/api/users/remove-attribute?userId=${userId}&attributes=${badAttributes.join(",")}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(NOT_FOUND)
+      .expect(StatusCodes.NOT_FOUND)
       .expect(deepEqualOmit(BadRequestResponses.userHasNotAttributesErrorFactory(attributesThatUserNotHaveAdded)));
   });
 
@@ -131,18 +131,18 @@ describe("remove-attribute.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: newUsername, password: "randomPassword" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
     const { newUserId: userId } = addUserResponse.body;
     await request(app)
       .post("/api/users/add-attribute")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ userId, attributes })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     await request(app)
       .delete(`/api/users/remove-attribute?userId=${userId}&attributes=${attributes.join(",")}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(NO_CONTENT);
+      .expect(StatusCodes.NO_CONTENT);
 
     deepStrictEqual(triggeredEvent, new UserAttributeRemovedEvent({ userId, attributes: [] }));
   });

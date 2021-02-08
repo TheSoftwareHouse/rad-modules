@@ -1,4 +1,4 @@
-import { CREATED, NO_CONTENT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import { GlobalData } from "../bootstrap";
 
@@ -20,13 +20,13 @@ describe("Access API key tests", () => {
       .post("/api/tokens/create-access-key")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CREATED)
+      .expect(StatusCodes.CREATED)
       .then((data) => {
         const { apiKey } = data.body;
         return request(app)
           .delete(`/api/tokens/remove-access-key/${apiKey}`)
           .set("Authorization", `Bearer ${accessToken}`)
-          .expect(NO_CONTENT);
+          .expect(StatusCodes.NO_CONTENT);
       });
   });
 });

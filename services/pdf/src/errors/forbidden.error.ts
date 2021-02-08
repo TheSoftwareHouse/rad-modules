@@ -1,5 +1,5 @@
 import { HttpError } from "./http.error";
-import { FORBIDDEN } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 /**
  * @swagger
@@ -16,6 +16,6 @@ import { FORBIDDEN } from "http-status-codes";
 
 export class ForbiddenError extends HttpError {
   constructor(message: string) {
-    super(message, FORBIDDEN);
+    super(message, StatusCodes.FORBIDDEN);
   }
 }

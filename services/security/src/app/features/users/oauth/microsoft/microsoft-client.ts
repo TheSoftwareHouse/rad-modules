@@ -4,7 +4,7 @@ import { OAuthClient, OAuthDefaultLogin, OAuthLogin, OAuthLoginIdToken, OAuthUse
 import fetch from "node-fetch";
 import * as queryString from "querystring";
 import { HttpError } from "../../../../../errors/http.error";
-import { FORBIDDEN, INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 interface MicrosoftClientProps {
   microsoftClientConfig: MicrosoftClientConfig;
@@ -38,11 +38,11 @@ export class MicrosoftClient implements OAuthClient {
       })
       .then(async (tokens) => {
         const tokenDecoded: any = await Promise.resolve(decode(tokens.id_token)).catch(() => {
-          throw new HttpError("Wrong token", FORBIDDEN);
+          throw new HttpError("Wrong token", StatusCodes.FORBIDDEN);
         });
 
         if (!tokenDecoded.email) {
-          throw new HttpError("Wrong email", FORBIDDEN);
+          throw new HttpError("Wrong email", StatusCodes.FORBIDDEN);
         }
 
         const userDomain = getDomainFromEmail(tokenDecoded.email);
@@ -50,7 +50,7 @@ export class MicrosoftClient implements OAuthClient {
         if (allowedDomains.length > 0 && !allowedDomains.includes(userDomain)) {
           throw new HttpError(
             `Domain: ${userDomain} is not allowed. Supported domains are: ${allowedDomains.join(",")}`,
-            FORBIDDEN,
+            StatusCodes.FORBIDDEN,
           );
         }
 
@@ -59,6 +59,6 @@ export class MicrosoftClient implements OAuthClient {
   }
 
   async loginWithToken(_oauthLoginIdToken: OAuthLoginIdToken): Promise<OAuthUser> {
-    throw new HttpError("Operation not supported", INTERNAL_SERVER_ERROR);
+    throw new HttpError("Operation not supported", StatusCodes.INTERNAL_SERVER_ERROR);
   }
 }

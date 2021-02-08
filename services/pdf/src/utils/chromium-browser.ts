@@ -1,7 +1,7 @@
 import { Browser, launch, PDFOptions, Page, Response } from "puppeteer-core";
-import { INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { HttpError } from "../errors/http.error";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { AppConfig } from "../config/config";
 import { v4 } from "uuid";
 
@@ -37,7 +37,7 @@ export class ChromiumBrowser {
       } catch (closePageError) {
         logger.error(closePageError.message);
       }
-      throw new HttpError(error.message, INTERNAL_SERVER_ERROR);
+      throw new HttpError(error.message, StatusCodes.INTERNAL_SERVER_ERROR);
     });
   }
 
@@ -51,7 +51,7 @@ export class ChromiumBrowser {
       } catch (closePageError) {
         logger.error(closePageError.message);
       }
-      throw new HttpError(error.message, INTERNAL_SERVER_ERROR);
+      throw new HttpError(error.message, StatusCodes.INTERNAL_SERVER_ERROR);
     });
   }
 
@@ -66,7 +66,7 @@ export class ChromiumBrowser {
     if (this.browser === undefined) {
       this.browser = await launch(browserConfig).catch((error) => {
         logger.error(error.message);
-        throw new HttpError("Can not launch chromium ", INTERNAL_SERVER_ERROR);
+        throw new HttpError("Can not launch chromium ", StatusCodes.INTERNAL_SERVER_ERROR);
       });
     }
 
@@ -81,7 +81,7 @@ export class ChromiumBrowser {
           logger.error(closeBrowserError.message);
         }
       }
-      throw new HttpError("Can not open new page in chromium browser", INTERNAL_SERVER_ERROR);
+      throw new HttpError("Can not open new page in chromium browser", StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
     // go to url or set html content
@@ -109,7 +109,7 @@ export class ChromiumBrowser {
       } catch (createPdfError) {
         logger.error(createPdfError.message);
       }
-      throw new HttpError("Can not create pdf - chromium error", INTERNAL_SERVER_ERROR);
+      throw new HttpError("Can not create pdf - chromium error", StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
     // close chromium page

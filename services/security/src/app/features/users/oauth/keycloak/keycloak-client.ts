@@ -1,7 +1,7 @@
 import { OAuthClient, OAuthDefaultLogin, OAuthLogin, OAuthLoginIdToken, OAuthUser } from "../client.types";
 import fetch from "node-fetch";
 import { HttpError } from "../../../../../errors/http.error";
-import { FORBIDDEN, INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { KeycloakClientConfig } from "../../../../../config/config";
 import * as jwt from "jsonwebtoken";
 
@@ -36,11 +36,11 @@ export class KeycloakClient implements OAuthClient {
     const idToken = jwt.decode(accessResponseObject.id_token) as any;
 
     if (!idToken.email) {
-      throw new HttpError("Unable to read email parameter from decoded id_token jwt", FORBIDDEN);
+      throw new HttpError("Unable to read email parameter from decoded id_token jwt", StatusCodes.FORBIDDEN);
     }
 
     if (!idToken.email_verified) {
-      throw new HttpError("Email unverified", FORBIDDEN);
+      throw new HttpError("Email unverified", StatusCodes.FORBIDDEN);
     }
 
     return {
@@ -50,6 +50,6 @@ export class KeycloakClient implements OAuthClient {
   }
 
   async loginWithToken(_oauthLoginIdToken: OAuthLoginIdToken): Promise<OAuthUser> {
-    throw new HttpError("Operation not supported", INTERNAL_SERVER_ERROR);
+    throw new HttpError("Operation not supported", StatusCodes.INTERNAL_SERVER_ERROR);
   }
 }

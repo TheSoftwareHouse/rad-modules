@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { TokenConfig } from "../config/config";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 import { BearerToken } from "./bearer-token";
 import { AuthenticationClient } from "../app/features/users/strategies/authentication/authentication-client.types";
 

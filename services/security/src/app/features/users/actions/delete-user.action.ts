@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { DeleteUserCommand } from "../commands/delete-user.command";
-import { NO_CONTENT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface DeleteUserActionProps {
   commandBus: CommandBus;
@@ -69,7 +69,7 @@ export const deleteUserAction = ({ commandBus }: DeleteUserActionProps) => (
       }),
     )
     .then(() => {
-      res.status(NO_CONTENT).type("application/json").send();
+      res.status(StatusCodes.NO_CONTENT).type("application/json").send();
     })
     .catch(next);
 };

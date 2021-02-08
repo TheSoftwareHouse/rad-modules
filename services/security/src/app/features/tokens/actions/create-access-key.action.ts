@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
 import { CreateAccessKeyCommand } from "../commands/create-access-key.command";
-import { CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 export interface CreateAccessKeyActionProps {
   commandBus: CommandBus;
@@ -79,6 +79,6 @@ export const createAccessKeyAction = ({ commandBus }: CreateAccessKeyActionProps
 
   commandBus
     .execute(new CreateAccessKeyCommand({ accessToken }))
-    .then((commandResult) => res.status(CREATED).json(commandResult))
+    .then((commandResult) => res.status(StatusCodes.CREATED).json(commandResult))
     .catch(next);
 };

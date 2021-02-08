@@ -1,4 +1,4 @@
-import { UNAUTHORIZED, CREATED, CONFLICT, NO_CONTENT } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import * as request from "supertest";
 import { usersFixture } from "../fixtures/users.fixture";
@@ -28,7 +28,7 @@ describe("delete-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "userToDelete", password: "1234567qaz" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = addUserResponse.body;
     let userToDelete = await usersRepository.findById(newUserId);
@@ -38,7 +38,7 @@ describe("delete-user.action", () => {
     await request(app)
       .delete(`/api/users/delete-user?userId=${newUserId}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(NO_CONTENT);
+      .expect(StatusCodes.NO_CONTENT);
 
     userToDelete = await usersRepository.findById(newUserId);
 
@@ -53,7 +53,7 @@ describe("delete-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "userToDelete2", password: "1234567qaz" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
 
     const { newUserId } = addUserResponse.body;
     const userToDelete = await usersRepository.findById(newUserId);
@@ -66,7 +66,7 @@ describe("delete-user.action", () => {
       .delete(`/api/users/delete-user?userId=${newUserId}`)
       .set("Authorization", `Bearer ${accessTokenWrongAttribute}`)
       .expect("Content-Type", /json/)
-      .expect(UNAUTHORIZED)
+      .expect(StatusCodes.UNAUTHORIZED)
       .expect(deepEqualOmit(BadRequestResponses.userHasNoAccess));
   });
 
@@ -83,7 +83,7 @@ describe("delete-user.action", () => {
       .delete(`/api/users/delete-user?userId=${user.id}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(CONFLICT)
+      .expect(StatusCodes.CONFLICT)
       .expect(deepEqualOmit(BadRequestResponses.adminDelete));
   });
 
@@ -100,13 +100,13 @@ describe("delete-user.action", () => {
       .post("/api/users/add-user")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({ username: "userToDelete", password: "1234567qaz" })
-      .expect(CREATED);
+      .expect(StatusCodes.CREATED);
     const { newUserId } = addUserResponse.body;
     const userToDelete = await usersRepository.findById(newUserId);
     await request(app)
       .delete(`/api/users/delete-user?userId=${newUserId}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(NO_CONTENT);
+      .expect(StatusCodes.NO_CONTENT);
 
     deepStrictEqual(triggeredEvent, new UserRemovedEvent({ userId: userToDelete!.id, attributes: [] }));
   });

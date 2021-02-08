@@ -1,5 +1,5 @@
 import * as request from "supertest";
-import { OK, BAD_REQUEST } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as assert from "assert";
 import { usersFixture } from "../fixtures/users.fixture";
 import { isUuid, isNotEmptyString } from "../../../../../shared/test-utils";
@@ -24,7 +24,7 @@ describe("Get policies test", () => {
       .get("/api/policy/get-policies?page=badPage&limit=badLimit")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"page" must be a number');
         assert.strictEqual(response.body.error.details[1].message, '"limit" must be a number');
@@ -39,7 +39,7 @@ describe("Get policies test", () => {
       .get("/api/policy/get-policies?page=&limit=")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"page" must be a number');
         assert.strictEqual(response.body.error.details[1].message, '"limit" must be a number');
@@ -54,7 +54,7 @@ describe("Get policies test", () => {
       .get("/api/policy/get-policies?page=1.5")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(BAD_REQUEST)
+      .expect(StatusCodes.BAD_REQUEST)
       .expect((response: any) => {
         assert.strictEqual(response.body.error.details[0].message, '"page" must be an integer');
       });
@@ -68,7 +68,7 @@ describe("Get policies test", () => {
       .get("/api/policy/get-policies?limit=10")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { policies } = policiesResponse.body;
 
@@ -93,7 +93,7 @@ describe("Get policies test", () => {
       .get("/api/policy/get-policies")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { policies } = policiesResponse.body;
 
@@ -119,7 +119,7 @@ describe("Get policies test", () => {
       .get("/api/policy/get-policies?extraQueryItem=test")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { policies } = policiesResponse.body;
 
@@ -145,7 +145,7 @@ describe("Get policies test", () => {
       .get("/api/policy/get-policies?filter[resource][includeOr]=AtT")
       .set("Authorization", `Bearer ${accessToken}`)
       .expect("Content-Type", /json/)
-      .expect(OK);
+      .expect(StatusCodes.OK);
 
     const { policies } = policiesResponse.body;
     const regexp = /att/;

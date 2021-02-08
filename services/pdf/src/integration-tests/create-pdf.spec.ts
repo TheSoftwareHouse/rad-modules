@@ -1,5 +1,5 @@
 import * as assert from "assert";
-import { BAD_REQUEST, CREATED } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import * as request from "supertest";
 import { Application } from "express";
 import { AppConfig } from "../config/config";
@@ -25,7 +25,7 @@ describe("create-pdf.action test", () => {
     };
     const startTime = Math.floor(Date.now() / 1000);
 
-    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(CREATED);
+    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(StatusCodes.CREATED);
 
     const expiryTime = Math.floor(new Date(result.body.expiryAt).getTime() / 1000);
 
@@ -59,7 +59,7 @@ describe("create-pdf.action test", () => {
     };
     const expiryTime = Math.floor(Date.now() / 1000) + config.expiration;
 
-    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(CREATED);
+    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(StatusCodes.CREATED);
 
     const expiryTimeFromResponse = Math.floor(new Date(result.body.expiryAt).getTime() / 1000);
 
@@ -91,7 +91,7 @@ describe("create-pdf.action test", () => {
       type: "uri",
       pdfOptions: {},
     };
-    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(BAD_REQUEST);
+    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(StatusCodes.BAD_REQUEST);
 
     assert(result.body.error, '"from" must be a valid uri');
   }).timeout(5000);
@@ -102,7 +102,7 @@ describe("create-pdf.action test", () => {
       type: "wrong type",
       pdfOptions: {},
     };
-    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(BAD_REQUEST);
+    const result = await request(app).post("/api/pdf/create-pdf").send(body).expect(StatusCodes.BAD_REQUEST);
 
     assert(result.body.error, '"from" must be one of [uri, html]');
   }).timeout(5000);

@@ -1,7 +1,7 @@
 import { CommandHandler } from "@tshio/command-bus";
 import { IS_AUTHENTICATED_COMMAND_TYPE, IsAuthenticatedCommand } from "../commands/is-authenticated.command";
 import { AuthenticationClient } from "../strategies/authentication/authentication-client.types";
-import { Logger } from "winston";
+import { Logger } from "@tshio/logger";
 
 export interface IsAuthenticatedHandlerProps {
   secret: string;
