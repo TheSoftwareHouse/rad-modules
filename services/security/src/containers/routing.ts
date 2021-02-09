@@ -8,6 +8,7 @@ import { publicRouting } from "../app/features/public/routing";
 import { policyRouting } from "../app/features/policy/routing";
 import { tokensRouting } from "../app/features/tokens/routing";
 import { attributesRouting } from "../app/features/attributes/routing";
+import { keycloakRouting } from "../app/features/keycloak/routing";
 
 export async function registerRouting(container: AwilixContainer, appConfig: AppConfig) {
   if (appConfig.applicationType === TransportProtocol.HTTP) {
@@ -17,6 +18,7 @@ export async function registerRouting(container: AwilixContainer, appConfig: App
       policyRouting: awilix.asFunction(policyRouting),
       tokensRouting: awilix.asFunction(tokensRouting),
       attributesRouting: awilix.asFunction(attributesRouting),
+      keycloakRouting: awilix.asFunction(keycloakRouting),
       apiRouter: awilix.asFunction(createApiRouter),
       // ROUTING_SETUP
     });

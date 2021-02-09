@@ -799,4 +799,22 @@ export class KeycloakManager {
       return jsonData;
     });
   }
+
+  public async addGroup(name: string) {
+    const credentials = await this.setCredentials();
+    const createUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/groups`;
+
+    return fetch(createUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
+      body: JSON.stringify({ name }),
+    }).then(async (response) => {
+      const data = await response.text();
+      if (response.status >= 400) {
+        throw new HttpError(data, response.status);
+      }
+    });
+  }
 }
