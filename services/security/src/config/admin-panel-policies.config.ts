@@ -80,6 +80,10 @@ export const AdminPanelPoliciesSchema = Joi.object({
     attribute: Joi.string(),
     resource: Joi.string(),
   }),
+  removeKeycloakGroup: Joi.object({
+    attribute: Joi.string(),
+    resource: Joi.string(),
+  }),
 });
 
 type AdminPanelPolicyItem = {
@@ -107,6 +111,7 @@ export type AdminPanelPoliciesConfig = {
   getUsersByResource: AdminPanelPolicyItem;
   getAttributes: AdminPanelPolicyItem;
   addKeycloakGroup: AdminPanelPolicyItem;
+  removeKeycloakGroup: AdminPanelPolicyItem;
 };
 
 export const getAdminPanelPoliciesConfig = (): AdminPanelPoliciesConfig => ({
@@ -183,7 +188,11 @@ export const getAdminPanelPoliciesConfig = (): AdminPanelPoliciesConfig => ({
     resource: "api/attributes/get-attributes",
   },
   addKeycloakGroup: {
-    attribute: process.env.ADMIN_PANEL_GET_ATTRIBUTES || ADMIN_PANEL_ATTRIBUTE_NAME,
-    resource: "api/attributes/add-keycloak-group",
+    attribute: process.env.ADMIN_PANEL_KEYCLOAK_ADD_GROUP || ADMIN_PANEL_ATTRIBUTE_NAME,
+    resource: "api/keycloak/add-keycloak-group",
+  },
+  removeKeycloakGroup: {
+    attribute: process.env.ADMIN_PANEL_KEYCLOAK_REMOVE_GROUP || ADMIN_PANEL_ATTRIBUTE_NAME,
+    resource: "api/keycloak/remove-keycloak-group",
   },
 });

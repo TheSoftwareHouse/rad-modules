@@ -39,7 +39,7 @@ export const keycloakRouting = ({
     [
       featureIsActiveHandler,
       accessTokenHandler,
-      requireAccess(adminPanelPolicies.addKeycloakGroup.resource),
+      requireAccess(adminPanelPolicies.removeKeycloakGroup.resource),
       removeGroupActionValidation,
     ],
     removeGroupAction({ commandBus }),
