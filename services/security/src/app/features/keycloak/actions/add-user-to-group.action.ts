@@ -1,17 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
-import { AddGroupCommand } from "../commands/add-group.command";
+import { AddUserToGroupCommand } from "../commands/add-user-to-group.command";
 import { StatusCodes } from "http-status-codes";
 
-export interface AddGroupActionProps {
+export interface AddUserToGroupActionProps {
   commandBus: CommandBus;
 }
 
-export const addGroupActionValidation = celebrate(
+export const addUserToGroupActionValidation = celebrate(
   {
     body: Joi.object({
-      name: Joi.string().required(),
+      username: Joi.string().required(),
+      group: Joi.string().required(),
     }).required(),
   },
   { abortEarly: false },
@@ -20,13 +21,13 @@ export const addGroupActionValidation = celebrate(
 /**
  * @swagger
  *
- * /api/keycloak/add-group:
+ * /api/keycloak/add-user-to-group:
  *   post:
  *     tags:
  *       - Keycloak
  *     security:
  *       - bearerAuth: []
- *     summary: Adds a new keycloak group
+ *     summary: Adds user to keycloak group
  *     requestBody:
  *       required: true
  *       content:
@@ -34,13 +35,17 @@ export const addGroupActionValidation = celebrate(
  *          schema:
  *            type: object
  *            properties:
- *              name:
+ *              username:
+ *                type: string
+ *                required: true
+ *                example: user@example.com
+ *              group:
  *                type: string
  *                required: true
  *                example: EXAMPLE_GROUP
  *     responses:
  *       201:
- *         description: Group created
+ *         description: User added
  *       400:
  *         description: Bad Request
  *         content:
@@ -53,18 +58,6 @@ export const addGroupActionValidation = celebrate(
  *           application/json:
  *             schema:
  *               $ref:  "#/definitions/UnauthorizedError"
- *       404:
- *         description: User and/or group not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref:  "#/definitions/NotFoundError"
- *       409:
- *         description: Group already exist
- *         content:
- *           application/json:
- *             schema:
- *               $ref:  "#/definitions/AlreadyExistsError"
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -72,15 +65,16 @@ export const addGroupActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const addGroupAction = ({ commandBus }: AddGroupActionProps) => (
+export const addUserToGroupAction = ({ commandBus }: AddUserToGroupActionProps) => (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   commandBus
     .execute(
-      new AddGroupCommand({
-        name: req.body.name.trim(),
+      new AddUserToGroupCommand({
+        username: req.body.username.trim(),
+        group: req.body.group.trim(),
       }),
     )
     .then((commandResult) => {

@@ -5,6 +5,7 @@ import { addGroupAction, addGroupActionValidation } from "./actions/add-group.ac
 import { RequireAccessFactory } from "../../../middleware/require-access";
 import { AdminPanelPoliciesConfig } from "../../../config/admin-panel-policies.config";
 import { removeGroupAction, removeGroupActionValidation } from "./actions/remove-group.action";
+import { addUserToGroupAction, addUserToGroupActionValidation } from "./actions/add-user-to-group.action";
 // COMMAND_IMPORTS
 
 export interface KeycloakRoutingProps {
@@ -44,6 +45,7 @@ export const keycloakRouting = ({
     ],
     removeGroupAction({ commandBus }),
   );
+  router.post("/add-user-to-group", [addUserToGroupActionValidation], addUserToGroupAction({ commandBus }));
   // COMMANDS_SETUP
 
   return router;
