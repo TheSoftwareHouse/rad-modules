@@ -12,6 +12,7 @@ Added
 - Add /api/keycloak/add-group endpoint
 - Add /api/keycloak/remove-group endpoint
 - Add /api/keycloak/add-user-to-group endpoint
+- Add /api/keycloak/remove-user-from-group endpoint
 
 ### 2021-02-05 v0.0.74
 Added

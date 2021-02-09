@@ -1,19 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
 import { CommandBus } from "@tshio/command-bus";
-import { AddUserToGroupCommand } from "../commands/add-user-to-group.command";
+import { RemoveUserFromGroupCommand } from "../commands/remove-user-from-group.command";
 import { StatusCodes } from "http-status-codes";
 
-export interface AddUserToGroupActionProps {
+export interface RemoveUserFromGroupActionProps {
   commandBus: CommandBus;
 }
 
-export const addUserToGroupActionValidation = celebrate(
+export const removeUserFromGroupActionValidation = celebrate(
   {
-    body: Joi.object({
-      username: Joi.string().required(),
-      group: Joi.string().required(),
-    }).required(),
+    headers: Joi.object(),
   },
   { abortEarly: false },
 );
@@ -21,31 +18,29 @@ export const addUserToGroupActionValidation = celebrate(
 /**
  * @swagger
  *
- * /api/keycloak/add-user-to-group:
- *   post:
+ * /api/keycloak/remove-user-from-group:
+ *   delete:
  *     tags:
  *       - Keycloak
  *     security:
  *       - bearerAuth: []
- *     summary: Adds user to keycloak group
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *          schema:
- *            type: object
- *            properties:
- *              username:
- *                type: string
- *                required: true
- *                example: user@example.com
- *              group:
- *                type: string
- *                required: true
- *                example: EXAMPLE_GROUP
+ *     summary: Removes keycloak group by name
+ *     parameters:
+ *       - in: query
+ *         name: username
+ *         schema:
+ *            type: string
+ *         required: true
+ *         example: user@example.com
+ *       - in: query
+ *         name: group
+ *         schema:
+ *            type: string
+ *         required: true
+ *         example: EXAMPLE_GROUP
  *     responses:
- *       201:
- *         description: User added
+ *       204:
+ *         description: User was removed from the group
  *       400:
  *         description: Bad Request
  *         content:
@@ -71,20 +66,20 @@ export const addUserToGroupActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const addUserToGroupAction = ({ commandBus }: AddUserToGroupActionProps) => (
+export const removeUserFromGroupAction = ({ commandBus }: RemoveUserFromGroupActionProps) => (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   commandBus
     .execute(
-      new AddUserToGroupCommand({
-        username: req.body.username.trim(),
-        group: req.body.group.trim(),
+      new RemoveUserFromGroupCommand({
+        username: (req.query as any).username.trim(),
+        group: (req.query as any).group.trim(),
       }),
     )
-    .then((commandResult) => {
-      res.status(StatusCodes.CREATED).json(commandResult);
+    .then(() => {
+      res.status(StatusCodes.NO_CONTENT).send();
     })
     .catch(next);
 };

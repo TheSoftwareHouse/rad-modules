@@ -53,12 +53,6 @@ export const addGroupActionValidation = celebrate(
  *           application/json:
  *             schema:
  *               $ref:  "#/definitions/UnauthorizedError"
- *       404:
- *         description: User and/or group not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref:  "#/definitions/NotFoundError"
  *       409:
  *         description: Group already exist
  *         content:
