@@ -30,7 +30,7 @@ describe("create-pdf.action test", () => {
     const expiryTime = Math.floor(new Date(result.body.expiryAt).getTime() / 1000);
 
     // check expiry date
-    assert.strictEqual(startTime + config.expiration, expiryTime);
+    assert.strictEqual(startTime + config.expiration - expiryTime < 5, true);
 
     // check download url
     const pattern = `${config.apiUrl}\\/api\\/download-pdf\\/\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}`;
@@ -64,7 +64,7 @@ describe("create-pdf.action test", () => {
     const expiryTimeFromResponse = Math.floor(new Date(result.body.expiryAt).getTime() / 1000);
 
     // check expiry date
-    assert.strictEqual(expiryTimeFromResponse - expiryTime <= 1, true);
+    assert.strictEqual(expiryTimeFromResponse - expiryTime < 5, true);
 
     // check download url
     const pattern = `${config.apiUrl}\\/api\\/download-pdf\\/\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}`;
