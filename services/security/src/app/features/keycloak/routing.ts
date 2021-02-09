@@ -4,6 +4,7 @@ import { CommandBus } from "@tshio/command-bus";
 import { addGroupAction, addGroupActionValidation } from "./actions/add-group.action";
 import { RequireAccessFactory } from "../../../middleware/require-access";
 import { AdminPanelPoliciesConfig } from "../../../config/admin-panel-policies.config";
+import { removeGroupAction, removeGroupActionValidation } from "./actions/remove-group.action";
 // COMMAND_IMPORTS
 
 export interface KeycloakRoutingProps {
@@ -32,6 +33,16 @@ export const keycloakRouting = ({
       addGroupActionValidation,
     ],
     addGroupAction({ commandBus }),
+  );
+  router.delete(
+    "/remove-group",
+    [
+      featureIsActiveHandler,
+      accessTokenHandler,
+      requireAccess(adminPanelPolicies.addKeycloakGroup.resource),
+      removeGroupActionValidation,
+    ],
+    removeGroupAction({ commandBus }),
   );
   // COMMANDS_SETUP
 
