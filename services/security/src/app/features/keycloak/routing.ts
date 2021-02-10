@@ -54,14 +54,19 @@ export const keycloakRouting = ({
     [
       featureIsActiveHandler,
       accessTokenHandler,
-      requireAccess(adminPanelPolicies.removeUserFromKeycloakGroup.resource),
+      requireAccess(adminPanelPolicies.addUserToKeycloakGroup.resource),
       addUserToGroupActionValidation,
     ],
     addUserToGroupAction({ commandBus }),
   );
   router.delete(
     "/remove-user-from-group",
-    [removeUserFromGroupActionValidation],
+    [
+      featureIsActiveHandler,
+      accessTokenHandler,
+      requireAccess(adminPanelPolicies.removeUserFromKeycloakGroup.resource),
+      removeUserFromGroupActionValidation,
+    ],
     removeUserFromGroupAction({ commandBus }),
   );
   // COMMANDS_SETUP

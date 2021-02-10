@@ -84,6 +84,10 @@ export const AdminPanelPoliciesSchema = Joi.object({
     attribute: Joi.string(),
     resource: Joi.string(),
   }),
+  addUserToKeycloakGroup: Joi.object({
+    attribute: Joi.string(),
+    resource: Joi.string(),
+  }),
   removeUserFromKeycloakGroup: Joi.object({
     attribute: Joi.string(),
     resource: Joi.string(),
@@ -116,6 +120,7 @@ export type AdminPanelPoliciesConfig = {
   getAttributes: AdminPanelPolicyItem;
   addKeycloakGroup: AdminPanelPolicyItem;
   removeKeycloakGroup: AdminPanelPolicyItem;
+  addUserToKeycloakGroup: AdminPanelPolicyItem;
   removeUserFromKeycloakGroup: AdminPanelPolicyItem;
 };
 
@@ -194,14 +199,18 @@ export const getAdminPanelPoliciesConfig = (): AdminPanelPoliciesConfig => ({
   },
   addKeycloakGroup: {
     attribute: process.env.ADMIN_PANEL_KEYCLOAK_ADD_GROUP || ADMIN_PANEL_ATTRIBUTE_NAME,
-    resource: "api/keycloak/add-keycloak-group",
+    resource: "api/keycloak/add-group",
   },
   removeKeycloakGroup: {
     attribute: process.env.ADMIN_PANEL_KEYCLOAK_REMOVE_GROUP || ADMIN_PANEL_ATTRIBUTE_NAME,
-    resource: "api/keycloak/remove-keycloak-group",
+    resource: "api/keycloak/remove-group",
+  },
+  addUserToKeycloakGroup: {
+    attribute: process.env.ADMIN_PANEL_KEYCLOAK_ADD_USER_TO_GROUP || ADMIN_PANEL_ATTRIBUTE_NAME,
+    resource: "api/keycloak/add-user-to-group",
   },
   removeUserFromKeycloakGroup: {
     attribute: process.env.ADMIN_PANEL_KEYCLOAK_REMOVE_USER_FROM_GROUP || ADMIN_PANEL_ATTRIBUTE_NAME,
-    resource: "api/keycloak/remove-keycloak-group",
+    resource: "api/keycloak/remove-user-from-group",
   },
 });
