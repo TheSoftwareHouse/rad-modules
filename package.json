@@ -40,6 +40,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "7.12.16",
     "@types/node": "14.14.25",
     "@types/redis": "2.8.28",
     "@typescript-eslint/eslint-plugin": "4.14.2",
