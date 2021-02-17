@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 
 ## security
 
+### 2021-02-09 v0.0.75
+Added
+- Add /api/keycloak/add-group endpoint
+- Add /api/keycloak/remove-group endpoint
+- Add /api/keycloak/add-user-to-group endpoint
+- Add /api/keycloak/remove-user-from-group endpoint
+
 ### 2021-02-05 v0.0.74
 Added
 - Add @tshio/logger

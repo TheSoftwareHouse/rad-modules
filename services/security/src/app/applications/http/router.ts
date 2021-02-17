@@ -6,6 +6,7 @@ export interface RoutingProps {
   policyRouting: express.Router;
   tokensRouting: express.Router;
   attributesRouting: express.Router;
+  keycloakRouting: express.Router;
   // ROUTES_INTERFACE
 }
 
@@ -15,6 +16,7 @@ export const createApiRouter = ({
   policyRouting,
   tokensRouting,
   attributesRouting,
+  keycloakRouting,
   // ROUTES_DEPENDENCIES
 }: RoutingProps,
 ) => {
@@ -25,6 +27,7 @@ export const createApiRouter = ({
   router.use("/policy", policyRouting);
   router.use("/tokens", tokensRouting);
   router.use("/attributes", attributesRouting);
+  router.use("/keycloak", keycloakRouting);
   // ROUTES_CONFIG
   return router;
 };

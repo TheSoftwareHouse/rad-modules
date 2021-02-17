@@ -799,4 +799,162 @@ export class KeycloakManager {
       return jsonData;
     });
   }
+
+  public async addGroup(name: string) {
+    const credentials = await this.setCredentials();
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/groups`;
+
+    return fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
+      body: JSON.stringify({ name }),
+    }).then(async (response) => {
+      const data = await response.text();
+      if (response.status >= 400) {
+        throw new HttpError(data, response.status);
+      }
+    });
+  }
+
+  public async removeGroup(name: string) {
+    const credentials = await this.setCredentials();
+    const findGroupUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/groups?search=${name}`;
+
+    const groupObject = await fetch(findGroupUrl, {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
+    }).then(async (response) => {
+      const data = await response.text();
+
+      if (response.status >= 400) {
+        throw new HttpError(data, response.status);
+      }
+      const jsonData = JSON.parse(data);
+
+      return jsonData.find((group: any) => group.name === name);
+    });
+
+    if (groupObject) {
+      const removeGroupUrl = `${
+        this.dependencies.keycloakClientConfig.keycloakUrl
+      }/auth/admin/realms/${encodeURIComponent(this.dependencies.keycloakClientConfig.realmName)}/groups/${
+        groupObject.id
+      }`;
+
+      await fetch(removeGroupUrl, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
+      }).then(async (response) => {
+        const data = await response.text();
+        if (response.status >= 400) {
+          throw new HttpError(data, response.status);
+        }
+      });
+    }
+  }
+
+  public async addUserToGroup(username: string, groupName: string) {
+    const credentials = await this.setCredentials();
+    const findGroupUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/groups?search=${groupName}`;
+
+    const groupObject = await fetch(findGroupUrl, {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
+    }).then(async (response) => {
+      const data = await response.text();
+
+      if (response.status >= 400) {
+        throw new HttpError(data, response.status);
+      }
+      const jsonData = JSON.parse(data);
+
+      return jsonData.find((group: any) => group.name === groupName);
+    });
+
+    if (!groupObject) {
+      throw new HttpError("Group not exist", StatusCodes.NOT_FOUND);
+    }
+
+    const userObject = await this.findUserByUsername(username);
+
+    if (!userObject) {
+      throw new HttpError("User not exist", StatusCodes.NOT_FOUND);
+    }
+
+    const addUserToGroupUrl = `${
+      this.dependencies.keycloakClientConfig.keycloakUrl
+    }/auth/admin/realms/${encodeURIComponent(this.dependencies.keycloakClientConfig.realmName)}/users/${
+      userObject.id
+    }/groups/${groupObject.id}`;
+
+    await fetch(addUserToGroupUrl, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
+      body: JSON.stringify({
+        groupId: groupObject.id,
+        realm: this.dependencies.keycloakClientConfig.realmName,
+        userId: userObject.id,
+      }),
+    }).then(async (response) => {
+      const data = await response.text();
+
+      if (response.status >= 400) {
+        throw new HttpError(data, response.status);
+      }
+    });
+  }
+
+  public async removeUserFromGroup(username: string, groupName: string) {
+    const credentials = await this.setCredentials();
+    const findGroupUrl = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/admin/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/groups?search=${groupName}`;
+
+    const groupObject = await fetch(findGroupUrl, {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
+    }).then(async (response) => {
+      const data = await response.text();
+
+      if (response.status >= 400) {
+        throw new HttpError(data, response.status);
+      }
+      const jsonData = JSON.parse(data);
+
+      return jsonData.find((group: any) => group.name === groupName);
+    });
+
+    if (!groupObject) {
+      throw new HttpError("Group not exist", StatusCodes.NOT_FOUND);
+    }
+
+    const userObject = await this.findUserByUsername(username);
+
+    if (!userObject) {
+      throw new HttpError("User not exist", StatusCodes.NOT_FOUND);
+    }
+
+    const addUserToGroupUrl = `${
+      this.dependencies.keycloakClientConfig.keycloakUrl
+    }/auth/admin/realms/${encodeURIComponent(this.dependencies.keycloakClientConfig.realmName)}/users/${
+      userObject.id
+    }/groups/${groupObject.id}`;
+
+    await fetch(addUserToGroupUrl, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", Authorization: `bearer ${credentials.accessToken}` },
+    }).then(async (response) => {
+      const data = await response.text();
+
+      if (response.status >= 400) {
+        throw new HttpError(data, response.status);
+      }
+    });
+  }
 }
