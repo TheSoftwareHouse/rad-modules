@@ -13,7 +13,7 @@ export class KeycloakClient implements OAuthClient {
   constructor(private dependencies: KeycloakClientProps) {}
 
   async login(oauthLogin: OAuthLogin): Promise<OAuthUser> {
-    const { clientId, clientSecret, keycloakUrl } = this.dependencies.keycloakClientConfig;
+    const { clientId, clientSecret, keycloakUrl, realmName } = this.dependencies.keycloakClientConfig;
     const { code, redirectUrl } = oauthLogin as OAuthDefaultLogin;
 
     const params = new URLSearchParams();
@@ -25,11 +25,14 @@ export class KeycloakClient implements OAuthClient {
     params.append("redirect_uri", redirectUrl);
     params.append("scope", "openid");
 
-    const accessResponse: any = await fetch(`${keycloakUrl}/auth/realms/TSH/protocol/openid-connect/token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params,
-    });
+    const accessResponse: any = await fetch(
+      `${keycloakUrl}/auth/realms/${encodeURIComponent(realmName)}/protocol/openid-connect/token`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params,
+      },
+    );
 
     const accessResponseObject = await accessResponse.json();
 
