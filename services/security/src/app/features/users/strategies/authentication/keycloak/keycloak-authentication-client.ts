@@ -36,6 +36,11 @@ export class KeycloakAuthenticationClient implements AuthenticationClient {
     };
   }
 
+  public async logout(refreshToken: string) {
+    const { keycloakManager } = this.dependencies;
+    await keycloakManager.logout(refreshToken);
+  }
+
   public async refreshToken(accessToken: string, refreshToken: string) {
     const { keycloakManager, jwtUtils } = this.dependencies;
 

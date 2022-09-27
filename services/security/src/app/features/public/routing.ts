@@ -4,6 +4,7 @@ import { CommandBus } from "@tshio/command-bus";
 import { Request, Response, NextFunction } from "express";
 import { OauthProvider } from "../../../config/config";
 import { loginAction, loginActionValidation } from "../users/actions/login.action";
+import { logoutAction, logoutActionValidation } from "../users/actions/logout.action";
 import { refreshTokenAction, refreshTokenActionValidation } from "../users/actions/refresh-token.action";
 import { oauthRedirectAction, oauthRedirectActionDefaultValidation } from "../users/actions/oauth-redirect.action";
 import { passwordResetTokenAction, passwordResetTokenActionValidation } from "./actions/password-reset-token.action";
@@ -32,6 +33,7 @@ export const publicRouting = ({ commandBus, logger, accessTokenHandler }: Public
     resetPasswordAction({ commandBus }),
   );
   router.post("/auth/login", [loginActionValidation], loginAction({ commandBus }));
+  router.post("/auth/logout", [logoutActionValidation], logoutAction({ commandBus }));
   router.get(
     ["/auth/oauth-redirect", "/auth/oauth-redirect/:provider"],
     [

@@ -95,6 +95,24 @@ export class KeycloakManager {
     });
   }
 
+  public async logout(refreshToken: string) {
+    const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
+      this.dependencies.keycloakClientConfig.realmName,
+    )}/protocol/openid-connect/logout`;
+
+    const body = queryString.stringify({
+      refresh_token: refreshToken,
+      client_secret: this.dependencies.keycloakClientConfig.clientSecret,
+      client_id: this.dependencies.keycloakClientConfig.clientId,
+    });
+
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+  }
+
   public async refreshToken(refreshToken: string) {
     const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
       this.dependencies.keycloakClientConfig.realmName,

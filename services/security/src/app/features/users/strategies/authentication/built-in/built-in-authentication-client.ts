@@ -61,6 +61,10 @@ export class BuiltInAuthenticationClient implements AuthenticationClient {
     };
   }
 
+  public async logout(_refreshToken: string) {
+    throw new BadRequestError("Operation is not supported");
+  }
+
   public async loginWithoutPassword(username: string) {
     const { usersRepository, userActivationConfig, policyRepository, jwtUtils, tokenPayloadConfig } = this.dependencies;
     const user = await usersRepository.findByUsername(username);

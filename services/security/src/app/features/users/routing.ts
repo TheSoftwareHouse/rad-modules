@@ -2,6 +2,7 @@ import { CommandBus } from "@tshio/command-bus";
 import * as express from "express";
 import { Request, Response, NextFunction } from "express";
 import { loginAction, loginActionValidation } from "./actions/login.action";
+import { logoutAction, logoutActionValidation } from "./actions/logout.action";
 import { addUserAction, addUserActionValidation } from "./actions/add-user.action";
 import { isAuthenticatedAction } from "./actions/is-authenticated.action";
 import { refreshTokenAction, refreshTokenActionValidation } from "./actions/refresh-token.action";
@@ -55,6 +56,7 @@ export const usersRouting = ({
 }: UsersRoutingProps) => {
   const router = express.Router();
   router.post("/login", [loginActionValidation], loginAction({ commandBus }));
+  router.post("/logout", [logoutActionValidation], logoutAction({ commandBus }));
   router.post(
     "/add-user",
     [accessTokenHandler, requireAccess(adminPanelPolicies.addUser.resource), addUserActionValidation],
