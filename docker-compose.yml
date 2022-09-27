@@ -224,6 +224,7 @@ services:
 
   keycloak-postgres:
     image: postgres:12-alpine
+    hostname: keycloak-postgres
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
