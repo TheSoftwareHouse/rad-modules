@@ -230,8 +230,8 @@ services:
       DB_USER: keycloak
       DB_SCHEMA: public
       DB_PASSWORD: password
-      KEYCLOAK_USER: "admin"
-      KEYCLOAK_PASSWORD: "admin"
+#      KEYCLOAK_USER: "admin"
+#      KEYCLOAK_PASSWORD: "admin"
     healthcheck:
       test: [ "CMD-SHELL", "true" ]
       interval: 5s
@@ -253,10 +253,7 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      disable: true
     volumes:
       - ./keycloak/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
       - ./keycloak/keycloak-postgres-data.sql:/keycloak-postgres-data.sql

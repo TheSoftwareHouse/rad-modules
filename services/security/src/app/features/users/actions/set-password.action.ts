@@ -95,29 +95,27 @@ export const setPasswordActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const setPasswordAction = ({ commandBus, jwtUtils, authorizationClient }: SetPasswordActionProps) => async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { oldPassword, newPassword, username: usernameWhomAdminChangePassword } = req.body;
-  const { accessToken } = res.locals;
-  try {
-    const { username: usernameToSelfPasswordChange } = jwtUtils.tryToGetPayloadFromTokenOrThrow(accessToken);
-    const isSuperAdmin = await authorizationClient.isSuperAdmin(accessToken);
+export const setPasswordAction =
+  ({ commandBus, jwtUtils, authorizationClient }: SetPasswordActionProps) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { oldPassword, newPassword, username: usernameWhomAdminChangePassword } = req.body;
+    const { accessToken } = res.locals;
+    try {
+      const { username: usernameToSelfPasswordChange } = jwtUtils.tryToGetPayloadFromTokenOrThrow(accessToken);
+      const isSuperAdmin = await authorizationClient.isSuperAdmin(accessToken);
 
-    const commandResult = await commandBus.execute(
-      new SetPasswordCommand({
-        oldPassword,
-        newPassword,
-        usernameWhomAdminChangePassword,
-        usernameToSelfPasswordChange,
-        isSuperAdmin,
-      }),
-    );
+      const commandResult = await commandBus.execute(
+        new SetPasswordCommand({
+          oldPassword,
+          newPassword,
+          usernameWhomAdminChangePassword,
+          usernameToSelfPasswordChange,
+          isSuperAdmin,
+        }),
+      );
 
-    res.json(commandResult);
-  } catch (err) {
-    next(err);
-  }
-};
+      res.json(commandResult);
+    } catch (err) {
+      next(err);
+    }
+  };

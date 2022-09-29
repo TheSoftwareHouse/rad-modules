@@ -75,20 +75,18 @@ export const activateUserActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const activateUserAction = ({ commandBus }: ActivateUserActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { activationToken } = req.params;
-  commandBus
-    .execute(
-      new ActivateUserCommand({
-        activationToken,
-      }),
-    )
-    .then((commandResult) => {
-      res.status(200).json(commandResult);
-    })
-    .catch(next);
-};
+export const activateUserAction =
+  ({ commandBus }: ActivateUserActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { activationToken } = req.params;
+    commandBus
+      .execute(
+        new ActivateUserCommand({
+          activationToken,
+        }),
+      )
+      .then((commandResult) => {
+        res.status(200).json(commandResult);
+      })
+      .catch(next);
+  };

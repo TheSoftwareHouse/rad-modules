@@ -84,16 +84,18 @@ export const loginActionValidation = celebrate(
  *     requestBody: *loginRequest
  *     responses: *loginResponses
  */
-export const loginAction = ({ commandBus }: LoginActionProps) => (req: Request, res: Response, next: NextFunction) => {
-  commandBus
-    .execute(
-      new LoginCommand({
-        username: req.body.username,
-        password: req.body.password,
-      }),
-    )
-    .then((commandResult) => {
-      res.json(commandResult);
-    })
-    .catch(next);
-};
+export const loginAction =
+  ({ commandBus }: LoginActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new LoginCommand({
+          username: req.body.username,
+          password: req.body.password,
+        }),
+      )
+      .then((commandResult) => {
+        res.json(commandResult);
+      })
+      .catch(next);
+  };

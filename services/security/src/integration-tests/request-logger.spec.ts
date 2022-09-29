@@ -28,7 +28,8 @@ describe("Middleware test", () => {
   it("Should display obfuscate value from body in log via requestLogger if key set in keysToHide", async () => {
     const { container } = GLOBAL.bootstrap;
     const app = container.resolve("app");
-    const validRegexp = /::ffff:127.0.0.1 POST \/api\/users\/login \d+ \d+.\d+ ms - req-body {"username":"user1","password":"Hidden property, type = string"} - api-key unknown - authorization unknown\b/;
+    const validRegexp =
+      /::ffff:127.0.0.1 POST \/api\/users\/login \d+ \d+.\d+ ms - req-body {"username":"user1","password":"Hidden property, type = string"} - api-key unknown - authorization unknown\b/;
 
     await request(app).post("/api/users/login").send({ username: "user1", password: "passw0rd" });
 
@@ -38,7 +39,8 @@ describe("Middleware test", () => {
   it("Should display obfuscate value in query string in log via requestLogger if key set in keysToHide", async () => {
     const { container } = GLOBAL.bootstrap;
     const app = container.resolve("app");
-    const validRegexp = /::ffff:127.0.0.1 GET \/some-endpoint\?username=user1&password=Hidden property, type = string \d+ \d+.\d+ ms - req-body no-body - api-key unknown - authorization unknown\b/;
+    const validRegexp =
+      /::ffff:127.0.0.1 GET \/some-endpoint\?username=user1&password=Hidden property, type = string \d+ \d+.\d+ ms - req-body no-body - api-key unknown - authorization unknown\b/;
 
     await request(app).get("/some-endpoint").query({ username: "user1", password: "passw0rd" });
     assert(validRegexp.test(middlewareMessageText));
@@ -47,7 +49,8 @@ describe("Middleware test", () => {
   it("Should display proper log via requestLogger", async () => {
     const { container } = GLOBAL.bootstrap;
     const app = container.resolve("app");
-    const validRegexp = /::ffff:127.0.0.1 POST \/api\/users\/login \d+ \d+.\d+ ms - req-body {"username":"user1","password":"passw0rd"} - api-key unknown - authorization unknown\b/;
+    const validRegexp =
+      /::ffff:127.0.0.1 POST \/api\/users\/login \d+ \d+.\d+ ms - req-body {"username":"user1","password":"passw0rd"} - api-key unknown - authorization unknown\b/;
     const oldKeysToHide = appConfig.requestLogger.keysToHide;
     appConfig.requestLogger.keysToHide = [];
 
@@ -60,7 +63,8 @@ describe("Middleware test", () => {
   it("Should display proper log via requestLogger even if wrong body parameters", async () => {
     const { container } = GLOBAL.bootstrap;
     const app = container.resolve("app");
-    const validRegexp = /::ffff:127.0.0.1 POST \/api\/users\/login \d+ \d+.\d+ ms - req-body {"username":"wrongUser","password":"Hidden property, type = string"} - api-key unknown - authorization unknown\b/;
+    const validRegexp =
+      /::ffff:127.0.0.1 POST \/api\/users\/login \d+ \d+.\d+ ms - req-body {"username":"wrongUser","password":"Hidden property, type = string"} - api-key unknown - authorization unknown\b/;
 
     await request(app).post("/api/users/login").send({ username: "wrongUser", password: "wrongPassword" });
 
@@ -70,7 +74,8 @@ describe("Middleware test", () => {
   it("Should hide authorization info if provided", async () => {
     const { container } = GLOBAL.bootstrap;
     const app = container.resolve("app");
-    const validRegexp = /::ffff:127.0.0.1 POST \/api\/tokens\/create-access-key \d+ \d+.\d+ ms - req-body no-body - api-key unknown - authorization Hidden, last six chars: .{6,6}\b/;
+    const validRegexp =
+      /::ffff:127.0.0.1 POST \/api\/tokens\/create-access-key \d+ \d+.\d+ ms - req-body no-body - api-key unknown - authorization Hidden, last six chars: .{6,6}\b/;
     const loginResponse = await request(app)
       .post("/api/users/login")
       .send({ username: "superadmin", password: "superadmin" });

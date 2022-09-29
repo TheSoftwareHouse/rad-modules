@@ -83,20 +83,18 @@ export const refreshTokenActionValidation = celebrate(
  *     requestBody: *refreshTokenRequest
  *     responses: *refreshTokenResponses
  */
-export const refreshTokenAction = ({ commandBus }: RefreshTokenActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new RefreshTokenCommand({
-        accessToken: req.body.accessToken,
-        refreshToken: req.body.refreshToken,
-      }),
-    )
-    .then((commandResult) => {
-      res.json(commandResult);
-    })
-    .catch(next);
-};
+export const refreshTokenAction =
+  ({ commandBus }: RefreshTokenActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new RefreshTokenCommand({
+          accessToken: req.body.accessToken,
+          refreshToken: req.body.refreshToken,
+        }),
+      )
+      .then((commandResult) => {
+        res.json(commandResult);
+      })
+      .catch(next);
+  };

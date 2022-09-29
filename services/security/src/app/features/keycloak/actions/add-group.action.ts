@@ -66,19 +66,17 @@ export const addGroupActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const addGroupAction = ({ commandBus }: AddGroupActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new AddGroupCommand({
-        name: req.body.name.trim(),
-      }),
-    )
-    .then((commandResult) => {
-      res.status(StatusCodes.CREATED).json(commandResult);
-    })
-    .catch(next);
-};
+export const addGroupAction =
+  ({ commandBus }: AddGroupActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new AddGroupCommand({
+          name: req.body.name.trim(),
+        }),
+      )
+      .then((commandResult) => {
+        res.status(StatusCodes.CREATED).json(commandResult);
+      })
+      .catch(next);
+  };

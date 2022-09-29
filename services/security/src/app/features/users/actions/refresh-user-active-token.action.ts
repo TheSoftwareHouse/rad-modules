@@ -77,20 +77,18 @@ export const refreshUserActiveTokenActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const refreshUserActiveTokenAction = ({ commandBus }: RefreshUserActiveTokenActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { userId } = req.body;
-  commandBus
-    .execute(
-      new RefreshUserActiveTokenCommand({
-        userId,
-      }),
-    )
-    .then((commandResult) => {
-      res.status(StatusCodes.OK).json(commandResult);
-    })
-    .catch(next);
-};
+export const refreshUserActiveTokenAction =
+  ({ commandBus }: RefreshUserActiveTokenActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.body;
+    commandBus
+      .execute(
+        new RefreshUserActiveTokenCommand({
+          userId,
+        }),
+      )
+      .then((commandResult) => {
+        res.status(StatusCodes.OK).json(commandResult);
+      })
+      .catch(next);
+  };

@@ -77,22 +77,20 @@ export const removePolicyActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const removePolicyAction = ({ commandBus }: RemovePolicyActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { id, resource, attribute } = req.query as any;
-  commandBus
-    .execute(
-      new RemovePolicyCommand({
-        id,
-        resource,
-        attribute,
-      }),
-    )
-    .then(() => {
-      res.status(StatusCodes.NO_CONTENT).send();
-    })
-    .catch(next);
-};
+export const removePolicyAction =
+  ({ commandBus }: RemovePolicyActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { id, resource, attribute } = req.query as any;
+    commandBus
+      .execute(
+        new RemovePolicyCommand({
+          id,
+          resource,
+          attribute,
+        }),
+      )
+      .then(() => {
+        res.status(StatusCodes.NO_CONTENT).send();
+      })
+      .catch(next);
+  };

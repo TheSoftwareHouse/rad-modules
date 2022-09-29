@@ -98,24 +98,22 @@ export const oauthRedirectActionDefaultValidation = celebrate(
  *     parameters: *oauthParameters
  *     responses: *oauthResponses
  */
-export const oauthRedirectAction = ({ commandBus }: OauthRedirectActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { code, redirectUrl } = req.query as any;
-  const { provider } = req.params as any;
+export const oauthRedirectAction =
+  ({ commandBus }: OauthRedirectActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { code, redirectUrl } = req.query as any;
+    const { provider } = req.params as any;
 
-  commandBus
-    .execute(
-      new OauthRedirectCommand({
-        provider,
-        code,
-        redirectUrl,
-      }),
-    )
-    .then((commandResult) => {
-      res.json(commandResult);
-    })
-    .catch(next);
-};
+    commandBus
+      .execute(
+        new OauthRedirectCommand({
+          provider,
+          code,
+          redirectUrl,
+        }),
+      )
+      .then((commandResult) => {
+        res.json(commandResult);
+      })
+      .catch(next);
+  };

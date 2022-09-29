@@ -58,19 +58,17 @@ export const logoutActionValidation = celebrate(
  *     requestBody: *logoutRequest
  *     responses: *logoutResponses
  */
-export const logoutAction = ({ commandBus }: LogoutActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new LogoutCommand({
-        refreshToken: req.body.refreshToken,
-      }),
-    )
-    .then((commandResult) => {
-      res.json(commandResult);
-    })
-    .catch(next);
-};
+export const logoutAction =
+  ({ commandBus }: LogoutActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new LogoutCommand({
+          refreshToken: req.body.refreshToken,
+        }),
+      )
+      .then((commandResult) => {
+        res.json(commandResult);
+      })
+      .catch(next);
+  };

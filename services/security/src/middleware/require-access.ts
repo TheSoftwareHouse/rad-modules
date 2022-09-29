@@ -12,40 +12,35 @@ interface RequireAdminAccessProps {
   accessKeyRepository: AccessKeyRepository;
 }
 
-export const requireAccess = ({
-  authenticationClient,
-  authorizationClient,
-  accessKeyRepository,
-}: RequireAdminAccessProps) => (accessAttribute: string): RequestHandler => async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { accessToken, apiKey } = res.locals;
-    if (apiKey) {
-      const key = await accessKeyRepository.findByApiKey(apiKey as string);
-      if (!key) {
-        throw new UnathorizedError("Wrong access key");
+export const requireAccess =
+  ({ authenticationClient, authorizationClient, accessKeyRepository }: RequireAdminAccessProps) =>
+  (accessAttribute: string): RequestHandler =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { accessToken, apiKey } = res.locals;
+      if (apiKey) {
+        const key = await accessKeyRepository.findByApiKey(apiKey as string);
+        if (!key) {
+          throw new UnathorizedError("Wrong access key");
+        }
+
+        return next();
+      }
+
+      const isAuthenticated = await authenticationClient.isAuthenticated(accessToken);
+
+      if (!isAuthenticated) {
+        throw new UnathorizedError("Unauthorized");
+      }
+
+      const { hasAccess } = await authorizationClient.hasAccess(accessToken, [accessAttribute]);
+
+      if (!hasAccess) {
+        throw new UnathorizedError("User has no access");
       }
 
       return next();
+    } catch (error) {
+      return next(error);
     }
-
-    const isAuthenticated = await authenticationClient.isAuthenticated(accessToken);
-
-    if (!isAuthenticated) {
-      throw new UnathorizedError("Unauthorized");
-    }
-
-    const { hasAccess } = await authorizationClient.hasAccess(accessToken, [accessAttribute]);
-
-    if (!hasAccess) {
-      throw new UnathorizedError("User has no access");
-    }
-
-    return next();
-  } catch (error) {
-    return next(error);
-  }
-};
+  };

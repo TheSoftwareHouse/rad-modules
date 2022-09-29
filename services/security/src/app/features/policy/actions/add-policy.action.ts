@@ -80,20 +80,18 @@ export const addPolicyActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const addPolicyAction = ({ commandBus }: AddPolicyActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new AddPolicyCommand({
-        resource: req.body.resource.trim(),
-        attribute: req.body.attribute.trim(),
-      }),
-    )
-    .then((commandResult) => {
-      res.status(StatusCodes.CREATED).json(commandResult);
-    })
-    .catch(next);
-};
+export const addPolicyAction =
+  ({ commandBus }: AddPolicyActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new AddPolicyCommand({
+          resource: req.body.resource.trim(),
+          attribute: req.body.attribute.trim(),
+        }),
+      )
+      .then((commandResult) => {
+        res.status(StatusCodes.CREATED).json(commandResult);
+      })
+      .catch(next);
+  };

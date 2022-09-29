@@ -71,20 +71,18 @@ export const addUserToGroupActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const addUserToGroupAction = ({ commandBus }: AddUserToGroupActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new AddUserToGroupCommand({
-        username: req.body.username.trim(),
-        group: req.body.group.trim(),
-      }),
-    )
-    .then((commandResult) => {
-      res.status(StatusCodes.CREATED).json(commandResult);
-    })
-    .catch(next);
-};
+export const addUserToGroupAction =
+  ({ commandBus }: AddUserToGroupActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new AddUserToGroupCommand({
+          username: req.body.username.trim(),
+          group: req.body.group.trim(),
+        }),
+      )
+      .then((commandResult) => {
+        res.status(StatusCodes.CREATED).json(commandResult);
+      })
+      .catch(next);
+  };

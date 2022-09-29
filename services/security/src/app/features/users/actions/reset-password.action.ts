@@ -81,28 +81,26 @@ export const resetPasswordActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const resetPasswordAction = ({ commandBus }: ResetPasswordActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { newPassword } = req.body;
-  const { resetPasswordToken } = req.params;
+export const resetPasswordAction =
+  ({ commandBus }: ResetPasswordActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { newPassword } = req.body;
+    const { resetPasswordToken } = req.params;
 
-  commandBus
-    .execute(
-      new ResetPasswordCommand({
-        resetPasswordToken,
-        newPassword,
-      }),
-    )
-    .then((commandResult) => {
-      if (!commandResult) {
-        res.status(StatusCodes.CREATED).type("application/json").json({});
-        return;
-      }
+    commandBus
+      .execute(
+        new ResetPasswordCommand({
+          resetPasswordToken,
+          newPassword,
+        }),
+      )
+      .then((commandResult) => {
+        if (!commandResult) {
+          res.status(StatusCodes.CREATED).type("application/json").json({});
+          return;
+        }
 
-      res.status(StatusCodes.CREATED).json(commandResult);
-    })
-    .catch(next);
-};
+        res.status(StatusCodes.CREATED).json(commandResult);
+      })
+      .catch(next);
+  };

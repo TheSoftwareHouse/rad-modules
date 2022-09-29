@@ -13,7 +13,7 @@ type StubSubscriber = EventSubscriberInterface & {
   sendEmail(event: Event): Promise<void>;
 };
 
-const stubSubscriber = ({
+const stubSubscriber = {
   getSubscribedEvents() {
     return [
       { name: "userCreated", method: "sendEmail" },
@@ -28,7 +28,7 @@ const stubSubscriber = ({
   async sendEmail(event: Event) {
     stubSubscriber.sendEmail.calledWith = event;
   },
-} as unknown) as SpiedObject<StubSubscriber>;
+} as unknown as SpiedObject<StubSubscriber>;
 
 describe("Event Dispatcher", () => {
   it("Support event subscribers", async () => {

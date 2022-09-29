@@ -1,13 +1,13 @@
 import { ErrorRequestHandler } from "express";
-import { isCelebrate } from "celebrate";
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { isCelebrateError } from "celebrate";
+import { StatusCodes } from "http-status-codes";
 import { HttpError } from "../errors/http.error";
 
 const stackIfDev = (stack?: string) => (process.env.NODE_ENV === "production" ? undefined : stack);
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
-  if (isCelebrate(err)) {
-    return res.status(BAD_REQUEST).json({
+  if (isCelebrateError(err)) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
       error: err,
       stack: stackIfDev(err.stack),
     });
@@ -20,7 +20,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     });
   }
 
-  return res.status(INTERNAL_SERVER_ERROR).json({
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     error: err.message,
     stack: stackIfDev(err.stack),
   });

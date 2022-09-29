@@ -139,11 +139,13 @@ export const sendActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const sendAction = ({ commandBus }: SendActionProps) => (req: Request, res: Response, next: NextFunction) => {
-  const { emails, priority = EmailQueuePriority.URGENT } = req.body;
+export const sendAction =
+  ({ commandBus }: SendActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { emails, priority = EmailQueuePriority.URGENT } = req.body;
 
-  commandBus
-    .execute(new SendCommand({ emails, priority }))
-    .then(() => res.sendStatus(StatusCodes.CREATED))
-    .catch(next);
-};
+    commandBus
+      .execute(new SendCommand({ emails, priority }))
+      .then(() => res.sendStatus(StatusCodes.CREATED))
+      .catch(next);
+  };

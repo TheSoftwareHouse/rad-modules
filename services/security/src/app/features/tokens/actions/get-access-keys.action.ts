@@ -75,19 +75,17 @@ export const getAccessKeysActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getAccessKeysAction = ({ commandBus }: GetAccessKeysActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { page = 1, limit = 25 } = req.query as any;
-  commandBus
-    .execute(
-      new GetAccessKeysCommand({
-        page,
-        limit,
-      }),
-    )
-    .then((commandResult) => res.json(commandResult))
-    .catch(next);
-};
+export const getAccessKeysAction =
+  ({ commandBus }: GetAccessKeysActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { page = 1, limit = 25 } = req.query as any;
+    commandBus
+      .execute(
+        new GetAccessKeysCommand({
+          page,
+          limit,
+        }),
+      )
+      .then((commandResult) => res.json(commandResult))
+      .catch(next);
+  };

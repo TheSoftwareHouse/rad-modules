@@ -102,21 +102,19 @@ export const getPoliciesActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getPoliciesAction = ({ commandBus }: GetPoliciesActionProps) => async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const defaultOrder = { by: "resource", type: "asc" };
-  const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
-  const queryObject = {
-    page,
-    limit,
-    filter,
-    order,
+export const getPoliciesAction =
+  ({ commandBus }: GetPoliciesActionProps) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const defaultOrder = { by: "resource", type: "asc" };
+    const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
+    const queryObject = {
+      page,
+      limit,
+      filter,
+      order,
+    };
+    commandBus
+      .execute(new GetPoliciesCommand(queryObject))
+      .then((commandResult: GetPoliciesResponse) => res.json(commandResult))
+      .catch(next);
   };
-  commandBus
-    .execute(new GetPoliciesCommand(queryObject))
-    .then((commandResult: GetPoliciesResponse) => res.json(commandResult))
-    .catch(next);
-};

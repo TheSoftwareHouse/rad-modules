@@ -52,11 +52,13 @@ export const meActionValidation = celebrate(
  *       500:
  *         description: Internal Server Error
  */
-export const meAction = ({ commandBus }: MeActionProps) => (req: Request, res: Response, next: NextFunction) => {
-  const { accessToken } = res.locals;
+export const meAction =
+  ({ commandBus }: MeActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { accessToken } = res.locals;
 
-  commandBus
-    .execute(new MeCommand({ accessToken }))
-    .then((commandResult) => res.json(commandResult))
-    .catch(next);
-};
+    commandBus
+      .execute(new MeCommand({ accessToken }))
+      .then((commandResult) => res.json(commandResult))
+      .catch(next);
+  };

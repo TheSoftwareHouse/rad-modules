@@ -76,24 +76,22 @@ export const generateTokenActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const generateTokenAction = ({ commandBus }: GenerateTokenActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { [appConfig.apiKeyHeaderName]: apiKey = "" } = req.headers;
-  const { accessExpirationInSeconds, refreshExpirationInSeconds } = req.body;
-  commandBus
-    .execute(
-      new GenerateTokenCommand({
-        apiKey: apiKey as string,
-        accessExpirationInSeconds,
-        refreshExpirationInSeconds,
-      }),
-    )
-    .then((commandResult) => {
-      // response
-      res.json(commandResult);
-    })
-    .catch(next);
-};
+export const generateTokenAction =
+  ({ commandBus }: GenerateTokenActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { [appConfig.apiKeyHeaderName]: apiKey = "" } = req.headers;
+    const { accessExpirationInSeconds, refreshExpirationInSeconds } = req.body;
+    commandBus
+      .execute(
+        new GenerateTokenCommand({
+          apiKey: apiKey as string,
+          accessExpirationInSeconds,
+          refreshExpirationInSeconds,
+        }),
+      )
+      .then((commandResult) => {
+        // response
+        res.json(commandResult);
+      })
+      .catch(next);
+  };

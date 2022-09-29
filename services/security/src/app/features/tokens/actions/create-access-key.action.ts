@@ -70,15 +70,13 @@ export const createAccessKeyActionValidation = celebrate(
  *     type: object
  *
  */
-export const createAccessKeyAction = ({ commandBus }: CreateAccessKeyActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { accessToken } = res.locals;
+export const createAccessKeyAction =
+  ({ commandBus }: CreateAccessKeyActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { accessToken } = res.locals;
 
-  commandBus
-    .execute(new CreateAccessKeyCommand({ accessToken }))
-    .then((commandResult) => res.status(StatusCodes.CREATED).json(commandResult))
-    .catch(next);
-};
+    commandBus
+      .execute(new CreateAccessKeyCommand({ accessToken }))
+      .then((commandResult) => res.status(StatusCodes.CREATED).json(commandResult))
+      .catch(next);
+  };

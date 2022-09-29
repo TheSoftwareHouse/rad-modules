@@ -69,20 +69,18 @@ export const passwordResetTokenActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const passwordResetTokenAction = ({ commandBus }: PasswordResetTokenActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { username } = req.body;
-  commandBus
-    .execute(
-      new PasswordResetTokenCommand({
-        username,
-      }),
-    )
-    .then((commandResult) => {
-      res.status(StatusCodes.CREATED).json(commandResult);
-    })
-    .catch(next);
-};
+export const passwordResetTokenAction =
+  ({ commandBus }: PasswordResetTokenActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { username } = req.body;
+    commandBus
+      .execute(
+        new PasswordResetTokenCommand({
+          username,
+        }),
+      )
+      .then((commandResult) => {
+        res.status(StatusCodes.CREATED).json(commandResult);
+      })
+      .catch(next);
+  };

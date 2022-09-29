@@ -47,16 +47,14 @@ export interface IsAuthenticatedActionProps {
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const isAuthenticatedAction = ({ commandBus }: IsAuthenticatedActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(new IsAuthenticatedCommand({ accessToken: BearerToken.fromHeader(req.headers.authorization) }))
-    .then((commandResult) => {
-      const status = commandResult && commandResult.isAuthenticated ? StatusCodes.OK : StatusCodes.UNAUTHORIZED;
-      res.status(status).json(commandResult);
-    })
-    .catch(next);
-};
+export const isAuthenticatedAction =
+  ({ commandBus }: IsAuthenticatedActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(new IsAuthenticatedCommand({ accessToken: BearerToken.fromHeader(req.headers.authorization) }))
+      .then((commandResult) => {
+        const status = commandResult && commandResult.isAuthenticated ? StatusCodes.OK : StatusCodes.UNAUTHORIZED;
+        res.status(status).json(commandResult);
+      })
+      .catch(next);
+  };

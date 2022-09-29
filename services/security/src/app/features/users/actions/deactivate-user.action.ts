@@ -74,20 +74,18 @@ export const deactivateUserActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const deactivateUserAction = ({ commandBus }: DeactivateUserActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { userId } = req.body;
-  commandBus
-    .execute(
-      new DeactivateUserCommand({
-        userId,
-      }),
-    )
-    .then((commandResult) => {
-      res.status(StatusCodes.OK).json(commandResult);
-    })
-    .catch(next);
-};
+export const deactivateUserAction =
+  ({ commandBus }: DeactivateUserActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.body;
+    commandBus
+      .execute(
+        new DeactivateUserCommand({
+          userId,
+        }),
+      )
+      .then((commandResult) => {
+        res.status(StatusCodes.OK).json(commandResult);
+      })
+      .catch(next);
+  };
