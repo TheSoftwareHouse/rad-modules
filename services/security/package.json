@@ -38,7 +38,7 @@
     "pug": "3.0.0",
     "qs": "6.9.6",
     "randexp": "0.5.3",
-    "redis": "3.0.2",
+    "redis": "3.1.1",
     "swagger-jsdoc": "6.0.2",
     "swagger-ui-express": "4.4.0",
     "tslib": "2.1.0",
