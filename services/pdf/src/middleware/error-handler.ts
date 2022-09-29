@@ -8,7 +8,7 @@ const stackIfDev = (stack?: string) => (process.env.NODE_ENV === "production" ? 
 export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   if (isCelebrateError(err)) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      error: err,
+      error: err.details,
       stack: stackIfDev(err.stack),
     });
   }

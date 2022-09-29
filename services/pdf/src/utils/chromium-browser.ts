@@ -1,4 +1,4 @@
-import { Browser, launch, PDFOptions, Page, Response } from "puppeteer-core";
+import { Browser, launch, PDFOptions, Page, HTTPResponse } from "puppeteer-core";
 import { StatusCodes } from "http-status-codes";
 import { HttpError } from "../errors/http.error";
 import { Logger } from "@tshio/logger";
@@ -27,7 +27,7 @@ export class ChromiumBrowser {
 
   constructor(private dependencies: ChromiumBrowserDependencies) {}
 
-  private async goToUrl(page: Page, from: string): Promise<Response | null> {
+  private async goToUrl(page: Page, from: string): Promise<HTTPResponse | null> {
     const { logger } = this.dependencies;
     return page.goto(from, { waitUntil: "networkidle2" }).catch(async (error) => {
       logger.error(error.message);
