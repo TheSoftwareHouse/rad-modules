@@ -10,7 +10,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     return res.status(StatusCodes.BAD_REQUEST).json({
       error: {
         message: err.message,
-        details: err.details.get("query")?.details,
+        details: [...err.details].map(([_key, errorDetails]) => errorDetails.details).flat(),
       },
       stack: stackIfDev(err.stack),
     });
