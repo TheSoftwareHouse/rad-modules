@@ -8,9 +8,7 @@ export interface UsersRepository {
   findById: (id: string) => Promise<UserModelGeneric | undefined>;
   findByIdWithoutAttributes: (id: string) => Promise<UserModelGeneric | undefined>;
   getAllUsersDisplayModel: () => Promise<UserModelGeneric[] | undefined[]>;
-  getUsers: (
-    queryObject: QueryObject,
-  ) => Promise<{
+  getUsers: (queryObject: QueryObject) => Promise<{
     users: UserModelGeneric[];
     total: number;
   }>;

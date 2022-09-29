@@ -28,11 +28,13 @@ const httpStrategy = async (data: SchedulerJob) => {
 
 export type ProxyCall = (job: SchedulerJob) => Promise<any>;
 
-export const proxyCall = () => async (job: SchedulerJob): Promise<any> => {
-  switch (job.type) {
-    case JobType.HTTP:
-      return httpStrategy(job);
-    default:
-      throw new Error(`${job.type} is not a supported strategy.`);
-  }
-};
+export const proxyCall =
+  () =>
+  async (job: SchedulerJob): Promise<any> => {
+    switch (job.type) {
+      case JobType.HTTP:
+        return httpStrategy(job);
+      default:
+        throw new Error(`${job.type} is not a supported strategy.`);
+    }
+  };

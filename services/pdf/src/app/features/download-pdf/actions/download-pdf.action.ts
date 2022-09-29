@@ -63,18 +63,16 @@ export const downloadPdfActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const downloadPdfAction = ({ commandBus }: DownloadPdfActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { fileId } = req.params;
-  commandBus
-    .execute(
-      new DownloadPdfCommand({
-        fileId,
-      }),
-    )
-    .then((commandResult) => res.download(commandResult.pdfPath))
-    .catch(next);
-};
+export const downloadPdfAction =
+  ({ commandBus }: DownloadPdfActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { fileId } = req.params;
+    commandBus
+      .execute(
+        new DownloadPdfCommand({
+          fileId,
+        }),
+      )
+      .then((commandResult) => res.download(commandResult.pdfPath))
+      .catch(next);
+  };

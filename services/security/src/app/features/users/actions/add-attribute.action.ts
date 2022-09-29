@@ -79,20 +79,18 @@ export const addAttributeActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const addAttributeAction = ({ commandBus }: AddAttributeActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new AddAttributeCommand({
-        attributes: req.body.attributes.map((attribute: string) => attribute.trim()),
-        userId: req.body.userId.trim(),
-      }),
-    )
-    .then(() => {
-      res.status(StatusCodes.CREATED).type("application/json").json({});
-    })
-    .catch(next);
-};
+export const addAttributeAction =
+  ({ commandBus }: AddAttributeActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new AddAttributeCommand({
+          attributes: req.body.attributes.map((attribute: string) => attribute.trim()),
+          userId: req.body.userId.trim(),
+        }),
+      )
+      .then(() => {
+        res.status(StatusCodes.CREATED).type("application/json").json({});
+      })
+      .catch(next);
+  };

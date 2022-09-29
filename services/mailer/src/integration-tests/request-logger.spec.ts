@@ -27,7 +27,8 @@ describe("Request logger tests", () => {
     const { container } = GLOBAL.bootstrap;
     container.register("loggerStream", asValue(newLoggerStream));
     const app = container.resolve("app");
-    const validRegexp = /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body {"username":"user1","password":"passw0rd"} - api-key unknown - authorization unknown\b/;
+    const validRegexp =
+      /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body {"username":"user1","password":"passw0rd"} - api-key unknown - authorization unknown\b/;
     const oldKeysToHide = appConfig.requestLogger.keysToHide;
 
     appConfig.requestLogger.keysToHide = [];
@@ -42,7 +43,8 @@ describe("Request logger tests", () => {
   it("Should display proper log via requestLogger even if wrong body parameters", async () => {
     const { container } = GLOBAL.bootstrap;
     const app = container.resolve("app");
-    const validRegexp = /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body {"username":"wrongUser","password":"Hidden property, type = string"} - api-key unknown - authorization unknown\b/;
+    const validRegexp =
+      /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body {"username":"wrongUser","password":"Hidden property, type = string"} - api-key unknown - authorization unknown\b/;
 
     await request(app).post("/api").send({ username: "wrongUser", password: "wrongPassword" });
 
@@ -52,7 +54,8 @@ describe("Request logger tests", () => {
   it("Should hide authorization info if provided", async () => {
     const { container } = GLOBAL.bootstrap;
     const app = container.resolve("app");
-    const validRegexp = /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body no-body - api-key unknown - authorization Hidden, last six chars: .{6,6}\b/;
+    const validRegexp =
+      /::ffff:127.0.0.1 POST \/api \d+ \d+.\d+ ms - req-body no-body - api-key unknown - authorization Hidden, last six chars: .{6,6}\b/;
 
     await request(app).post("/api").set("Authorization", "Bearer InvalidTokenJustToTestIfItWillBeHidden");
 

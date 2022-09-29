@@ -67,13 +67,15 @@ export const sendActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const sendAction = ({ commandBus }: SendActionProps) => (req: Request, res: Response, next: NextFunction) => {
-  const { channels, message } = req.body;
-  commandBus
-    .execute(new SendCommand({ channels, message }))
-    .then((commandResult) => {
-      res.status(CREATED).type("application/json").json(commandResult);
-      // response
-    })
-    .catch(next);
-};
+export const sendAction =
+  ({ commandBus }: SendActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { channels, message } = req.body;
+    commandBus
+      .execute(new SendCommand({ channels, message }))
+      .then((commandResult) => {
+        res.status(CREATED).type("application/json").json(commandResult);
+        // response
+      })
+      .catch(next);
+  };

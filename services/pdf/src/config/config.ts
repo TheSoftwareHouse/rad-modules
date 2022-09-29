@@ -1,6 +1,6 @@
 import { TransportProtocol } from "../../../../shared/enums/transport-protocol";
 import { Joi } from "celebrate";
-import { PDFFormat, PDFOptions } from "puppeteer-core";
+import { PDFOptions, PaperFormat } from "puppeteer-core";
 
 const PdfOptionsSchema = Joi.object({
   scale: Joi.number(),
@@ -98,7 +98,7 @@ export const appConfig: AppConfig = {
       : undefined,
     landscape: process.env.PDF_OPTIONS_LANDSCAPE ? process.env.PDF_OPTIONS_LANDSCAPE === "true" : undefined,
     pageRanges: process.env.PDF_OPTIONS_PAGE_RANGES,
-    format: process.env.PDF_OPTIONS_FORMAT ? (process.env.PDF_OPTIONS_FORMAT as PDFFormat) : undefined,
+    format: process.env.PDF_OPTIONS_FORMAT ? (process.env.PDF_OPTIONS_FORMAT as PaperFormat) : undefined,
     width: process.env.PDF_OPTIONS_WIDTH,
     height: process.env.PDF_OPTIONS_HEIGHT,
     margin: {

@@ -66,20 +66,18 @@ export const removeUserFromGroupActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const removeUserFromGroupAction = ({ commandBus }: RemoveUserFromGroupActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new RemoveUserFromGroupCommand({
-        username: (req.query as any).username.trim(),
-        group: (req.query as any).group.trim(),
-      }),
-    )
-    .then(() => {
-      res.status(StatusCodes.NO_CONTENT).send();
-    })
-    .catch(next);
-};
+export const removeUserFromGroupAction =
+  ({ commandBus }: RemoveUserFromGroupActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new RemoveUserFromGroupCommand({
+          username: (req.query as any).username.trim(),
+          group: (req.query as any).group.trim(),
+        }),
+      )
+      .then(() => {
+        res.status(StatusCodes.NO_CONTENT).send();
+      })
+      .catch(next);
+  };

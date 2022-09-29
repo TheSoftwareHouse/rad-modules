@@ -89,22 +89,20 @@ export const getUserActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getUserAction = ({ commandBus, authorizationClient }: GetUserActionProps) => async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { userId } = req.params;
-  const { accessToken, apiKey } = res.locals;
-  const isSuperAdmin = apiKey ? true : await authorizationClient.isSuperAdmin(accessToken);
+export const getUserAction =
+  ({ commandBus, authorizationClient }: GetUserActionProps) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    const { accessToken, apiKey } = res.locals;
+    const isSuperAdmin = apiKey ? true : await authorizationClient.isSuperAdmin(accessToken);
 
-  commandBus
-    .execute(
-      new GetUserCommand({
-        userId,
-        isSuperAdmin,
-      }),
-    )
-    .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
-    .catch(next);
-};
+    commandBus
+      .execute(
+        new GetUserCommand({
+          userId,
+          isSuperAdmin,
+        }),
+      )
+      .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
+      .catch(next);
+  };

@@ -206,24 +206,22 @@ export const scheduleJobActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const scheduleJobAction = ({ commandBus }: ScheduleJobActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new ScheduleJobCommand({
-        name: req.body.name,
-        type: req.body.type,
-        payload: req.body.payload,
-        jobOptions: req.body.jobOptions,
-        startImmediately: req.body.startImmediately ?? true,
-        rule: SchedulerRule.NORMAL,
-      }),
-    )
-    .then((commandResult) => {
-      res.status(StatusCodes.CREATED).json(commandResult);
-    })
-    .catch(next);
-};
+export const scheduleJobAction =
+  ({ commandBus }: ScheduleJobActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new ScheduleJobCommand({
+          name: req.body.name,
+          type: req.body.type,
+          payload: req.body.payload,
+          jobOptions: req.body.jobOptions,
+          startImmediately: req.body.startImmediately ?? true,
+          rule: SchedulerRule.NORMAL,
+        }),
+      )
+      .then((commandResult) => {
+        res.status(StatusCodes.CREATED).json(commandResult);
+      })
+      .catch(next);
+  };

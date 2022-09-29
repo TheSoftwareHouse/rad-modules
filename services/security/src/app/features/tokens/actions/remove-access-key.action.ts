@@ -57,18 +57,16 @@ export const removeAccessKeyActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const removeAccessKeyAction = ({ commandBus }: RemoveAccessKeyActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { apiKey } = req.params;
-  commandBus
-    .execute(
-      new RemoveAccessKeyCommand({
-        apiKey,
-      }),
-    )
-    .then(() => res.status(StatusCodes.NO_CONTENT).type("application/json").send())
-    .catch(next);
-};
+export const removeAccessKeyAction =
+  ({ commandBus }: RemoveAccessKeyActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { apiKey } = req.params;
+    commandBus
+      .execute(
+        new RemoveAccessKeyCommand({
+          apiKey,
+        }),
+      )
+      .then(() => res.status(StatusCodes.NO_CONTENT).type("application/json").send())
+      .catch(next);
+  };

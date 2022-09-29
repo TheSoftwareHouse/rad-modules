@@ -74,21 +74,22 @@ export const loginGoogleIdTokenActionValidation = celebrate(
  *                   type: string
  *                   example: Unauthorized
  */
-export const loginGoogleIdTokenAction = ({ commandBus }: LoginGoogleIdTokenActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { idToken } = req.body;
-  if (!appConfig.oauth.enabled.includes(OauthProvider.GOOGLE)) {
-    throw new HttpError("Login with id_token is disabled (appConfig.oauth.enabled)", StatusCodes.INTERNAL_SERVER_ERROR);
-  }
-  commandBus
-    .execute(
-      new LoginGoogleIdTokenCommand({
-        idToken,
-      }),
-    )
-    .then((commandResult) => res.json(commandResult))
-    .catch(next);
-};
+export const loginGoogleIdTokenAction =
+  ({ commandBus }: LoginGoogleIdTokenActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { idToken } = req.body;
+    if (!appConfig.oauth.enabled.includes(OauthProvider.GOOGLE)) {
+      throw new HttpError(
+        "Login with id_token is disabled (appConfig.oauth.enabled)",
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+    commandBus
+      .execute(
+        new LoginGoogleIdTokenCommand({
+          idToken,
+        }),
+      )
+      .then((commandResult) => res.json(commandResult))
+      .catch(next);
+  };

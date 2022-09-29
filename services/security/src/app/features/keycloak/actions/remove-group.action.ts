@@ -56,19 +56,17 @@ export const removeGroupActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const removeGroupAction = ({ commandBus }: RemoveGroupActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new RemoveGroupCommand({
-        name: (req.query as any).name.trim(),
-      }),
-    )
-    .then(() => {
-      res.status(StatusCodes.NO_CONTENT).send();
-    })
-    .catch(next);
-};
+export const removeGroupAction =
+  ({ commandBus }: RemoveGroupActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new RemoveGroupCommand({
+          name: (req.query as any).name.trim(),
+        }),
+      )
+      .then(() => {
+        res.status(StatusCodes.NO_CONTENT).send();
+      })
+      .catch(next);
+  };

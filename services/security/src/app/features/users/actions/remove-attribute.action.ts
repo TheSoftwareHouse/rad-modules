@@ -75,20 +75,18 @@ export const removeAttributeActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const removeAttributeAction = ({ commandBus }: RemoveAttributeActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new RemoveAttributeCommand({
-        attributes: (req.query.attributes as string).split(",").map((attribute) => attribute.trim()),
-        userId: req.query.userId as string,
-      }),
-    )
-    .then(() => {
-      res.status(StatusCodes.NO_CONTENT).type("application/json").send();
-    })
-    .catch(next);
-};
+export const removeAttributeAction =
+  ({ commandBus }: RemoveAttributeActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new RemoveAttributeCommand({
+          attributes: (req.query.attributes as string).split(",").map((attribute) => attribute.trim()),
+          userId: req.query.userId as string,
+        }),
+      )
+      .then(() => {
+        res.status(StatusCodes.NO_CONTENT).type("application/json").send();
+      })
+      .catch(next);
+  };

@@ -93,16 +93,14 @@ export const addUserActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const addUserAction = ({ commandBus }: AddUserActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { username, password, attributes } = req.body;
-  commandBus
-    .execute(new AddUserCommand({ username, password, attributes }))
-    .then((commandResult) => {
-      res.status(StatusCodes.CREATED).json(commandResult);
-    })
-    .catch(next);
-};
+export const addUserAction =
+  ({ commandBus }: AddUserActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { username, password, attributes } = req.body;
+    commandBus
+      .execute(new AddUserCommand({ username, password, attributes }))
+      .then((commandResult) => {
+        res.status(StatusCodes.CREATED).json(commandResult);
+      })
+      .catch(next);
+  };

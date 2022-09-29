@@ -85,20 +85,18 @@ export const getUsersByResourceActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getUsersByResourceAction = ({ commandBus }: GetUsersByResourceActionProps) => async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { page = 1, limit = 25, resource = "" } = req.query as any;
-  commandBus
-    .execute(
-      new GetUsersByResourceCommand({
-        resourceName: resource,
-        page: +page,
-        limit: +limit,
-      }),
-    )
-    .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
-    .catch(next);
-};
+export const getUsersByResourceAction =
+  ({ commandBus }: GetUsersByResourceActionProps) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { page = 1, limit = 25, resource = "" } = req.query as any;
+    commandBus
+      .execute(
+        new GetUsersByResourceCommand({
+          resourceName: resource,
+          page: +page,
+          limit: +limit,
+        }),
+      )
+      .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
+      .catch(next);
+  };

@@ -1,12 +1,13 @@
 {
   "extends": [
+    "airbnb-base",
     "airbnb-typescript/base",
     "plugin:prettier/recommended"
   ],
   "env": {
     "mocha": true
   },
-  "plugins": ["prettier", "unicorn"],
+  "plugins": ["prettier", "unicorn", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
@@ -22,6 +23,8 @@
     "no-underscore-dangle": "off",
     "no-useless-constructor": "off",
     "class-methods-use-this": "off",
+    "no-promise-executor-return": "off",
+    "import/no-relative-packages": "off",
     "@typescript-eslint/naming-convention": [
       "error",
       {
@@ -40,6 +43,7 @@
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "quotes": ["error", "double", { "avoidEscape": true }],
-    "@typescript-eslint/quotes": [ "error", "double", { "avoidEscape": true }]
+    "@typescript-eslint/quotes": [ "error", "double", { "avoidEscape": true }],
+    "@typescript-eslint/default-param-last": "off"
   }
 }

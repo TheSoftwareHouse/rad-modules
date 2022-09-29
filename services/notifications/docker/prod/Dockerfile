@@ -1,4 +1,4 @@
-FROM node:14-alpine3.12 as build
+FROM node:16-alpine as build
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY . ./
 
 RUN cd ./services/notifications && npm i && ./node_modules/.bin/tsc --skipLibCheck
 
-FROM node:14-alpine3.12
+FROM node:16-alpine
 
 WORKDIR /app
 

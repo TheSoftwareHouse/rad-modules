@@ -49,20 +49,18 @@ export const cancelJobActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const cancelJobAction = ({ commandBus }: CancelJobActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { jobId: id } = req.query as any;
-  commandBus
-    .execute(
-      new CancelJobCommand({
-        id,
-      }),
-    )
-    .then(() => {
-      res.status(StatusCodes.NO_CONTENT).type("application/json").send();
-    })
-    .catch(next);
-};
+export const cancelJobAction =
+  ({ commandBus }: CancelJobActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { jobId: id } = req.query as any;
+    commandBus
+      .execute(
+        new CancelJobCommand({
+          id,
+        }),
+      )
+      .then(() => {
+        res.status(StatusCodes.NO_CONTENT).type("application/json").send();
+      })
+      .catch(next);
+  };

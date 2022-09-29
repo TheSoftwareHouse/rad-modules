@@ -69,20 +69,18 @@ export const getUserIdActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getUserIdAction = ({ usersRepository }: GetUserIdActionProps) => async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { username } = req.query as any;
-  try {
-    const userId = await usersRepository.getUserIdByUsername(username);
+export const getUserIdAction =
+  ({ usersRepository }: GetUserIdActionProps) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { username } = req.query as any;
+    try {
+      const userId = await usersRepository.getUserIdByUsername(username);
 
-    if (!userId) {
-      throw new NotFoundError("User not found");
+      if (!userId) {
+        throw new NotFoundError("User not found");
+      }
+      return res.status(StatusCodes.OK).json({ userId });
+    } catch (err) {
+      return next(err);
     }
-    return res.status(StatusCodes.OK).json({ userId });
-  } catch (err) {
-    return next(err);
-  }
-};
+  };

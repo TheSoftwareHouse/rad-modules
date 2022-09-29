@@ -43,16 +43,18 @@ export class XSecurityTokenUtils {
       const accessToken = BearerToken.fromCookieOrString(xSecurityToken);
       const refreshToken = BearerToken.fromCookieOrString(xSecurityRefreshToken);
 
-      const {
-        accessToken: freshAccessToken,
-        refreshToken: freshRefreshToken,
-      } = await authenticationClient.refreshToken(accessToken.getToken(), refreshToken.getToken());
+      const { accessToken: freshAccessToken, refreshToken: freshRefreshToken } =
+        await authenticationClient.refreshToken(accessToken.getToken(), refreshToken.getToken());
 
       this.addXSecurityTokenToCookie(freshAccessToken, freshRefreshToken, res);
 
       return { accessToken: freshAccessToken, refreshToken: freshRefreshToken };
-    } catch (err) {
-      logger.error(err);
+    } catch (error) {
+      if (error instanceof Error) {
+        logger.error(error.message);
+      } else {
+        logger.error("Unexpected error", error);
+      }
       return res.redirect("/admin/admin-login-view");
     }
   }

@@ -56,20 +56,18 @@ export const deleteUserActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const deleteUserAction = ({ commandBus }: DeleteUserActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { userId } = req.query as any;
-  commandBus
-    .execute(
-      new DeleteUserCommand({
-        userId,
-      }),
-    )
-    .then(() => {
-      res.status(StatusCodes.NO_CONTENT).type("application/json").send();
-    })
-    .catch(next);
-};
+export const deleteUserAction =
+  ({ commandBus }: DeleteUserActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.query as any;
+    commandBus
+      .execute(
+        new DeleteUserCommand({
+          userId,
+        }),
+      )
+      .then(() => {
+        res.status(StatusCodes.NO_CONTENT).type("application/json").send();
+      })
+      .catch(next);
+  };

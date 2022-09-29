@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.9"
 
 services:
   security:
@@ -28,9 +28,12 @@ services:
     volumes:
       - build:/app/build
     depends_on:
-      - postgres
-      - redis
-      - mailhog
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
     networks:
       app:
         aliases:
@@ -91,19 +94,29 @@ services:
           - pdf
 
   postgres:
-    image: postgres:12-alpine
+    image: postgres:14-alpine
     volumes:
         - ./postgresql-multiple-databases:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USERNAME: postgres
       POSTGRES_MULTIPLE_DATABASES: users,scheduler,notifications
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     networks:
       - app
 
   redis:
     image: redis:4-alpine
     hostname: redis
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     networks:
       - app
 
@@ -131,10 +144,14 @@ services:
       OAUTH_CREATE_USER_ACCOUNT: "true"
       DB_LOGGING: "false"
     depends_on:
-      - redis
-      - postgres
-      - mailhog
-      - keycloak
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
     networks:
       - app
 
@@ -204,7 +221,7 @@ services:
       - app
 
   keycloak:
-    image: jboss/keycloak
+    image: jboss/keycloak:16.1.1
     command: ["-Djboss.socket.binding.port-offset=10"]
     environment:
       DB_VENDOR: POSTGRES
@@ -215,20 +232,28 @@ services:
       DB_PASSWORD: password
       KEYCLOAK_USER: "admin"
       KEYCLOAK_PASSWORD: "admin"
+    healthcheck:
+      test: [ "CMD-SHELL", "true" ]
+      interval: 5s
+      timeout: 5s
+      retries: 15
     ports:
       - 8090:8090
     networks:
       - app
     depends_on:
-      - keycloak-postgres
+      keycloak-postgres:
+        condition: service_started
 
   keycloak-postgres:
-    image: postgres:12-alpine
+    image: postgres:14-alpine
     hostname: keycloak-postgres
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
+    healthcheck:
+      disable: true
     volumes:
       - ./keycloak/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
       - ./keycloak/keycloak-postgres-data.sql:/keycloak-postgres-data.sql
@@ -257,6 +282,8 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
+    healthcheck:
+      disable: true
     environment:
       - MH_HOSTNAME=mailhog
 
@@ -266,9 +293,12 @@ services:
     command: [sh, -c, 'NODE_ENV=production node /app/build/services/security/src/index.js']
     hostname: security
     depends_on:
-      - postgres
-      - redis
-      - mailhog
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
     networks:
       app:
         aliases:

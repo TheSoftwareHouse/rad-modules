@@ -63,20 +63,23 @@ export const passwordResetTokenActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const passwordResetTokenAction = ({ commandBus, logger }: PasswordResetTokenActionProps) => (
-  req: Request,
-  res: Response,
-) => {
-  const { username } = req.body;
-  try {
-    commandBus.execute(
-      new PasswordResetTokenCommand({
-        username,
-      }),
-    );
-  } catch (error) {
-    logger.error(error);
-  } finally {
-    res.status(StatusCodes.ACCEPTED).json({});
-  }
-};
+export const passwordResetTokenAction =
+  ({ commandBus, logger }: PasswordResetTokenActionProps) =>
+  (req: Request, res: Response) => {
+    const { username } = req.body;
+    try {
+      commandBus.execute(
+        new PasswordResetTokenCommand({
+          username,
+        }),
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        logger.error(error.message);
+      } else {
+        logger.error("Unexpected error", error);
+      }
+    } finally {
+      res.status(StatusCodes.ACCEPTED).json({});
+    }
+  };

@@ -7,9 +7,7 @@ export interface PolicyRepository {
   delete: (ids: string[]) => Promise<any>;
   findByResourcesAndAttributes: (resources: string[], attributes: string[]) => Promise<PolicyModelGeneric[]>;
   getNamesByAttributes: (attributes: string[]) => Promise<string[]>;
-  getPolicies: (
-    queryObject: QueryObject,
-  ) => Promise<{
+  getPolicies: (queryObject: QueryObject) => Promise<{
     policies: PolicyModelGeneric[];
     total: number;
   }>;

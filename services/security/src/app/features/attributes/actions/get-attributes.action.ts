@@ -109,21 +109,19 @@ export const getAttributesActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getAttributesAction = ({ commandBus }: GetAttributesActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const defaultOrder = { by: "name", type: "asc" };
-  const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
-  const queryObject = {
-    page,
-    limit,
-    filter,
-    order,
+export const getAttributesAction =
+  ({ commandBus }: GetAttributesActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const defaultOrder = { by: "name", type: "asc" };
+    const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
+    const queryObject = {
+      page,
+      limit,
+      filter,
+      order,
+    };
+    commandBus
+      .execute(new GetAttributesCommand(queryObject))
+      .then((commandResult) => res.json(commandResult))
+      .catch(next);
   };
-  commandBus
-    .execute(new GetAttributesCommand(queryObject))
-    .then((commandResult) => res.json(commandResult))
-    .catch(next);
-};

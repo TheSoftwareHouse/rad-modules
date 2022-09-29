@@ -750,7 +750,8 @@
       "redirectUris": [
         "https://security:50050/*",
         "http://security:50050/*",
-        "http://127.0.0.1:50050/*"
+        "http://127.0.0.1:50050/*",
+        "http://localhost:3000/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -783,6 +784,21 @@
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
       "protocolMappers": [
+        {
+          "id": "9ea81395-62f2-4706-a0d1-6e55a6dff42b",
+          "name": "user_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "id",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "user_id",
+            "jsonType.label": "String"
+          }
+        },
         {
           "id": "3f258dc1-26e1-4d59-8d4e-023dab1f6ff1",
           "name": "attributes",

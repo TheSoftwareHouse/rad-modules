@@ -1,4 +1,4 @@
-import { Browser, launch, PDFOptions, Page, Response } from "puppeteer-core";
+import { Browser, launch, PDFOptions, Page, HTTPResponse } from "puppeteer-core";
 import { StatusCodes } from "http-status-codes";
 import { HttpError } from "../errors/http.error";
 import { Logger } from "@tshio/logger";
@@ -27,7 +27,7 @@ export class ChromiumBrowser {
 
   constructor(private dependencies: ChromiumBrowserDependencies) {}
 
-  private async goToUrl(page: Page, from: string): Promise<Response | null> {
+  private async goToUrl(page: Page, from: string): Promise<HTTPResponse | null> {
     const { logger } = this.dependencies;
     return page.goto(from, { waitUntil: "networkidle2" }).catch(async (error) => {
       logger.error(error.message);
@@ -35,7 +35,11 @@ export class ChromiumBrowser {
         logger.info("trying to close chromium page");
         await page.close();
       } catch (closePageError) {
-        logger.error(closePageError.message);
+        if (closePageError instanceof Error) {
+          logger.error(closePageError.message);
+        } else {
+          logger.error("Unexpected error", closePageError);
+        }
       }
       throw new HttpError(error.message, StatusCodes.INTERNAL_SERVER_ERROR);
     });
@@ -49,7 +53,11 @@ export class ChromiumBrowser {
         logger.info("trying to close chromium page");
         await page.close();
       } catch (closePageError) {
-        logger.error(closePageError.message);
+        if (closePageError instanceof Error) {
+          logger.error(closePageError.message);
+        } else {
+          logger.error("Unexpected error", closePageError);
+        }
       }
       throw new HttpError(error.message, StatusCodes.INTERNAL_SERVER_ERROR);
     });
@@ -78,7 +86,11 @@ export class ChromiumBrowser {
           logger.info("trying to close chromium browser");
           await this.browser.close();
         } catch (closeBrowserError) {
-          logger.error(closeBrowserError.message);
+          if (closeBrowserError instanceof Error) {
+            logger.error(closeBrowserError.message);
+          } else {
+            logger.error("Unexpected error", closeBrowserError);
+          }
         }
       }
       throw new HttpError("Can not open new page in chromium browser", StatusCodes.INTERNAL_SERVER_ERROR);
@@ -107,7 +119,11 @@ export class ChromiumBrowser {
         logger.info("trying to close chromium page");
         await page.close();
       } catch (createPdfError) {
-        logger.error(createPdfError.message);
+        if (createPdfError instanceof Error) {
+          logger.error(createPdfError.message);
+        } else {
+          logger.error("Unexpected error", createPdfError);
+        }
       }
       throw new HttpError("Can not create pdf - chromium error", StatusCodes.INTERNAL_SERVER_ERROR);
     });

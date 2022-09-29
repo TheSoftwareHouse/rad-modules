@@ -111,21 +111,19 @@ export const getUsersActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getUsersAction = ({ commandBus }: GetUsersActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const defaultOrder = { by: "username", type: "asc" };
-  const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
-  const queryObject: GetUsersCommandPayload = {
-    page: +page,
-    limit: +limit,
-    filter: filter as any,
-    order: order as any,
+export const getUsersAction =
+  ({ commandBus }: GetUsersActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const defaultOrder = { by: "username", type: "asc" };
+    const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
+    const queryObject: GetUsersCommandPayload = {
+      page: +page,
+      limit: +limit,
+      filter: filter as any,
+      order: order as any,
+    };
+    commandBus
+      .execute(new GetUsersCommand(queryObject))
+      .then((commandResult: UsersResponse) => res.json(commandResult))
+      .catch(next);
   };
-  commandBus
-    .execute(new GetUsersCommand(queryObject))
-    .then((commandResult: UsersResponse) => res.json(commandResult))
-    .catch(next);
-};

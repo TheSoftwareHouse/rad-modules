@@ -27,19 +27,17 @@ export const xApiKeyResponseFactory = (req: Request) => {
   }
 };
 
-export const xApiKeyHandler = ({ accessKeyRepository, apiKeyHeaderName }: XApiKeyHandlerProps) => async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const apiKey = req.headers[apiKeyHeaderName];
-    const key = await accessKeyRepository.findByApiKey(apiKey as string);
-    if (key) {
-      return res.json(xApiKeyResponseFactory(req));
+export const xApiKeyHandler =
+  ({ accessKeyRepository, apiKeyHeaderName }: XApiKeyHandlerProps) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const apiKey = req.headers[apiKeyHeaderName];
+      const key = await accessKeyRepository.findByApiKey(apiKey as string);
+      if (key) {
+        return res.json(xApiKeyResponseFactory(req));
+      }
+      return next();
+    } catch (error) {
+      return next(error);
     }
-    return next();
-  } catch (error) {
-    return next(error);
-  }
-};
+  };

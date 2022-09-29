@@ -126,23 +126,21 @@ export const getNotificationsActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getNotificationsAction = ({ commandBus }: GetNotificationsActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const defaultOrder = { by: "createdAt", type: "desc" };
-  const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
-  const queryObject: GetNotificationsCommandPayload = {
-    page: +page,
-    limit: +limit,
-    filter: filter as any,
-    order: order as any,
+export const getNotificationsAction =
+  ({ commandBus }: GetNotificationsActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const defaultOrder = { by: "createdAt", type: "desc" };
+    const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
+    const queryObject: GetNotificationsCommandPayload = {
+      page: +page,
+      limit: +limit,
+      filter: filter as any,
+      order: order as any,
+    };
+    commandBus
+      .execute(new GetNotificationsCommand(queryObject))
+      .then((commandResult) => {
+        res.json(commandResult);
+      })
+      .catch(next);
   };
-  commandBus
-    .execute(new GetNotificationsCommand(queryObject))
-    .then((commandResult) => {
-      res.json(commandResult);
-    })
-    .catch(next);
-};

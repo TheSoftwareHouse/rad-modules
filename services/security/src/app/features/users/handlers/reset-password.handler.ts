@@ -27,14 +27,8 @@ export default class ResetPasswordHandler implements CommandHandler<ResetPasswor
 
   async execute(command: ResetPasswordCommand): Promise<ResetPasswordResponse | undefined> {
     const { resetPasswordToken, newPassword } = command.payload;
-    const {
-      usersRepository,
-      authenticationClient,
-      passwordGenerator,
-      mailer,
-      logger,
-      userPasswordIsRandom,
-    } = this.dependencies;
+    const { usersRepository, authenticationClient, passwordGenerator, mailer, logger, userPasswordIsRandom } =
+      this.dependencies;
 
     const password = newPassword || passwordGenerator.gen();
 

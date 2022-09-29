@@ -75,20 +75,18 @@ export const hasAttributeActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const hasAttributeAction = ({ commandBus }: HasAttributeActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new HasAttributeCommand({
-        accessToken: BearerToken.fromHeader(req.headers.authorization),
-        attributes: req.body.attributes,
-      }),
-    )
-    .then((commandResult) => {
-      res.json(commandResult);
-    })
-    .catch(next);
-};
+export const hasAttributeAction =
+  ({ commandBus }: HasAttributeActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new HasAttributeCommand({
+          accessToken: BearerToken.fromHeader(req.headers.authorization),
+          attributes: req.body.attributes,
+        }),
+      )
+      .then((commandResult) => {
+        res.json(commandResult);
+      })
+      .catch(next);
+  };

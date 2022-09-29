@@ -10,3 +10,4 @@ docusaurus/website/i18n/*
 docusaurus/website/build/*
 .workspace
 .vscode
+*_bak

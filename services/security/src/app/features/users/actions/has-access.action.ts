@@ -78,18 +78,16 @@ export const hasAccessActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const hasAccessAction = ({ commandBus }: HasAccessActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  commandBus
-    .execute(
-      new HasAccessCommand({
-        accessToken: BearerToken.fromHeader(req.headers.authorization),
-        resources: req.body.resources as string[],
-      }),
-    )
-    .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
-    .catch(next);
-};
+export const hasAccessAction =
+  ({ commandBus }: HasAccessActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    commandBus
+      .execute(
+        new HasAccessCommand({
+          accessToken: BearerToken.fromHeader(req.headers.authorization),
+          resources: req.body.resources as string[],
+        }),
+      )
+      .then((commandResult) => res.status(StatusCodes.OK).json(commandResult))
+      .catch(next);
+  };

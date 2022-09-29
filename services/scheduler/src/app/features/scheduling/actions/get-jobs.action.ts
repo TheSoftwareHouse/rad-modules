@@ -113,23 +113,21 @@ export const getJobsActionValidation = celebrate(
  *             schema:
  *               $ref:  "#/definitions/InternalServerError"
  */
-export const getJobsAction = ({ commandBus }: GetJobsActionProps) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const defaultOrder = { by: "name", type: "asc" };
-  const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
-  const queryObject: GetJobsCommandPayload = {
-    page: +page,
-    limit: +limit,
-    filter: filter as any,
-    order: order as any,
+export const getJobsAction =
+  ({ commandBus }: GetJobsActionProps) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const defaultOrder = { by: "name", type: "asc" };
+    const { page = 1, limit = 25, filter = {}, order = defaultOrder } = req.query as any;
+    const queryObject: GetJobsCommandPayload = {
+      page: +page,
+      limit: +limit,
+      filter: filter as any,
+      order: order as any,
+    };
+    commandBus
+      .execute(new GetJobsCommand(queryObject))
+      .then((commandResult) => {
+        res.json(commandResult);
+      })
+      .catch(next);
   };
-  commandBus
-    .execute(new GetJobsCommand(queryObject))
-    .then((commandResult) => {
-      res.json(commandResult);
-    })
-    .catch(next);
-};
