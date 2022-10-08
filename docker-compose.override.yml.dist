@@ -30,50 +30,8 @@ services:
       - ./services/security/src:/app/services/security/src
       - ./services/security/swagger:/app/services/security/swagger
       - ./services/security/init-data-volume:/app/build/services/init-data-volume
-    depends_on:
-      keycloak:
-        condition: service_started
     ports:
       - 50050:50050
-
-  gateway:
-    volumes:
-      - ./services/gateway/node_modules:/app/build/services/gateway/node_modules
-      - ./services/gateway/src:/app/services/gateway/src
-    ports:
-      - 50051:50050
-  
-  notifications:
-    volumes:
-      - ./services/notifications/node_modules:/app/build/services/notifications/node_modules
-      - ./services/notifications/src:/app/services/notifications/src
-      - ./services/notifications/swagger:/app/services/notifications/swagger
-    ports:
-      - 50052:50050
-
-  scheduler: 
-    volumes:
-      - ./services/scheduler/node_modules:/app/build/services/scheduler/node_modules
-      - ./services/scheduler/src:/app/services/scheduler/src
-      - ./services/scheduler/swagger:/app/services/scheduler/swagger
-    ports:
-      - 50053:50050
-
-  mailer:
-    volumes:
-      - ./services/mailer/node_modules:/app/build/services/mailer/node_modules
-      - ./services/mailer/src:/app/services/mailer/src
-      - ./services/mailer/swagger:/app/services/mailer/swagger
-    ports:
-      - 50054:50050
-
-  pdf:
-      volumes:
-        - ./services/pdf/node_modules:/app/build/services/pdf/node_modules
-        - ./services/pdf/src:/app/services/pdf/src
-        - ./services/pdf/swagger:/app/services/pdf/swagger
-      ports:
-        - 50050:50050
 
   redis:
     ports:
@@ -94,24 +52,13 @@ services:
   keycloak:
     image: jboss/keycloak:16.1.1
     command: ["-Djboss.socket.binding.port-offset=10", "-Dkeycloak.import=/security-realm.json", "-Dkeycloak.profile.feature.upload_scripts=enabled"]
-    environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: keycloak-postgres
-      DB_DATABASE: keycloak
-      DB_USER: keycloak
-      DB_SCHEMA: public
-      DB_PASSWORD: password
-      KEYCLOAK_USER: "admin"
-      KEYCLOAK_PASSWORD: "admin"
+    env_file: keycloak/variables.env
     ports:
       - 8090:8090
     networks:
       - app
     volumes:
       - ./keycloak/config/security-realm.json:/security-realm.json
-    depends_on:
-      keycloak-postgres:
-        condition: service_healthy
 
   keycloak-postgres:
     image: postgres:14-alpine
