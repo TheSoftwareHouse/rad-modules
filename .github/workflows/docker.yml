@@ -6,6 +6,7 @@ on:
     tags:
       - 'security-[0-9]+.[0-9]+.[0-9]+'
 
+jobs:
   security:
     runs-on: ubuntu-latest
     name: Deploy Security to DockerHub
