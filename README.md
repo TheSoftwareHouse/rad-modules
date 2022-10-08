@@ -48,6 +48,10 @@ After checkout of a repository, please perform the following steps in exact sequ
 
 4. Run production integration tests `npm run security-integration`
 
+5. Open your browser and go to the swagger api docs: [http://localhost:50050/api-docs/](http://localhost:50050/api-docs/)
+
+6. On the swagger page, generate an access token via endpoint `/api/public/auth/login` or `/api/users/login` good luck!  🔥
+
 ---
 
 ### How to check if everything works?
@@ -56,7 +60,7 @@ After checkout of a repository, please perform the following steps in exact sequ
 
 2. Run `docker-compose up security`
 
-3. Open your browser and go to: [http://localhost:50050/api-docs/#/](http://localhost:50050/api-docs/#/)
+3. Open your browser and go to: [http://localhost:50050/api-docs/](http://localhost:50050/api-docs/)
 
 You should see the swagger panel and request in terminal
 
