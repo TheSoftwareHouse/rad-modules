@@ -1,6 +1,5 @@
 import { OAuthClient, OAuthDefaultLogin, OAuthLogin, OAuthLoginIdToken, OAuthUser } from "../client.types";
 import fetch from "node-fetch";
-import * as queryString from "querystring";
 import { HttpError } from "../../../../../errors/http.error";
 import { StatusCodes } from "http-status-codes";
 import { FacebookClientConfig } from "../../../../../config/config";
@@ -25,7 +24,7 @@ export class FacebookClient implements OAuthClient {
 
     const accessResponseObject = await accessResponse.json();
 
-    const infoParams = queryString.stringify({
+    const infoParams = new URLSearchParams({
       fields: ["email"].join(","),
       access_token: accessResponseObject.access_token,
     });

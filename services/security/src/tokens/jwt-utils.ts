@@ -30,12 +30,11 @@ export class JwtUtils {
   // @ts-ignore
   public async generateToken(data: JwtPayload, tokenConfig: TokenConfig): Promise<string> {
     return new Promise((resolve, reject) => {
-
       sign(
         { ...data },
         tokenConfig.secret,
         { expiresIn: tokenConfig.expirationInSeconds },
-          // @ts-ignore
+        // @ts-ignore
         (err: Error, token: string) => {
           if (err) {
             return reject(new Error("Failed to sign a token"));
