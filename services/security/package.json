@@ -20,7 +20,7 @@
   "dependencies": {
     "@tshio/command-bus": "1.0.2",
     "@tshio/logger": "^1.0.4",
-    "awilix": "4.3.1",
+    "awilix": "7.0.3",
     "celebrate": "15.0.1",
     "cookie-parser": "1.4.5",
     "cors": "2.8.5",
