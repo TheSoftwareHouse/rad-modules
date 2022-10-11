@@ -15,7 +15,6 @@ jobs:
           GH_NAME: ${{ secrets.GH_NAME }}
           GH_EMAIL: ${{ secrets.GH_EMAIL }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
   redoc:
     runs-on: ubuntu-latest
     name: Prepare and push API ReDocs to GitHub
