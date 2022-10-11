@@ -4,6 +4,9 @@ services:
   security:
     image: security-service:latest
     working_dir: /app/build/services/security
+    build:
+      context: ./
+      dockerfile: services/security/docker/dev/Dockerfile
     command: [sh, -c, 'node-dev ./src/index.js']
     hostname: security
     environment:
@@ -39,60 +42,6 @@ services:
         aliases:
           - security
 
-  scheduler:
-    image: scheduler-service:latest
-    working_dir: /app/build/services/scheduler
-    command: [sh, -c, 'node-dev ./src/index.js']
-    hostname: scheduler
-    volumes:
-      - build:/app/build
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - app
-
-  mailer:
-    image: mailer-service:latest
-    working_dir: /app/build/services/mailer
-    command: [sh, -c, 'node-dev ./src/index.js']
-    hostname: mailer
-    depends_on:
-      - redis
-      - mailhog
-    environment:
-      TRANSPORT_SMTP_HOST: mailhog
-      TRANSPORT_SMTP_PORT: 1025
-      TRANSPORT_SMTP_SECURE: "false"
-    volumes:
-      - build:/app/build
-    networks:
-      - app
-
-  notifications:
-    image: notifications-service:latest
-    working_dir: /app/build/services/notifications
-    command: [sh, -c, 'node-dev ./src/index.js']
-    hostname: notifications
-    depends_on:
-      - postgres
-    volumes:
-      - build:/app/build
-    networks:
-      - app
-
-  pdf:
-    image: pdf-service:latest
-    working_dir: /app/build/services/pdf
-    command: [sh, -c, 'node-dev ./src/index.js']
-    hostname: pdf
-    volumes:
-      - build:/app/build
-    networks:
-      app:
-        aliases:
-          - pdf
-
   postgres:
     image: postgres:14-alpine
     volumes:
@@ -102,9 +51,9 @@ services:
       POSTGRES_USERNAME: postgres
       POSTGRES_MULTIPLE_DATABASES: users,scheduler,notifications
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 5
     networks:
       - app
@@ -120,24 +69,11 @@ services:
     networks:
       - app
 
-  gateway:
-    image: gateway-service:latest
-    working_dir: /app/build/services/gateway
-    command: [sh, -c, 'node-dev ./src/index.js']
-    hostname: gateway
-    environment:
-      PROXY_CONFIG_PATH: "/app/services/gateway/src/config/proxy.json"
-      API_URL: "http://localhost:50050"
-    depends_on:
-      - security
-    volumes:
-      - build:/app/build
-    networks:
-      - app
-
   security-integration-tests:
-    image: security-service-prod:latest
-    working_dir: /app/build/services/security
+    image: security-service-prod
+    build:
+      context: ./
+      dockerfile: services/security/docker/prod/Dockerfile
     command: [sh, -c, "npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/{,!(authorization-strategies)/**}/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --timeout 10000 --exit && sleep 20 && AUTHENTICATION_STRATEGY=keycloak node ./node_modules/.bin/mocha \"src/integration-tests/authorization-strategies/keycloak-authentication-client.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit", ]
     environment:
       OAUTH_ENABLED_PROVIDERS: "google,facebook"
@@ -150,73 +86,24 @@ services:
         condition: service_healthy
       mailhog:
         condition: service_started
-      keycloak:
-        condition: service_healthy
     networks:
       - app
 
-  mailer-integration-tests:
-    image: mailer-service-prod:latest
-    working_dir: /app/build/services/mailer
-    command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
+  keycloak-postgres:
+    image: postgres:14-alpine
+    hostname: keycloak-postgres
     environment:
-      DB_LOGGING: "false"
-      NODE_ENV: debug
-      TRANSPORT_SMTP_HOST: mailhog
-      TRANSPORT_SMTP_PORT: 1025
-      TRANSPORT_SMTP_SECURE: "false"
-    depends_on:
-      - redis
-      - mailhog
-    networks:
-      - app
-
-  notifications-integration-tests:
-    image: notifications-service-prod:latest
-    working_dir: /app/build/services/notifications
-    command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
-    environment:
-      DB_LOGGING: "false"
-    depends_on:
-      - postgres
-    networks:
-      - app
-
-  gateway-integration-tests:
-    image: gateway-service-prod:latest
-    working_dir: /app/build/services/gateway
-    command: [sh, -c, 'sleep 5 && npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
-    hostname: gateway
-    environment:
-      API_URL: "http://security-prod:50050"
-      DB_LOGGING: "false"
-    depends_on:
-      - security-prod
-    networks:
-      - app
-
-  pdf-integration-tests:
-    image: pdf-service-prod:latest
-    working_dir: /app/build/services/pdf
-    command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
-    hostname: pdf
-    environment:
-      API_URL: "http://pdf:50050"
-      DB_LOGGING: "false"
-    networks:
-      app:
-        aliases:
-          - pdf
-
-  scheduler-integration-tests:
-    image: scheduler-service-prod:latest
-    working_dir: /app/build/services/scheduler
-    command: [sh, -c, 'npm i mocha && node ./node_modules/.bin/mocha \"src/integration-tests/**/*.spec.js\" --file=\"src/integration-tests/bootstrap.js\" --exit']
-    environment:
-      DB_LOGGING: "false"
-    depends_on:
-      - redis
-      - postgres
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./keycloak/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./keycloak/keycloak-postgres-data.sql:/keycloak-postgres-data.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U keycloak" ]
+      interval: 5s
+      timeout: 30s
+      retries: 10
     networks:
       - app
 
@@ -233,32 +120,14 @@ services:
       KEYCLOAK_USER: "admin"
       KEYCLOAK_PASSWORD: "admin"
     healthcheck:
-      test: [ "CMD-SHELL", "true" ]
-      interval: 5s
-      timeout: 5s
-      retries: 15
+      disable: true
     ports:
       - 8090:8090
     networks:
       - app
     depends_on:
       keycloak-postgres:
-        condition: service_started
-
-  keycloak-postgres:
-    image: postgres:14-alpine
-    hostname: keycloak-postgres
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: password
-    healthcheck:
-      disable: true
-    volumes:
-      - ./keycloak/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-      - ./keycloak/keycloak-postgres-data.sql:/keycloak-postgres-data.sql
-    networks:
-      - app
+        condition: service_healthy
 
   js:
     image: app:latest

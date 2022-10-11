@@ -10,31 +10,9 @@
 
 ##
 
-### Rapid-application development modules
+### **Security** module to handle users and users policy,
 
-There are many digital systems worldwide. Each system was developed to solve some business requirements, despite each system is different they all have common (modules) to achieve their requirements e.g
 
-- **Security** module to handle users and users policy,
-- **Mailer** module for sending emails,
-- **Scheduler** module for running scheduled jobs,
-- **Notifications** module for pushing notifications,
-- **PDF** module for converting HTML to PDF,
-- **Admin** module with GUI admin panel to manage other modules (optional),
-
-RAD modules were developed to simplify the development process so developers can focus only on business requirements.
-
-For example, your app needs to send an email after some operation but you don't have implemented the mailing module jet. No worries you can pull our service and use it in your app. Things you need to do are only a few steps:
-
-- Pull our docker image of mailing service
-- Add service to yours docker-compose file
-- Set necessary env variables
-- Call methods from your app to new mailing service via HTTP methods
-
-Our modules are fully configurable so you can change things you want or things you don't need.
-
-If you want to read more about our RAD modules please check the description of each module.
-
-In case of issues feel free to add a new issue on our github.
 
 ---
 
@@ -64,45 +42,15 @@ After checkout of a repository, please perform the following steps in exact sequ
     ```
     $ cp docker-compose.override.yml.dist docker-compose.override.yml
     ```
-2. Run `make all`
+2. Run watch `npm start`
 
-3. Run watch - `npm run watch`
+3. Run security service `npm run security`
 
-Alternatively you can do it manually:
+4. Run production integration tests `npm run security-integration`
 
-1. Copy docker-compose.override
-    ```
-    $ cp docker-compose.override.yml.dist docker-compose.override.yml
-    ```
-2. Run `npm i`
+5. Open your browser and go to the swagger api docs: [http://localhost:50050/api-docs/](http://localhost:50050/api-docs/)
 
-3. Run `cd ./services/security && npm i`
-
-4. Run `cd ./services/scheduler && npm i`
-
-5. Run `cd ./services/gateway && npm i`
-
-6. Run `cd ./services/mailer && npm i`
-
-7. Run `cd ./services/notifications && npm i`
-
-8. Run `cd ./services/pdf && npm i`
-
-9. Run `npm run docker-build-watcher`
-
-10. Run `npm run docker-build-scheduler`
-
-11. Run `npm run docker-build-security`
-
-12. Run `npm run docker-build-mailer`
-
-13. Run `npm run docker-build-notifications`
-
-14. Run `npm run docker-build-gateway`
-
-15. Run `npm run docker-build-pdf`
-
-16. Run watch - `npm run watch`
+6. On the swagger page, generate an access token via endpoint `/api/public/auth/login` or `/api/users/login` good luck!  🔥
 
 ---
 
@@ -110,9 +58,9 @@ Alternatively you can do it manually:
 
 1. If you forgot to run builder run `npm run watch`
 
-2. Run `docker-compose up security` (or you can up another service with you want to work)
+2. Run `docker-compose up security`
 
-3. Open your browser and go to: [http://localhost:50050/api-docs/#/](http://localhost:50050/api-docs/#/)
+3. Open your browser and go to: [http://localhost:50050/api-docs/](http://localhost:50050/api-docs/)
 
 You should see the swagger panel and request in terminal
 
@@ -125,7 +73,7 @@ This app is fully dockerized, so in order to use it you have to have docker and 
 1. In order to run specific container run:
 
     ```
-    docker-compose up <container-name>
+    docker-compose up security
     ```
 
 2. In order to watch files for dev purpose type:
