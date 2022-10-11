@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 import { HttpError } from "../../errors/http.error";
-import * as queryString from "querystring";
 import { ConflictError } from "../../errors/conflict.error";
 import { PolicyModelGeneric } from "../../app/features/policy/models/policy.model";
 import { UserModelGeneric } from "../../app/features/users/models/user.model";
@@ -27,7 +26,7 @@ export class KeycloakManager {
       this.dependencies.keycloakClientConfig.realmName,
     )}/protocol/openid-connect/token`;
 
-    const body = queryString.stringify({
+    const body = new URLSearchParams({
       username: this.dependencies.keycloakClientConfig.clientUsername,
       password: this.dependencies.keycloakClientConfig.clientPassword,
       client_secret: this.dependencies.keycloakClientConfig.clientSecret,
@@ -57,7 +56,7 @@ export class KeycloakManager {
       this.dependencies.keycloakClientConfig.realmName,
     )}/protocol/openid-connect/token`;
 
-    const body = queryString.stringify({
+    const body = new URLSearchParams({
       username,
       password,
       client_secret: this.dependencies.keycloakClientConfig.clientSecret,
@@ -100,7 +99,7 @@ export class KeycloakManager {
       this.dependencies.keycloakClientConfig.realmName,
     )}/protocol/openid-connect/logout`;
 
-    const body = queryString.stringify({
+    const body = new URLSearchParams({
       refresh_token: refreshToken,
       client_secret: this.dependencies.keycloakClientConfig.clientSecret,
       client_id: this.dependencies.keycloakClientConfig.clientId,
@@ -624,7 +623,7 @@ export class KeycloakManager {
     const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
       this.dependencies.keycloakClientConfig.realmName,
     )}/protocol/openid-connect/token`;
-    const body = queryString.stringify({
+    const body = new URLSearchParams({
       grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket",
       audience: this.dependencies.keycloakClientConfig.clientId,
       permission,
@@ -799,7 +798,7 @@ export class KeycloakManager {
     const url = `${this.dependencies.keycloakClientConfig.keycloakUrl}/auth/realms/${encodeURIComponent(
       this.dependencies.keycloakClientConfig.realmName,
     )}/protocol/openid-connect/token`;
-    const body = queryString.stringify({
+    const body = new URLSearchParams({
       grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket",
       audience: this.dependencies.keycloakClientConfig.clientId,
     });
