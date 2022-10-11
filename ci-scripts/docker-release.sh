@@ -23,7 +23,7 @@ dockerhub_push() {
     echo ${DOCKERHUB_PASSWORD} | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
     IMAGE="$DOCKERHUB_REPOSITORY/$SERVICE_NAME"
     docker build -t ${IMAGE}:${VERSION} -f $DOCKERFILE_PATH .
-    docker tag ${IMAGE}:${VERSION} ${IMAGE}:latest
+    docker tag ${IMAGE}:${VERSION} ${IMAGE}:${VERSION}
     docker push ${IMAGE}
 }
 
