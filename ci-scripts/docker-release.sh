@@ -24,7 +24,7 @@ dockerhub_push() {
     IMAGE="$DOCKERHUB_REPOSITORY/$SERVICE_NAME"
     docker build -t ${IMAGE}:${VERSION} -f $DOCKERFILE_PATH .
     docker tag ${IMAGE}:${VERSION} ${IMAGE}:${VERSION}
-    docker push ${IMAGE}
+    docker push ${IMAGE}:${VERSION}
 }
 
 check_arguments
