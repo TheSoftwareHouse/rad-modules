@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const services = ["security", "scheduler", "notifications", "mailer", "gateway", "pdf"];
+const services = ["security"];
 
 const API_KEY_HEADER_NAME = "x-api-key";
 const projectRootPath = path.join(__dirname, "..");
